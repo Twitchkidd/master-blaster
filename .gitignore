@@ -1,1 +1,4 @@
 .DS_Store
+build/
+dist/
+master_blaster.egg-info/
