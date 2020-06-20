@@ -1,6 +1,6 @@
 #!/usr/bin/env
 
-# Master Blaster - Rename All Primary Branches Of Code Repositories
+# Master Blaster - Rename Primary Branches Of Code Repositories
 # Copyright (C) 2020 Gareth Field - field.gareth @ gmail.com
 
 # This program is free software: you can redistribute it and/or modify
