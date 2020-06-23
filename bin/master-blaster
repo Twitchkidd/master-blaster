@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env python
 
 # Master Blaster - Rename Primary Branches Of Code Repositories
 # Copyright (C) 2020 Gareth Field - field.gareth @ gmail.com
@@ -15,3 +15,26 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+from pathlib import Path
+import requests
+
+init = '''
+Welcome to master-blaster! This program automatically renames primary branches
+from master to main for GitHub users!
+'''
+prompt = "Check ~/.gitconfig for your GitHub email? "
+checkGitconfig = input(prompt)
+print(checkGitconfig)
+if checkGitconfig == "Yes":
+    print("Okay\n")
+    with open(f"{Path.home()}/.gitconfig", 'r') as f:
+        # gitconfig = f.read()
+        # print(gitconfig)
+        found = False
+        for line in f:
+            if line.find("email =") != -1:
+                print(line)
+                found = True
+        if found == False:
+            print("Can't find email!")
