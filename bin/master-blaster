@@ -16,25 +16,72 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import questionary
 from pathlib import Path
 import requests
+import getpass
+import json
+from urllib.parse import urljoin
+
+GITHUB_API = "https://api.github.com"
 
 init = '''
 Welcome to master-blaster! This program automatically renames primary branches
 from master to main for GitHub users!
 '''
-prompt = "Check ~/.gitconfig for your GitHub email? "
-checkGitconfig = input(prompt)
-print(checkGitconfig)
-if checkGitconfig == "Yes":
-    print("Okay\n")
-    with open(f"{Path.home()}/.gitconfig", 'r') as f:
-        # gitconfig = f.read()
-        # print(gitconfig)
-        found = False
-        for line in f:
-            if line.find("email =") != -1:
-                print(line)
-                found = True
-        if found == False:
-            print("Can't find email!")
+
+username = input("GitHub username: ")
+password = getpass.getpass("GitHub password: ")
+
+url = urljoin(GITHUB_API, 'authorizations')
+payload = {}
+
+res = requests.post(
+    url,
+    auth=(username, password),
+    data=json.dumps(payload)
+)
+
+j = json.loads(res.text)
+if res.status_code >= 400:
+    msg = j.get('message', "UNDEFINED ERROR (no error description from server)")
+    print(f"Error: {msg}")
+    exit()
+token = j["token"]
+print(f"Token : {token}")
+
+# answer = questionary.select(
+#     "prompt",
+#     choices=[
+#         "Option 1",
+#         "Option 2",
+#         "Option 3"
+#     ]
+# ).ask()
+# prompt = "Check ~/.gitconfig for your GitHub email? "
+# checkGitconfig = input(prompt)
+# print(checkGitconfig)
+# email = ""
+# emailStringStart = 0
+# if checkGitconfig == "Yes":
+#     print("Okay\n")
+#     with open(f"{Path.home()}/.gitconfig", 'r') as f:
+#         # gitconfig = f.read()
+#         # print(gitconfig)
+#         found = False
+#         for line in f:
+#             if line.find("email =") != -1:
+#                 print(line)
+#                 found = True
+#                 emailStringStart = line.find("email =")
+#                 print(line[emailStringStart + 8:])
+#         if found == False:
+#             print("Can't find email!")
+# Uhh so, turns out you can't search by email, as that's not a public thing. Wah wah. Lots to learn.
+# So username is what we're looking for ... and how to generate an oauth token? I was looking at
+# oauth apps, but you can just hit the rest api with an authorization header that's an oauth token
+
+# Oh thank the l ... thanks Jason McVetta!!! https://advanced-python.readthedocs.io/en/latest/rest/authtoken.html
+
+# Oh, fuck me! GitHub is nuking password-based token generation! Doesn't work without 2FA! UMMM okay, either
+# ask the user to generate a token manually or launch a browser somehow?!
