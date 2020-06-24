@@ -16,39 +16,49 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import questionary
-from pathlib import Path
+# import questionary
+# from pathlib import Path
 import requests
-import getpass
+# import getpass
 import json
 from urllib.parse import urljoin
 
 GITHUB_API = "https://api.github.com"
 
-init = '''
-Welcome to master-blaster! This program automatically renames primary branches
-from master to main for GitHub users!
-'''
-
-username = input("GitHub username: ")
-password = getpass.getpass("GitHub password: ")
+testToken = "1036c7cd7bed6bb17f5380ae57ae741002c49266"
 
 url = urljoin(GITHUB_API, 'authorizations')
-payload = {}
+res = requests.get(
 
-res = requests.post(
-    url,
-    auth=(username, password),
-    data=json.dumps(payload)
 )
+print(res.json())
 
-j = json.loads(res.text)
-if res.status_code >= 400:
-    msg = j.get('message', "UNDEFINED ERROR (no error description from server)")
-    print(f"Error: {msg}")
-    exit()
-token = j["token"]
-print(f"Token : {token}")
+# requests.patch is a thing!
+
+# init = '''
+# Welcome to master-blaster! This program automatically renames primary branches
+# from master to main for GitHub users!
+# '''
+
+# username = input("GitHub username: ")
+# password = getpass.getpass("GitHub password: ")
+
+# url = urljoin(GITHUB_API, 'authorizations')
+# payload = {}
+
+# res = requests.post(
+#     url,
+#     auth=(username, password),
+#     data=json.dumps(payload)
+# )
+
+# j = json.loads(res.text)
+# if res.status_code >= 400:
+#     msg = j.get('message', "UNDEFINED ERROR (no error description from server)")
+#     print(f"Error: {msg}")
+#     exit()
+# token = j["token"]
+# print(f"Token : {token}")
 
 # answer = questionary.select(
 #     "prompt",
@@ -85,3 +95,44 @@ print(f"Token : {token}")
 
 # Oh, fuck me! GitHub is nuking password-based token generation! Doesn't work without 2FA! UMMM okay, either
 # ask the user to generate a token manually or launch a browser somehow?!
+
+
+# Okay so we'll need something explaining what you need to come back to the terminal with
+# and an input it paste in the token
+# and then the rest of the questions which go
+# username
+# types of repos ... actually does that need to go in before the ... yea, because you need
+# to explain what scope to allow ...
+# yea lets see, scope ... so ...
+# username,
+# what types of repos ... so it looks like either `repo` or `public_repo`
+# I guess I don't need to go crazy with specification of single or multiple contributer-type stuff yet
+# then when you have username and what scopes to ask for, then ... ping for the list, and if
+# that goes wrong there was either a username or scope issue, and for the moment just close the process?
+# Okay well once you get a list, then ask about what to name the main branches, and say you'll ask that
+# beforehand ... and then ask for permission to scan for local repos, warn about committing everything,
+# and then do the thing, lol.
+
+# GET /user/repos
+
+# visibility? => all ~ public ~ private
+# affiliation? => owner ~ collaborator ~ organization_member
+# type? => all ~ owner ~ public ~ private ~ member (422 error if collision with previous)
+
+# PATCH /repos/:owner/:repo
+# default_branch? string
+
+# HHMMMM
+# __main__ — Top-level script environment¶
+# '__main__' is the name of the scope in which top-level code executes. A module’s __name__ is set equal to '__main__' when read from standard input, a script, or from an interactive prompt.
+
+# A module can discover whether or not it is running in the main scope by checking its own __name__, which allows a common idiom for conditionally executing code in a module when it is run as a script or with python -m but not when it is imported:
+
+# if __name__ == "__main__":
+#     # execute only if run as a script
+#     main()
+# For a package, the same effect can be achieved by including a __main__.py module, the contents of which will be executed when the module is run with -m.
+
+# headers = {"user-agent": "my-app-101"}
+# payload = { "key1": "Value1", "key2": "Value2"}
+# r = requests.whatever("url://something", params=payload)
