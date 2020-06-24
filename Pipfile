@@ -4,10 +4,12 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+autopep8 = "*"
 
 [packages]
 requests = "*"
 questionary = "*"
+master-blaster = {editable = true, path = "."}
 
 [requires]
-python_version = "2.7"
+python_version = "3.7"

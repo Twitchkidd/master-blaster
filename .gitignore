@@ -2,3 +2,6 @@
 build/
 dist/
 master_blaster.egg-info/
+repoPublicRepo.txt
+repo.txt
+.vscode/
