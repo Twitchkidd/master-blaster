@@ -19,7 +19,6 @@
 import questionary
 import requests
 import json
-# from urllib.parse import urljoin
 from pathlib import Path
 import os
 
@@ -100,7 +99,6 @@ gitNewPrompt = """
   'main', shall we?
 """
 
-
 # def tokenFetchPrompt(scopes):
 #     return f"""
 #     Last step! Since password-based token generation is being deprecated, please
@@ -135,13 +133,8 @@ repoTokenPrompt = """
      save it first in case there's an error and you need to retry. (Recommended)
 """
 
-
-# print(isinstance(gitNewPrompt, str))
-# True
-
 # https://github.com/regexhq/regex-username
 # /^([a-z\d]+-)*[a-z\d]+$/i
-
 # p = re.compile('/^([a-z\d]+-)*[a-z\d]+$/i')
 # m = p.match("twitch-kidd")
 # m2 = p.match("-hyphenstart")
@@ -163,15 +156,7 @@ repoTokenPrompt = """
 #     print('match found', m4.group())
 # else:
 #     print('no match!')
-
 # This didn't work. I need to move on, and if the user mistypes their username, c'est la vie
-
-# print(any("All repositories I'm he owner, collaborator, and/or organization member, only public, not private." == option for option in ["All repositories I'm the owner, collaborator, and/or organization member, only public, not private.",
-#                                                                                                                                         "All repositories I'm the owner of, only public, not private.", "All repositories I'm the owner of and/or a collaborator on, only public, not private.", "All repositories I'm the owner of and/or a member of the organization, only public, not private."]))
-# wtf
-
-# print(isinstance("", str))
-
 
 questions = [
     {
@@ -225,6 +210,10 @@ questions = [
         "name": "repoPublicRepoToken",
         "message": repoPublicRepoTokenPrompt,
         "when": lambda x: x['repoTypes'] == "All repositories I'm the owner, collaborator, and/or organization member, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of and/or a collaborator on, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of and/or a member of the organization, only public, not private."
+        # "when": lambda x: any("yeap" == option for option in ["nope", "nope", "yeap"])
+        # "when": lambda x: x['repoTypes'] in {"All repositories I'm the owner, collaborator, and/or organization member, only public, not private.", "All repositories I'm the owner of, only public, not private.", "All repositories I'm the owner of and/or a collaborator on, only public, not private.", "All repositories I'm the owner of and/or a member of the organization, only public, not private."}
+        # "when": lambda x: not x['repoPublicRepoToken']
+        # WHYYY WHYYYYYY
     },
     {
         "type": "text",
@@ -233,10 +222,6 @@ questions = [
         "when": lambda x: x['repoTypes'] != "All repositories I'm the owner, collaborator, and/or organization member, only public, not private." and x['repoTypes'] != "All repositories I'm the owner of, only public, not private." and x['repoTypes'] != "All repositories I'm the owner of and/or a collaborator on, only public, not private." and x['repoTypes'] != "All repositories I'm the owner of and/or a member of the organization, only public, not private."
     }
 ]
-# "when": lambda x: any("yeap" == option for option in ["nope", "nope", "yeap"])
-# "when": lambda x: x['repoTypes'] in {"All repositories I'm the owner, collaborator, and/or organization member, only public, not private.", "All repositories I'm the owner of, only public, not private.", "All repositories I'm the owner of and/or a collaborator on, only public, not private.", "All repositories I'm the owner of and/or a member of the organization, only public, not private."}
-# "when": lambda x: not x['repoPublicRepoToken']
-# WHYYY WHYYYYYY
 
 answers = questionary.prompt(questions)
 
@@ -256,16 +241,25 @@ username = "Twitchkidd"
 
 headers = {"Authorization": 'token ' + token}
 
+# And this ...
+params = {"per_page": "1000"}
+
+# GET /user/repos
+
+# visibility? => all ~ public ~ private
+# affiliation? => owner ~ collaborator ~ organization_member
+# type? => all ~ owner ~ public ~ private ~ member (422 error if collision with previous)
+
 # This one gets everything!
+# Maybe call it reposGetRes?
 res = requests.get(f"{GITHUB_API}/user/repos?per_page=1000", headers=headers)
-# pyjson = json.dumps(res.json(), sort_keys=True, indent=2)
-# print(pyjson)
 
 repos = []
 for repository in res.json():
     repos.append(repository['name'])
 # This could probably be improved to check local repos for if their urls are the same
 # We're going to go agead with simple string matching for now.
+# # Yea, must upgrade. Seeing repos with the same name that are either forks or from an organization
 print(sorted(repos))
 print(len(repos))
 
@@ -293,42 +287,6 @@ print(len(localRepoNames))
 
 # requests.patch is a thing!
 
-# init = '''
-# Welcome to master-blaster! This program automatically renames primary branches
-# from master to main for GitHub users!
-# '''
-
-# username = input("GitHub username: ")
-# password = getpass.getpass("GitHub password: ")
-
-# url = urljoin(GITHUB_API, 'authorizations')
-# payload = {}
-
-# res = requests.post(
-#     url,
-#     auth=(username, password),
-#     data=json.dumps(payload)
-# )
-
-# j = json.loads(res.text)
-# if res.status_code >= 400:
-#     msg = j.get('message', "UNDEFINED ERROR (no error description from server)")
-#     print(f"Error: {msg}")
-#     exit()
-# token = j["token"]
-# print(f"Token : {token}")
-
-# answer = questionary.select(
-#     "prompt",
-#     choices=[
-#         "Option 1",
-#         "Option 2",
-#         "Option 3"
-#     ]
-# ).ask()
-# prompt = "Check ~/.gitconfig for your GitHub email? "
-# checkGitconfig = input(prompt)
-# print(checkGitconfig)
 # email = ""
 # emailStringStart = 0
 # if checkGitconfig == "Yes":
@@ -345,37 +303,7 @@ print(len(localRepoNames))
 #                 print(line[emailStringStart + 8:])
 #         if found == False:
 #             print("Can't find email!")
-# Uhh so, turns out you can't search by email, as that's not a public thing. Wah wah. Lots to learn.
-# So username is what we're looking for ... and how to generate an oauth token? I was looking at
-# oauth apps, but you can just hit the rest api with an authorization header that's an oauth token
 
-# Oh thank the l ... thanks Jason McVetta!!! https://advanced-python.readthedocs.io/en/latest/rest/authtoken.html
-
-# Oh, fuck me! GitHub is nuking password-based token generation! Doesn't work without 2FA! UMMM okay, either
-# ask the user to generate a token manually or launch a browser somehow?!
-
-
-# Okay so we'll need something explaining what you need to come back to the terminal with
-# and an input it paste in the token
-# and then the rest of the questions which go
-# username
-# types of repos ... actually does that need to go in before the ... yea, because you need
-# to explain what scope to allow ...
-# yea lets see, scope ... so ...
-# username,
-# what types of repos ... so it looks like either `repo` or `public_repo`
-# I guess I don't need to go crazy with specification of single or multiple contributer-type stuff yet
-# then when you have username and what scopes to ask for, then ... ping for the list, and if
-# that goes wrong there was either a username or scope issue, and for the moment just close the process?
-# Okay well once you get a list, then ask about what to name the main branches, and say you'll ask that
-# beforehand ... and then ask for permission to scan for local repos, warn about committing everything,
-# and then do the thing, lol.
-
-# GET /user/repos
-
-# visibility? => all ~ public ~ private
-# affiliation? => owner ~ collaborator ~ organization_member
-# type? => all ~ owner ~ public ~ private ~ member (422 error if collision with previous)
 
 # PATCH /repos/:owner/:repo
 # default_branch? string
