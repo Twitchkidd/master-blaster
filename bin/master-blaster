@@ -246,17 +246,26 @@ if 'repoPublicRepoToken' in answers:
 else:
     token = answers['repoToken']
 
+# TESTING!
 token = repo
-print(token)
 
 username = answers['username']
-print(username)
+
+# TESTING!
+username = "Twitchkidd"
 
 headers = {"Authorization": 'token ' + token}
-print(headers)
 
-r = requests.get(f"{GITHUB_API}/user/repos", headers=headers)
-print(r.json())
+# This one gets everything!
+res = requests.get(f"{GITHUB_API}/user/repos", headers=headers)
+pyjson = json.dumps(res.json(), sort_keys=True, indent=2)
+# print(pyjson)
+
+repos = []
+for repository in pyjson:
+    # repos.append(repository['name'])
+    print(repository)
+# print(repos)
 
 # url = urljoin(GITHUB_API, 'authorizations')
 # res = requests.get(
