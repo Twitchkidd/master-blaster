@@ -266,18 +266,29 @@ for repository in res.json():
     repos.append(repository['name'])
 # This could probably be improved to check local repos for if their urls are the same
 # We're going to go agead with simple string matching for now.
+print(sorted(repos))
 print(len(repos))
 
 ########################################################################
 
+localRepoNames = []
 localRepos = []
 # for root, subdirs, files in os.walk(Path.home()):
 for root, subdirs, files in os.walk(f"{Path.home()}/Code"):
     for d in subdirs:
-        if any(d == name for name in repos) and ".git" in subdirs:
-            print(d)
-            localRepos.append(f"{root}/{d}")
-print(len(localRepos))
+        # if any(d == name for name in repos) and ".git" in subdirs:
+        if any(d == name for name in repos):
+            for root2, subdirs2, files2 in os.walk(f"{root}/{d}"):
+                if ".git" in subdirs2:
+                    localRepos.append(f"{root}/{d}")
+                    localRepoNames.append(d)
+                    # okay so {subdirs2}/.git/config after [remote "origin"] \n url =
+                    # contains the remoteorigin url
+print(sorted(localRepoNames))
+print(len(localRepoNames))
+
+# for rep in repos:
+#     if rep
 
 
 # requests.patch is a thing!
