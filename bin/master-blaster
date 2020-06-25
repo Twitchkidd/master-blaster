@@ -246,6 +246,18 @@ if 'repoPublicRepoToken' in answers:
 else:
     token = answers['repoToken']
 
+token = repo
+print(token)
+
+username = answers['username']
+print(username)
+
+headers = {"Authorization": 'token ' + token}
+print(headers)
+
+r = requests.get(f"{GITHUB_API}/user/repos", headers=headers)
+print(r.json())
+
 # url = urljoin(GITHUB_API, 'authorizations')
 # res = requests.get(
 
