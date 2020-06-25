@@ -83,6 +83,10 @@ namesMain = "All primary branches renamed to 'main'."
 namesCustom = "Choose another name to rename all primary branches to."
 namesPerRepo = "Interactively choose a name for the primary branch for each repo."
 
+customNamePrompt = """
+  What name are you choosing for primary branches?
+"""
+
 localDirectoriesPrompt = """
   Repositories not present locally will be cloned to a temporary folder,
   updated, the update pushed, (the default branch on GitHub.com updated,)
@@ -97,54 +101,83 @@ gitNewPrompt = """
 """
 
 
-def tokenFetchPrompt(scopes):
-    return f"""
-    Last step! Since password-based token generation is being deprecated, please
-    get a personal access token with the correct scope(s) in order to run this
-    program. To get this token, go to https://github.com, sign in, then go to
-    'Settings', then 'Developer Settings', then 'Personal access tokens', then
-    'Generate new token', confirm your password, name the token in the 'Note'
-    input field, and select the {scopes} scope(s), then 'Generate Token', then
-    copy it to your clipboard and either paste it back here into the prompt, or
-    save it first in case there's an error and you need to retry. (Recommended)
-  """
+# def tokenFetchPrompt(scopes):
+#     return f"""
+#     Last step! Since password-based token generation is being deprecated, please
+#     get a personal access token with the correct scope(s) in order to run this
+#     program. To get this token, go to https://github.com, sign in, then go to
+#     'Settings', then 'Developer Settings', then 'Personal access tokens', then
+#     'Generate new token', confirm your password, name the token in the 'Note'
+#     input field, and select the {scopes} scope(s), then 'Generate Token', then
+#     copy it to your clipboard and either paste it back here into the prompt, or
+#     save it first in case there's an error and you need to retry. (Recommended)
+#   """
+
+repoPublicRepoTokenPrompt = """
+     Last step! Since password-based token generation is being deprecated, please
+     get a personal access token with the correct scope(s) in order to run this
+     program. To get this token, go to https://github.com, sign in, then go to
+     'Settings', then 'Developer Settings', then 'Personal access tokens', then
+     'Generate new token', confirm your password, name the token in the 'Note'
+     input field, and select the 'public repo' scope, then 'Generate Token', then
+     copy it to your clipboard and either paste it back here into the prompt, or
+     save it first in case there's an error and you need to retry. (Recommended)
+"""
+
+repoTokenPrompt = """
+     Last step! Since password-based token generation is being deprecated, please
+     get a personal access token with the correct scope(s) in order to run this
+     program. To get this token, go to https://github.com, sign in, then go to
+     'Settings', then 'Developer Settings', then 'Personal access tokens', then
+     'Generate new token', confirm your password, name the token in the 'Note'
+     input field, and select the 'repo' scope, then 'Generate Token', then
+     copy it to your clipboard and either paste it back here into the prompt, or
+     save it first in case there's an error and you need to retry. (Recommended)
+"""
 
 
-print(isinstance(gitNewPrompt, str))
+# print(isinstance(gitNewPrompt, str))
+# True
 
 # https://github.com/regexhq/regex-username
 # /^([a-z\d]+-)*[a-z\d]+$/i
 
-p = re.compile('/^([a-z\d]+-)*[a-z\d]+$/i')
-m = p.match("twitch-kidd")
-m2 = p.match("-hyphenstart")
-m3 = p.match("hyphenend-")
-m4 = p.match("987y8uhoiu#$@#$@")
-if m:
-    print('match found', m.group())
-else:
-    print('no match!')
-if m2:
-    print('match found', m2.group())
-else:
-    print('no match!')
-if m3:
-    print('match found', m3.group())
-else:
-    print('no match!')
-if m4:
-    print('match found', m4.group())
-else:
-    print('no match!')
+# p = re.compile('/^([a-z\d]+-)*[a-z\d]+$/i')
+# m = p.match("twitch-kidd")
+# m2 = p.match("-hyphenstart")
+# m3 = p.match("hyphenend-")
+# m4 = p.match("987y8uhoiu#$@#$@")
+# if m:
+#     print('match found', m.group())
+# else:
+#     print('no match!')
+# if m2:
+#     print('match found', m2.group())
+# else:
+#     print('no match!')
+# if m3:
+#     print('match found', m3.group())
+# else:
+#     print('no match!')
+# if m4:
+#     print('match found', m4.group())
+# else:
+#     print('no match!')
 
-print()
+# This didn't work. I need to move on, and if the user mistypes their username, c'est la vie
+
+# print(any("All repositories I'm he owner, collaborator, and/or organization member, only public, not private." == option for option in ["All repositories I'm the owner, collaborator, and/or organization member, only public, not private.",
+#                                                                                                                                         "All repositories I'm the owner of, only public, not private.", "All repositories I'm the owner of and/or a collaborator on, only public, not private.", "All repositories I'm the owner of and/or a member of the organization, only public, not private."]))
+# wtf
+
+# print(isinstance("", str))
+
 
 questions = [
     {
         "type": "text",
         "name": "username",
         "message": usernamePrompt,
-        "validate": lambda x: isinstance(x, str)
     },
     {
         "type": "select",
@@ -172,6 +205,12 @@ questions = [
         ]
     },
     {
+        "type": "text",
+        "name": "customName",
+        "message": customNamePrompt,
+        "when": lambda x: x['names'] == "Choose another name to rename all primary branches to."
+    },
+    {
         "type": "confirm",
         "name": "localDirectories",
         "message": localDirectoriesPrompt
@@ -183,10 +222,21 @@ questions = [
     },
     {
         "type": "text",
-        "name": "token",
-        "message": tokenFetchPrompt("SCOPE TODO")
+        "name": "repoPublicRepoToken",
+        "message": repoPublicRepoTokenPrompt,
+        "when": lambda x: x['repoTypes'] == "All repositories I'm the owner, collaborator, and/or organization member, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of and/or a collaborator on, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of and/or a member of the organization, only public, not private."
+    },
+    {
+        "type": "text",
+        "name": "repoToken",
+        "message": repoTokenPrompt,
+        "when": lambda x: x['repoTypes'] != "All repositories I'm the owner, collaborator, and/or organization member, only public, not private." and x['repoTypes'] != "All repositories I'm the owner of, only public, not private." and x['repoTypes'] != "All repositories I'm the owner of and/or a collaborator on, only public, not private." and x['repoTypes'] != "All repositories I'm the owner of and/or a member of the organization, only public, not private."
     }
 ]
+# "when": lambda x: any("yeap" == option for option in ["nope", "nope", "yeap"])
+# "when": lambda x: x['repoTypes'] in {"All repositories I'm the owner, collaborator, and/or organization member, only public, not private.", "All repositories I'm the owner of, only public, not private.", "All repositories I'm the owner of and/or a collaborator on, only public, not private.", "All repositories I'm the owner of and/or a member of the organization, only public, not private."}
+# "when": lambda x: not x['repoPublicRepoToken']
+# WHYYY WHYYYYYY
 
 answers = questionary.prompt(questions)
 
