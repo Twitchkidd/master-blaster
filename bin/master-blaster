@@ -281,10 +281,6 @@ for root, subdirs, files in os.walk(f"{Path.home()}/Code"):
 print(sorted(localRepoNames))
 print(len(localRepoNames))
 
-# for rep in repos:
-#     if rep
-
-
 # requests.patch is a thing!
 
 # email = ""
