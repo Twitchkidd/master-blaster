@@ -17,11 +17,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import questionary
-from pathlib import Path
 import requests
 import json
-from urllib.parse import urljoin
-import re
+# from urllib.parse import urljoin
+from pathlib import Path
+import os
 
 GITHUB_API = "https://api.github.com"
 
@@ -53,7 +53,7 @@ tokenExplanation = """
   come back with an access token to make this program work, though. The next
   question will determine whether the program needs a token with the more
   general `repo` scope or the more limited `public_repo` scope. You can run
-  this program again if you're happy with the results
+  this program again if you're happy with the results!
 """
 
 print(tokenExplanation)
@@ -257,21 +257,27 @@ username = "Twitchkidd"
 headers = {"Authorization": 'token ' + token}
 
 # This one gets everything!
-res = requests.get(f"{GITHUB_API}/user/repos", headers=headers)
-pyjson = json.dumps(res.json(), sort_keys=True, indent=2)
+res = requests.get(f"{GITHUB_API}/user/repos?per_page=1000", headers=headers)
+# pyjson = json.dumps(res.json(), sort_keys=True, indent=2)
 # print(pyjson)
 
 repos = []
-for repository in pyjson:
-    # repos.append(repository['name'])
-    print(repository)
-# print(repos)
+for repository in res.json():
+    repos.append(repository['name'])
+# This could probably be improved to check local repos for if their urls are the same
+# We're going to go agead with simple string matching for now.
+print(len(repos))
 
-# url = urljoin(GITHUB_API, 'authorizations')
-# res = requests.get(
+########################################################################
 
-# )
-# print(res.json())
+localRepos = []
+# for root, subdirs, files in os.walk(Path.home()):
+for root, subdirs, files in os.walk(f"{Path.home()}/Code"):
+    for d in subdirs:
+        if any(d == name for name in repos) and ".git" in subdirs:
+            print(d)
+            localRepos.append(f"{root}/{d}")
+print(len(localRepos))
 
 
 # requests.patch is a thing!
