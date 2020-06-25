@@ -240,7 +240,12 @@ questions = [
 
 answers = questionary.prompt(questions)
 
-print(answers)
+token = ""
+if 'repoPublicRepoToken' in answers:
+    token = answers['repoPublicRepoToken']
+else:
+    token = answers['repoToken']
+
 # url = urljoin(GITHUB_API, 'authorizations')
 # res = requests.get(
 
