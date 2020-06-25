@@ -65,14 +65,14 @@ repoTypesPrompt = """
   What set of repositories do you want to update?
 """
 
-# repoTypesAll = "All repositories I'm the owner, collaborator, and/or organization member, public and private."
-# repoTypesAllPublic = "All repositories I'm the owner, collaborator, and/or organization member, only public, not private."
-# repoTypesOwner = "All repositories I'm the owner of, public and private."
-# repoTypesOwnerPublic = "All repositories I'm the owner of, only public, not private."
-# repoTypesCollaborator = "All repositories I'm the owner of and/or a collaborator on, public and private."
-# repoTypesCollaboratorPublic = "All repositories I'm the owner of and/or a collaborator on, only public, not private."
-# repoTypesOrganization = "All repositories I'm the owner of and/or a member of the organization, public and private."
-# repoTypesOrganizationPublic = "All repositories I'm the owner of and/or a member of the organization, only public, not private."
+repoTypesAll = "All repositories I'm the owner, collaborator, and/or organization member, public and private."
+repoTypesAllPublic = "All repositories I'm the owner, collaborator, and/or organization member, only public, not private."
+repoTypesOwner = "All repositories I'm the owner of, public and private."
+repoTypesOwnerPublic = "All repositories I'm the owner of, only public, not private."
+repoTypesCollaborator = "All repositories I'm the owner of and/or a collaborator on, public and private."
+repoTypesCollaboratorPublic = "All repositories I'm the owner of and/or a collaborator on, only public, not private."
+repoTypesOrganization = "All repositories I'm the owner of and/or a member of the organization, public and private."
+repoTypesOrganizationPublic = "All repositories I'm the owner of and/or a member of the organization, only public, not private."
 
 namesPrompt = """
   What would you like to call your primary branches? (We recommend 'main'.)
@@ -169,14 +169,14 @@ questions = [
         "name": "repoTypes",
         "message": repoTypesPrompt,
         "choices": [
-            "All repositories I'm the owner, collaborator, and/or organization member, public and private.",
-            "All repositories I'm the owner, collaborator, and/or organization member, only public, not private.",
-            "All repositories I'm the owner of, public and private.",
-            "All repositories I'm the owner of, only public, not private.",
-            "All repositories I'm the owner of and/or a collaborator on, public and private.",
-            "All repositories I'm the owner of and/or a collaborator on, only public, not private.",
-            "All repositories I'm the owner of and/or a member of the organization, public and private.",
-            "All repositories I'm the owner of and/or a member of the organization, only public, not private."
+            repoTypesAll,
+            repoTypesAllPublic,
+            repoTypesOwner,
+            repoTypesOwnerPublic,
+            repoTypesCollaborator,
+            repoTypesCollaboratorPublic,
+            repoTypesOrganization,
+            repoTypesOrganizationPublic
         ]
     },
     {
@@ -210,16 +210,13 @@ questions = [
         "name": "repoPublicRepoToken",
         "message": repoPublicRepoTokenPrompt,
         "when": lambda x: x['repoTypes'] == "All repositories I'm the owner, collaborator, and/or organization member, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of and/or a collaborator on, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of and/or a member of the organization, only public, not private."
-        # "when": lambda x: any("yeap" == option for option in ["nope", "nope", "yeap"])
-        # "when": lambda x: x['repoTypes'] in {"All repositories I'm the owner, collaborator, and/or organization member, only public, not private.", "All repositories I'm the owner of, only public, not private.", "All repositories I'm the owner of and/or a collaborator on, only public, not private.", "All repositories I'm the owner of and/or a member of the organization, only public, not private."}
-        # "when": lambda x: not x['repoPublicRepoToken']
-        # WHYYY WHYYYYYY
+        # why can't I get this work with any()?
     },
     {
         "type": "text",
         "name": "repoToken",
         "message": repoTokenPrompt,
-        "when": lambda x: x['repoTypes'] != "All repositories I'm the owner, collaborator, and/or organization member, only public, not private." and x['repoTypes'] != "All repositories I'm the owner of, only public, not private." and x['repoTypes'] != "All repositories I'm the owner of and/or a collaborator on, only public, not private." and x['repoTypes'] != "All repositories I'm the owner of and/or a member of the organization, only public, not private."
+        "when": lambda x: x['repoTypes'] == "All repositories I'm the owner, collaborator, and/or organization member, public and private." or x['repoTypes'] == "All repositories I'm the owner of, public and private." or x['repoTypes'] == "All repositories I'm the owner of and/or a collaborator on, public and private." or x['repoTypes'] == "All repositories I'm the owner of and/or a member of the organization, public and private."
     }
 ]
 
@@ -241,18 +238,32 @@ username = "Twitchkidd"
 
 headers = {"Authorization": 'token ' + token}
 
-# And this ...
-params = {"per_page": "1000"}
+params = {}
 
-# GET /user/repos
+if answers['repoTypes'] == repoTypesAll:
+    params = {"per_page": "1000"}
+if answers['repoTypes'] == repoTypesAllPublic:
+    params = {"per_page": "1000", "visibility": "public"}
+if answers['repoTypes'] == repoTypesOwner:
+    params = {"per_page": "1000", "type": "owner"}
+if answers['repoTypes'] == repoTypesOwnerPublic:
+    params = {"per_page": "1000", "visibility": "public", "type": "owner"}
+if answers['repoTypes'] == repoTypesCollaborator:
+    params = {"per_page": "1000", "type": "owner,collaborator"}
+if answers['repoTypes'] == repoTypesCollaboratorPublic:
+    params = {"per_page": "1000", "visibility": "public",
+              "type": "owner,collaborator"}
+if answers['repoTypes'] == repoTypesOrganization:
+    params = {"per_page": "1000",
+              "type": "owner,collaborator,organization_member"}
+if answers['repoTypes'] == repoTypesOrganizationPublic:
+    params = {"per_page": "1000", "visibility": "public",
+              "type": "owner,collaborator,organization_member"}
 
-# visibility? => all ~ public ~ private
-# affiliation? => owner ~ collaborator ~ organization_member
-# type? => all ~ owner ~ public ~ private ~ member (422 error if collision with previous)
+print(params)
 
-# This one gets everything!
 # Maybe call it reposGetRes?
-res = requests.get(f"{GITHUB_API}/user/repos?per_page=1000", headers=headers)
+res = requests.get(f"{GITHUB_API}/user/repos", headers=headers, params=params)
 
 repos = []
 for repository in res.json():
