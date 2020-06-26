@@ -27,9 +27,11 @@ GITHUB_API = "https://api.github.com"
 repo = ""
 repoPublicRepo = ""
 
+# ! TESTING!
 with open("./repo.txt", 'r') as repoF:
     repo = repoF.read(40)
 
+# ! TESTING!
 with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
     repoPublicRepo = repoPublicRepoF.read(40)
 
@@ -40,6 +42,7 @@ intro = """
 
 print(intro)
 
+# * TODO PRING LICENSE
 licenseText = """
   TODO PRINT LICENSE
 """
@@ -99,6 +102,7 @@ gitNewPrompt = """
   'main', shall we?
 """
 
+# * THERE'S SOMETHING TO BE LEARNED ABOUT RUNNING FUNCTIONS BETWEEN QUESTIONARY ASKING QUESTIONS
 # def tokenFetchPrompt(scopes):
 #     return f"""
 #     Last step! Since password-based token generation is being deprecated, please
@@ -133,6 +137,7 @@ repoTokenPrompt = """
      save it first in case there's an error and you need to retry. (Recommended)
 """
 
+# * THIS SHOULD BECOME A GITHUB ISSUE: VALIDATION
 # https://github.com/regexhq/regex-username
 # /^([a-z\d]+-)*[a-z\d]+$/i
 # p = re.compile('/^([a-z\d]+-)*[a-z\d]+$/i')
@@ -195,6 +200,7 @@ questions = [
         "message": customNamePrompt,
         "when": lambda x: x['names'] == "Choose another name to rename all primary branches to."
     },
+    # TODO Something done with this!
     {
         "type": "confirm",
         "name": "localDirectories",
@@ -221,6 +227,7 @@ questions = [
 ]
 
 answers = questionary.prompt(questions)
+print(answers)
 
 token = ""
 if 'repoPublicRepoToken' in answers:
@@ -228,18 +235,18 @@ if 'repoPublicRepoToken' in answers:
 else:
     token = answers['repoToken']
 
-# TESTING!
+# ! TESTING!
 token = repo
 
 username = answers['username']
 
-# TESTING!
+# ! TESTING!
 username = "Twitchkidd"
 
 headers = {"Authorization": 'token ' + token}
 
+# * THIS IS WHERE WE CONSTRUCT THE PARAMETERS
 params = {}
-
 if answers['repoTypes'] == repoTypesAll:
     params = {"per_page": "1000"}
 if answers['repoTypes'] == repoTypesAllPublic:
@@ -259,41 +266,37 @@ if answers['repoTypes'] == repoTypesOrganization:
 if answers['repoTypes'] == repoTypesOrganizationPublic:
     params = {"per_page": "1000", "visibility": "public",
               "type": "owner,collaborator,organization_member"}
-
 print(params)
 
+# * THIS IS WHERE WE MAKE THE API CALL
 # Maybe call it reposGetRes?
 res = requests.get(f"{GITHUB_API}/user/repos", headers=headers, params=params)
-
+# * THIS IS WHERE WE EXTRACT THE DATA FROM THE API CALL
 repos = []
 for repository in res.json():
+    # * COLLISIONS BETWEEN SAME NAME/DUPLICATE REPOS MEANS WE NEED TO GRAB MORE INFO HERE
     repos.append(repository['name'])
-# This could probably be improved to check local repos for if their urls are the same
-# We're going to go agead with simple string matching for now.
-# # Yea, must upgrade. Seeing repos with the same name that are either forks or from an organization
 print(sorted(repos))
 print(len(repos))
 
-########################################################################
-
+# * THIS PART IS WHERE WE SEARCH FOR LOCAL REPOS AND COMPARE AGAINST REPOS ON GITHUB
 localRepoNames = []
 localRepos = []
 # for root, subdirs, files in os.walk(Path.home()):
 for root, subdirs, files in os.walk(f"{Path.home()}/Code"):
     for d in subdirs:
-        # if any(d == name for name in repos) and ".git" in subdirs:
         if any(d == name for name in repos):
             for root2, subdirs2, files2 in os.walk(f"{root}/{d}"):
                 if ".git" in subdirs2:
                     localRepos.append(f"{root}/{d}")
                     localRepoNames.append(d)
-                    # okay so {subdirs2}/.git/config after [remote "origin"] \n url =
-                    # contains the remoteorigin url
+                    # * okay so {subdirs2}/.git/config after [remote "origin"] \n url = contains the remoteorigin url
 print(sorted(localRepoNames))
 print(len(localRepoNames))
 
-# requests.patch is a thing!
+# * requests.patch is a thing!
 
+# * THIS IS AN EXAMPLE OF READING FILES, GOING TO HAVE TO DO KINDA LIKE THIS FOR THE ORIGIN IN GIT DIRS!
 # email = ""
 # emailStringStart = 0
 # if checkGitconfig == "Yes":
@@ -311,11 +314,11 @@ print(len(localRepoNames))
 #         if found == False:
 #             print("Can't find email!")
 
-
+# * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH
 # PATCH /repos/:owner/:repo
 # default_branch? string
 
-# HHMMMM
+# * THIS MIGHT BE A BETTER WAY OF MAKING THIS SCRIPT EXECUTABLE!
 # __main__ — Top-level script environment¶
 # '__main__' is the name of the scope in which top-level code executes. A module’s __name__ is set equal to '__main__' when read from standard input, a script, or from an interactive prompt.
 
@@ -326,8 +329,5 @@ print(len(localRepoNames))
 #     main()
 # For a package, the same effect can be achieved by including a __main__.py module, the contents of which will be executed when the module is run with -m.
 
-# headers = {"user-agent": "my-app-101"}
-# payload = { "key1": "Value1", "key2": "Value2"}
-# r = requests.whatever("url://something", params=payload)
-
+# * MUST REVIEW THE PROTOCOL FOR LOCAL REPOS!
 # Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
