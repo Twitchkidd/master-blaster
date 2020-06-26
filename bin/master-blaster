@@ -329,3 +329,5 @@ print(len(localRepoNames))
 # headers = {"user-agent": "my-app-101"}
 # payload = { "key1": "Value1", "key2": "Value2"}
 # r = requests.whatever("url://something", params=payload)
+
+# Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
