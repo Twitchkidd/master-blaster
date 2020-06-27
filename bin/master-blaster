@@ -42,7 +42,7 @@ intro = """
 
 print(intro)
 
-# * TODO PRING LICENSE
+# * TODO PRINT LICENSE
 licenseText = """
   TODO PRINT LICENSE
 """
