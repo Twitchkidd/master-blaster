@@ -35,19 +35,22 @@ with open("./repo.txt", 'r') as repoF:
 with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
     repoPublicRepo = repoPublicRepoF.read(40)
 
+licenseText = """
+    master-blaster  Copyright (C) 2020  Gareth Field
+    This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
+    This is free software, and you are welcome to redistribute it
+    under certain conditions; type `show c' for details.
+"""
+# * TODO `show w` and `show c`
+
+print(licenseText)
+
 intro = """
   Welcome to master-blaster! This program renames primary branches for github users!
   We'll go through the options before making any changes!
 """
 
 print(intro)
-
-# * TODO PRINT LICENSE
-licenseText = """
-  TODO PRINT LICENSE
-"""
-
-print(licenseText)
 
 tokenExplanation = """
   GitHub is deprecating password-based token generation! This is great for
@@ -198,7 +201,9 @@ questions = [
         "type": "text",
         "name": "customName",
         "message": customNamePrompt,
-        "when": lambda x: x['names'] == "Choose another name to rename all primary branches to."
+        "when": lambda x: print("hey") and x['names'] == "Choose another name to rename all primary branches to."
+        # * THAT was insteresting! print must return falsy or something, because choose another name was chosen,
+        # * then it printed hey, and then went on to localDirectoriesPrompt!
     },
     # TODO Something done with this!
     {
