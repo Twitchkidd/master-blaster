@@ -150,32 +150,6 @@ repoTokenPrompt = """
      save it first in case there's an error and you need to retry. (Recommended)
 """
 
-# * THIS SHOULD BECOME A GITHUB ISSUE: VALIDATION
-# https://github.com/regexhq/regex-username
-# /^([a-z\d]+-)*[a-z\d]+$/i
-# p = re.compile('/^([a-z\d]+-)*[a-z\d]+$/i')
-# m = p.match("twitch-kidd")
-# m2 = p.match("-hyphenstart")
-# m3 = p.match("hyphenend-")
-# m4 = p.match("987y8uhoiu#$@#$@")
-# if m:
-#     print('match found', m.group())
-# else:
-#     print('no match!')
-# if m2:
-#     print('match found', m2.group())
-# else:
-#     print('no match!')
-# if m3:
-#     print('match found', m3.group())
-# else:
-#     print('no match!')
-# if m4:
-#     print('match found', m4.group())
-# else:
-#     print('no match!')
-# This didn't work. I need to move on, and if the user mistypes their username, c'est la vie
-
 questions = [
     {
         "type": "text",
