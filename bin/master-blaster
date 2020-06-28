@@ -22,17 +22,27 @@ import json
 from pathlib import Path
 import os
 
+# This defaults to v3 of the api.
+GITHUB_API = "https://api.github.com"
+
 # * ``` Placeholder variable for the name(s)! ```
 name = "main"
 names = {}
 
-# * ``` Placeholder variable and setter for repository types! ```
+# * ``` Placeholder variable for repository types! ```
 repoTypes = ""
 
-# This defaults to v3 of the api.
-GITHUB_API = "https://api.github.com"
+# * ``` Placeholder variable for names selection! ```
+namesSelection = ""
+
+# * ``` Placeholder variable for local directories selection! ```
+localDirectories = True
+
+# * ``` Pleaceholder variable for git alias selection! ```
+gitNew = True
 
 # * ``` Placeholder variables for the tokens! ```
+token = ""
 tokenRepoScope = ""
 tokenPublicRepoScope = ""
 
@@ -72,6 +82,8 @@ tokenExplanation = """
 """
 print(tokenExplanation)
 
+# * ~~~ First set of questionary dict questions! ~~~
+
 # * ``` Ask for username! ```
 usernamePrompt = """
   Please enter your GitHub username!
@@ -92,7 +104,7 @@ repoTypesOrganization = "All repositories I'm the owner of and/or a member of th
 repoTypesOrganizationPublic = "All repositories I'm the owner of and/or a member of the organization, only public, not private."
 
 # * ``` What to name the primary branches and choices! ```
-namesPrompt = """
+namesSelectionPrompt = """
   What would you like to call your primary branches? (Default 'main'.)
 """
 
@@ -105,12 +117,7 @@ customNamePrompt = """
   What name are you choosing for primary branches?
 """
 
-
-def customNameConfirmPrompt(confirmThisName):
-    name = f"{confirmThisName}"
-    return f"""
-        Confirm: {confirmThisName}?
-    """
+# * ~~~ Second set of questionary dict questions! ~~~
 
 
 localDirectoriesPrompt = """
@@ -147,9 +154,6 @@ repoTokenPrompt = """
      copy it to your clipboard and either paste it back here into the prompt, or
      save it first in case there's an error and you need to retry. (Recommended)
 """
-# Like if I were doing this with individual calls ... then I could run a function in between,
-# but I don't need to dismantle the questions dict entirely, it just needs to be fragmented ...
-
 
 questionsOne = [
     {
@@ -174,8 +178,8 @@ questionsOne = [
     },
     {
         "type": "select",
-        "name": "names",
-        "message": namesPrompt,
+        "name": "namesSelection",
+        "message": namesSelectionPrompt,
         "choices": [
             "All primary branches renamed to 'main'.",
             "Choose another name to rename all primary branches to.",
@@ -187,27 +191,43 @@ questionsOne = [
         "name": "customName",
         "message": customNamePrompt,
         # "when": lambda x: print("hey") or x['names'] == "Choose another name to rename all primary branches to."
-        "when": lambda x: x['names'] == "Choose another name to rename all primary branches to."
-        # * THAT was insteresting! print must return falsy or something, because choose another name was chosen,
-        # * then it printed hey, and then went on to localDirectoriesPrompt!
-        # * SAAAHHHWEEET I CAN JUST RUN CODE AND X IS STILL AVAILABLE!!! CHANGING IT TO OR TO MAKE SURE it continued
+        "when": lambda x: x['namesSelection'] == "Choose another name to rename all primary branches to."
+        # THAT was insteresting! print must return falsy or something, because choose another name was chosen,
+        # then it printed hey, and then went on to localDirectoriesPrompt!
+        # SAAAHHHWEEET I CAN JUST RUN CODE AND X IS STILL AVAILABLE!!! CHANGING IT TO OR TO MAKE SURE it continued
         # "when": lambda x: x['names'] == "Choose another name to rename all primary branches to."
     },
-    # {
-    #     "type": "confirm",
-    #     "name": "customNameConfirm",
-    #     "message": customNameConfirmPrompt,
-    #     "when": lambda x: setName(x['names']) or x['names']
-    # },
 ]
 answersOne = questionary.prompt(questionsOne)
 
-# * Custom questionary flow!
-print(answersOne)
+username = answersOne['username']
+# ! TESTING!
+username = "Twitchkidd"
+
 repoTypes = answersOne['repoTypes']
-response = questionary.confirm(
-    customNameConfirmPrompt(answersOne['customName'])).ask()
-print(response)
+namesSelection = answersOne['namesSelection']
+
+# * Custom questionary flow!
+
+
+def customNameConfirmPrompt(inputName):
+    name = inputName
+    return f'''{inputName} for all primary branches?'''
+
+
+if answersOne['customName']:
+    name = answersOne['customName']
+    nameConfirmed = False
+    while not nameConfirmed:
+        response = questionary.confirm(
+            customNameConfirmPrompt(name)).ask()
+        if not response:
+            newName = questionary.text(customNamePrompt).ask()
+            newNameResponse = questionary.confirm(
+                customNameConfirmPrompt(newName)
+            ).ask()
+        if response:
+            nameConfirmed = True
 
 # * Second set of questions after custom flow required!
 questionsTwo = [
@@ -237,23 +257,18 @@ questionsTwo = [
     }
 ]
 answersTwo = questionary.prompt(questionsTwo)
-print(name)  # What?
-print(answersTwo)
 
+localDirectories = answersTwo['localDirectories']
+gitNew = answersTwo['gitNew']
 
-# token = ""
-# if 'repoPublicRepoToken' in answers:
-#     token = answers['repoPublicRepoToken']
-# else:
-#     token = answers['repoToken']
+if 'repoPublicRepoToken' in answersTwo:
+    token = answersTwo['repoPublicRepoToken']
+else:
+    token = answersTwo['repoToken']
 
-# # ! TESTING!
-# token = repo
+# ! TESTING!
+token = tokenRepoScope
 
-# username = answers['username']
-
-# # ! TESTING!
-# username = "Twitchkidd"
 
 # headers = {"Authorization": 'token ' + token}
 
