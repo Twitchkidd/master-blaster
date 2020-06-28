@@ -38,7 +38,7 @@ namesSelection = ""
 # * ``` Placeholder variable for local directories selection! ```
 localDirectories = True
 
-# * ``` Pleaceholder variable for git alias selection! ```
+# * ``` Placeholder variable for git alias selection! ```
 gitNew = True
 
 # * ``` Placeholder variables for the tokens! ```
@@ -54,6 +54,8 @@ with open("./repo.txt", 'r') as repoF:
 with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
     tokenPublicRepoScope = repoPublicRepoF.read(40)
 
+# * Placeholder variable for the set of repos!
+repos = []
 
 # * ``` Intro text! ```
 intro = """
@@ -190,16 +192,12 @@ questionsOne = [
         "type": "text",
         "name": "customName",
         "message": customNamePrompt,
-        # "when": lambda x: print("hey") or x['names'] == "Choose another name to rename all primary branches to."
         "when": lambda x: x['namesSelection'] == "Choose another name to rename all primary branches to."
-        # THAT was insteresting! print must return falsy or something, because choose another name was chosen,
-        # then it printed hey, and then went on to localDirectoriesPrompt!
-        # SAAAHHHWEEET I CAN JUST RUN CODE AND X IS STILL AVAILABLE!!! CHANGING IT TO OR TO MAKE SURE it continued
-        # "when": lambda x: x['names'] == "Choose another name to rename all primary branches to."
     },
 ]
 answersOne = questionary.prompt(questionsOne)
 
+# * Extract the data from the first set of prompts!
 username = answersOne['username']
 # ! TESTING!
 username = "Twitchkidd"
@@ -215,7 +213,7 @@ def customNameConfirmPrompt(inputName):
     return f'''{inputName} for all primary branches?'''
 
 
-if answersOne['customName']:
+if 'customName' in answersOne:
     name = answersOne['customName']
     nameConfirmed = False
     while not nameConfirmed:
@@ -258,6 +256,7 @@ questionsTwo = [
 ]
 answersTwo = questionary.prompt(questionsTwo)
 
+# * Extract the data from the second set of prompts!
 localDirectories = answersTwo['localDirectories']
 gitNew = answersTwo['gitNew']
 
@@ -269,40 +268,42 @@ else:
 # ! TESTING!
 token = tokenRepoScope
 
+# * ~~~ Constructing the url! ~~~
 
-# headers = {"Authorization": 'token ' + token}
+# * Construct the headers!
+headers = {"Authorization": 'token ' + token}
 
-# # * THIS IS WHERE WE CONSTRUCT THE PARAMETERS
-# params = {}
-# if answers['repoTypes'] == repoTypesAll:
-#     params = {"per_page": "1000"}
-# if answers['repoTypes'] == repoTypesAllPublic:
-#     params = {"per_page": "1000", "visibility": "public"}
-# if answers['repoTypes'] == repoTypesOwner:
-#     params = {"per_page": "1000", "type": "owner"}
-# if answers['repoTypes'] == repoTypesOwnerPublic:
-#     params = {"per_page": "1000", "visibility": "public", "type": "owner"}
-# if answers['repoTypes'] == repoTypesCollaborator:
-#     params = {"per_page": "1000", "type": "owner,collaborator"}
-# if answers['repoTypes'] == repoTypesCollaboratorPublic:
-#     params = {"per_page": "1000", "visibility": "public",
-#               "type": "owner,collaborator"}
-# if answers['repoTypes'] == repoTypesOrganization:
-#     params = {"per_page": "1000",
-#               "type": "owner,collaborator,organization_member"}
-# if answers['repoTypes'] == repoTypesOrganizationPublic:
-#     params = {"per_page": "1000", "visibility": "public",
-#               "type": "owner,collaborator,organization_member"}
-# print(params)
+# * Custruct the parameters!
+params = {}
+if repoTypes == repoTypesAll:
+    params = {"per_page": "1000"}
+if repoTypes == repoTypesAllPublic:
+    params = {"per_page": "1000", "visibility": "public"}
+if repoTypes == repoTypesOwner:
+    params = {"per_page": "1000", "type": "owner"}
+if repoTypes == repoTypesOwnerPublic:
+    params = {"per_page": "1000", "visibility": "public", "type": "owner"}
+if repoTypes == repoTypesCollaborator:
+    params = {"per_page": "1000", "type": "owner,collaborator"}
+if repoTypes == repoTypesCollaboratorPublic:
+    params = {"per_page": "1000", "visibility": "public",
+              "type": "owner,collaborator"}
+if repoTypes == repoTypesOrganization:
+    params = {"per_page": "1000",
+              "type": "owner,collaborator,organization_member"}
+if repoTypes == repoTypesOrganizationPublic:
+    params = {"per_page": "1000", "visibility": "public",
+              "type": "owner,collaborator,organization_member"}
 
-# # * THIS IS WHERE WE MAKE THE API CALL
-# # Maybe call it reposGetRes?
-# res = requests.get(f"{GITHUB_API}/user/repos", headers=headers, params=params)
-# # * THIS IS WHERE WE EXTRACT THE DATA FROM THE API CALL
-# repos = []
-# for repository in res.json():
-#     # * COLLISIONS BETWEEN SAME NAME/DUPLICATE REPOS MEANS WE NEED TO GRAB MORE INFO HERE
-#     repos.append(repository['name'])
+# * Make the API call!
+reposResponse = requests.get(
+    f"{GITHUB_API}/user/repos", headers=headers, params=params)
+
+# * Extract the data from the API call!
+for repository in reposResponse.json():
+    print(repository)
+    # * COLLISIONS BETWEEN SAME NAME/DUPLICATE REPOS MEANS WE NEED TO GRAB MORE INFO HERE
+    # repos.append({repository['name']})
 # print(sorted(repos))
 # print(len(repos))
 
