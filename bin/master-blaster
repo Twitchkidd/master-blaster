@@ -22,36 +22,46 @@ import json
 from pathlib import Path
 import os
 
+# * ``` Placeholder variable for the name(s)! ```
+name = "main"
+names = {}
+
+# * ``` Placeholder variable and setter for repository types! ```
+repoTypes = ""
+
+# This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
 
-repo = ""
-repoPublicRepo = ""
+# * ``` Placeholder variables for the tokens! ```
+tokenRepoScope = ""
+tokenPublicRepoScope = ""
 
 # ! TESTING!
 with open("./repo.txt", 'r') as repoF:
-    repo = repoF.read(40)
+    tokenRepoScope = repoF.read(40)
 
 # ! TESTING!
 with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
-    repoPublicRepo = repoPublicRepoF.read(40)
+    tokenPublicRepoScope = repoPublicRepoF.read(40)
 
+
+# * ``` Intro text! ```
+intro = """
+  Welcome to master-blaster! This program renames primary branches for github users!
+  We'll go through the options before making any changes!
+"""
+print(intro)
+
+# * ``` License text! ```
 licenseText = """
     master-blaster  Copyright (C) 2020  Gareth Field
     This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
     This is free software, and you are welcome to redistribute it
     under certain conditions; type `show c' for details.
 """
-# * TODO `show w` and `show c`
-
 print(licenseText)
 
-intro = """
-  Welcome to master-blaster! This program renames primary branches for github users!
-  We'll go through the options before making any changes!
-"""
-
-print(intro)
-
+# * ``` Explanation of token thing! ```
 tokenExplanation = """
   GitHub is deprecating password-based token generation! This is great for
   security, it's going to mean you're going to have to go to GitHub.com and
@@ -60,13 +70,14 @@ tokenExplanation = """
   general `repo` scope or the more limited `public_repo` scope. You can run
   this program again if you're happy with the results!
 """
-
 print(tokenExplanation)
 
+# * ``` Ask for username! ```
 usernamePrompt = """
   Please enter your GitHub username!
 """
 
+# * ``` What types of repos question and choices! ```
 repoTypesPrompt = """
   What set of repositories do you want to update?
 """
@@ -80,19 +91,19 @@ repoTypesCollaboratorPublic = "All repositories I'm the owner of and/or a collab
 repoTypesOrganization = "All repositories I'm the owner of and/or a member of the organization, public and private."
 repoTypesOrganizationPublic = "All repositories I'm the owner of and/or a member of the organization, only public, not private."
 
+# * ``` What to name the primary branches and choices! ```
 namesPrompt = """
-  What would you like to call your primary branches? (We recommend 'main'.)
+  What would you like to call your primary branches? (Default 'main'.)
 """
 
 namesMain = "All primary branches renamed to 'main'."
 namesCustom = "Choose another name to rename all primary branches to."
 namesPerRepo = "Interactively choose a name for the primary branch for each repo."
 
+# * ``` Custom name for all branches! ```
 customNamePrompt = """
   What name are you choosing for primary branches?
 """
-
-name = "main"
 
 
 def customNameConfirmPrompt(confirmThisName):
@@ -115,19 +126,6 @@ gitNewPrompt = """
   'main', shall we?
 """
 
-# * THERE'S SOMETHING TO BE LEARNED ABOUT RUNNING FUNCTIONS BETWEEN QUESTIONARY ASKING QUESTIONS
-# def tokenFetchPrompt(scopes):
-#     return f"""
-#     Last step! Since password-based token generation is being deprecated, please
-#     get a personal access token with the correct scope(s) in order to run this
-#     program. To get this token, go to https://github.com, sign in, then go to
-#     'Settings', then 'Developer Settings', then 'Personal access tokens', then
-#     'Generate new token', confirm your password, name the token in the 'Note'
-#     input field, and select the {scopes} scope(s), then 'Generate Token', then
-#     copy it to your clipboard and either paste it back here into the prompt, or
-#     save it first in case there's an error and you need to retry. (Recommended)
-#   """
-
 repoPublicRepoTokenPrompt = """
      Last step! Since password-based token generation is being deprecated, please
      get a personal access token with the correct scope(s) in order to run this
@@ -149,8 +147,11 @@ repoTokenPrompt = """
      copy it to your clipboard and either paste it back here into the prompt, or
      save it first in case there's an error and you need to retry. (Recommended)
 """
+# Like if I were doing this with individual calls ... then I could run a function in between,
+# but I don't need to dismantle the questions dict entirely, it just needs to be fragmented ...
 
-questions = [
+
+questionsOne = [
     {
         "type": "text",
         "name": "username",
@@ -192,12 +193,25 @@ questions = [
         # * SAAAHHHWEEET I CAN JUST RUN CODE AND X IS STILL AVAILABLE!!! CHANGING IT TO OR TO MAKE SURE it continued
         # "when": lambda x: x['names'] == "Choose another name to rename all primary branches to."
     },
-    {
-        "type": "confirm",
-        "name": "customNameConfirm",
-        "message": customNameConfirmPrompt,
-        "when": lambda x: setName(x['names']) or x['names']
-    },
+    # {
+    #     "type": "confirm",
+    #     "name": "customNameConfirm",
+    #     "message": customNameConfirmPrompt,
+    #     "when": lambda x: setName(x['names']) or x['names']
+    # },
+]
+answersOne = questionary.prompt(questionsOne)
+
+# * Custom questionary flow!
+# TODO CUSTOM CODE GOES HERE
+print(answersOne)
+response = questionary.confirm(
+    customNameConfirmPrompt(answersOne['customName'])).ask()
+# Please figure out how to do this with a slice
+print(response)
+
+# * Second set of questions after custom flow required!
+questionsTwo = [
     {
         "type": "confirm",
         "name": "localDirectories",
@@ -222,9 +236,10 @@ questions = [
         "when": lambda x: x['repoTypes'] == "All repositories I'm the owner, collaborator, and/or organization member, public and private." or x['repoTypes'] == "All repositories I'm the owner of, public and private." or x['repoTypes'] == "All repositories I'm the owner of and/or a collaborator on, public and private." or x['repoTypes'] == "All repositories I'm the owner of and/or a member of the organization, public and private."
     }
 ]
-answers = questionary.prompt(questions)
-print(name)
-print(answers)
+answersTwo = questionary.prompt(questionsTwo)
+print(name)  # What?
+print(answersTwo)
+
 
 # token = ""
 # if 'repoPublicRepoToken' in answers:
