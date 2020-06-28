@@ -300,12 +300,18 @@ reposResponse = requests.get(
     f"{GITHUB_API}/user/repos", headers=headers, params=params)
 
 # * Extract the data from the API call!
-for repository in reposResponse.json():
-    print(repository)
-    # * COLLISIONS BETWEEN SAME NAME/DUPLICATE REPOS MEANS WE NEED TO GRAB MORE INFO HERE
-    # repos.append({repository['name']})
+# for repository in reposResponse.json():
+#     print(repository)
+# * COLLISIONS BETWEEN SAME NAME/DUPLICATE REPOS MEANS WE NEED TO GRAB MORE INFO HERE
+# repos.append({repository['name']})
 # print(sorted(repos))
 # print(len(repos))
+# print(json.dumps(reposResponse.json(), indent=2, sort_keys=True))
+# for repository in reposResponse.json():
+#     if repository['name'] == "Who2Heal":
+#         print(repository)
+# repository['htmlUrl']
+# repos.append({htmlUrl:repository['htmlUrl'],name:repository['name'],primaryBranchName:name})
 
 # # * THIS PART IS WHERE WE SEARCH FOR LOCAL REPOS AND COMPARE AGAINST REPOS ON GITHUB
 # localRepoNames = []
