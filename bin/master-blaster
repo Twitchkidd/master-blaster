@@ -92,6 +92,16 @@ customNamePrompt = """
   What name are you choosing for primary branches?
 """
 
+name = "main"
+
+
+def customNameConfirmPrompt(confirmThisName):
+    name = f"{confirmThisName}"
+    return f"""
+        Confirm: {confirmThisName}?
+    """
+
+
 localDirectoriesPrompt = """
   Repositories not present locally will be cloned to a temporary folder,
   updated, the update pushed, (the default branch on GitHub.com updated,)
@@ -201,11 +211,19 @@ questions = [
         "type": "text",
         "name": "customName",
         "message": customNamePrompt,
-        "when": lambda x: print("hey") and x['names'] == "Choose another name to rename all primary branches to."
+        # "when": lambda x: print("hey") or x['names'] == "Choose another name to rename all primary branches to."
+        "when": lambda x: x['names'] == "Choose another name to rename all primary branches to."
         # * THAT was insteresting! print must return falsy or something, because choose another name was chosen,
         # * then it printed hey, and then went on to localDirectoriesPrompt!
+        # * SAAAHHHWEEET I CAN JUST RUN CODE AND X IS STILL AVAILABLE!!! CHANGING IT TO OR TO MAKE SURE it continued
+        # "when": lambda x: x['names'] == "Choose another name to rename all primary branches to."
     },
-    # TODO Something done with this!
+    {
+        "type": "confirm",
+        "name": "customNameConfirm",
+        "message": customNameConfirmPrompt,
+        "when": lambda x: setName(x['names']) or x['names']
+    },
     {
         "type": "confirm",
         "name": "localDirectories",
@@ -230,109 +248,109 @@ questions = [
         "when": lambda x: x['repoTypes'] == "All repositories I'm the owner, collaborator, and/or organization member, public and private." or x['repoTypes'] == "All repositories I'm the owner of, public and private." or x['repoTypes'] == "All repositories I'm the owner of and/or a collaborator on, public and private." or x['repoTypes'] == "All repositories I'm the owner of and/or a member of the organization, public and private."
     }
 ]
-
 answers = questionary.prompt(questions)
+print(name)
 print(answers)
 
-token = ""
-if 'repoPublicRepoToken' in answers:
-    token = answers['repoPublicRepoToken']
-else:
-    token = answers['repoToken']
+# token = ""
+# if 'repoPublicRepoToken' in answers:
+#     token = answers['repoPublicRepoToken']
+# else:
+#     token = answers['repoToken']
 
-# ! TESTING!
-token = repo
+# # ! TESTING!
+# token = repo
 
-username = answers['username']
+# username = answers['username']
 
-# ! TESTING!
-username = "Twitchkidd"
+# # ! TESTING!
+# username = "Twitchkidd"
 
-headers = {"Authorization": 'token ' + token}
+# headers = {"Authorization": 'token ' + token}
 
-# * THIS IS WHERE WE CONSTRUCT THE PARAMETERS
-params = {}
-if answers['repoTypes'] == repoTypesAll:
-    params = {"per_page": "1000"}
-if answers['repoTypes'] == repoTypesAllPublic:
-    params = {"per_page": "1000", "visibility": "public"}
-if answers['repoTypes'] == repoTypesOwner:
-    params = {"per_page": "1000", "type": "owner"}
-if answers['repoTypes'] == repoTypesOwnerPublic:
-    params = {"per_page": "1000", "visibility": "public", "type": "owner"}
-if answers['repoTypes'] == repoTypesCollaborator:
-    params = {"per_page": "1000", "type": "owner,collaborator"}
-if answers['repoTypes'] == repoTypesCollaboratorPublic:
-    params = {"per_page": "1000", "visibility": "public",
-              "type": "owner,collaborator"}
-if answers['repoTypes'] == repoTypesOrganization:
-    params = {"per_page": "1000",
-              "type": "owner,collaborator,organization_member"}
-if answers['repoTypes'] == repoTypesOrganizationPublic:
-    params = {"per_page": "1000", "visibility": "public",
-              "type": "owner,collaborator,organization_member"}
-print(params)
+# # * THIS IS WHERE WE CONSTRUCT THE PARAMETERS
+# params = {}
+# if answers['repoTypes'] == repoTypesAll:
+#     params = {"per_page": "1000"}
+# if answers['repoTypes'] == repoTypesAllPublic:
+#     params = {"per_page": "1000", "visibility": "public"}
+# if answers['repoTypes'] == repoTypesOwner:
+#     params = {"per_page": "1000", "type": "owner"}
+# if answers['repoTypes'] == repoTypesOwnerPublic:
+#     params = {"per_page": "1000", "visibility": "public", "type": "owner"}
+# if answers['repoTypes'] == repoTypesCollaborator:
+#     params = {"per_page": "1000", "type": "owner,collaborator"}
+# if answers['repoTypes'] == repoTypesCollaboratorPublic:
+#     params = {"per_page": "1000", "visibility": "public",
+#               "type": "owner,collaborator"}
+# if answers['repoTypes'] == repoTypesOrganization:
+#     params = {"per_page": "1000",
+#               "type": "owner,collaborator,organization_member"}
+# if answers['repoTypes'] == repoTypesOrganizationPublic:
+#     params = {"per_page": "1000", "visibility": "public",
+#               "type": "owner,collaborator,organization_member"}
+# print(params)
 
-# * THIS IS WHERE WE MAKE THE API CALL
-# Maybe call it reposGetRes?
-res = requests.get(f"{GITHUB_API}/user/repos", headers=headers, params=params)
-# * THIS IS WHERE WE EXTRACT THE DATA FROM THE API CALL
-repos = []
-for repository in res.json():
-    # * COLLISIONS BETWEEN SAME NAME/DUPLICATE REPOS MEANS WE NEED TO GRAB MORE INFO HERE
-    repos.append(repository['name'])
-print(sorted(repos))
-print(len(repos))
+# # * THIS IS WHERE WE MAKE THE API CALL
+# # Maybe call it reposGetRes?
+# res = requests.get(f"{GITHUB_API}/user/repos", headers=headers, params=params)
+# # * THIS IS WHERE WE EXTRACT THE DATA FROM THE API CALL
+# repos = []
+# for repository in res.json():
+#     # * COLLISIONS BETWEEN SAME NAME/DUPLICATE REPOS MEANS WE NEED TO GRAB MORE INFO HERE
+#     repos.append(repository['name'])
+# print(sorted(repos))
+# print(len(repos))
 
-# * THIS PART IS WHERE WE SEARCH FOR LOCAL REPOS AND COMPARE AGAINST REPOS ON GITHUB
-localRepoNames = []
-localRepos = []
-# for root, subdirs, files in os.walk(Path.home()):
-for root, subdirs, files in os.walk(f"{Path.home()}/Code"):
-    for d in subdirs:
-        if any(d == name for name in repos):
-            for root2, subdirs2, files2 in os.walk(f"{root}/{d}"):
-                if ".git" in subdirs2:
-                    localRepos.append(f"{root}/{d}")
-                    localRepoNames.append(d)
-                    # * okay so {subdirs2}/.git/config after [remote "origin"] \n url = contains the remoteorigin url
-print(sorted(localRepoNames))
-print(len(localRepoNames))
+# # * THIS PART IS WHERE WE SEARCH FOR LOCAL REPOS AND COMPARE AGAINST REPOS ON GITHUB
+# localRepoNames = []
+# localRepos = []
+# # for root, subdirs, files in os.walk(Path.home()):
+# for root, subdirs, files in os.walk(f"{Path.home()}/Code"):
+#     for d in subdirs:
+#         if any(d == name for name in repos):
+#             for root2, subdirs2, files2 in os.walk(f"{root}/{d}"):
+#                 if ".git" in subdirs2:
+#                     localRepos.append(f"{root}/{d}")
+#                     localRepoNames.append(d)
+#                     # * okay so {subdirs2}/.git/config after [remote "origin"] \n url = contains the remoteorigin url
+# print(sorted(localRepoNames))
+# print(len(localRepoNames))
 
-# * requests.patch is a thing!
+# # * requests.patch is a thing!
 
-# * THIS IS AN EXAMPLE OF READING FILES, GOING TO HAVE TO DO KINDA LIKE THIS FOR THE ORIGIN IN GIT DIRS!
-# email = ""
-# emailStringStart = 0
-# if checkGitconfig == "Yes":
-#     print("Okay ")
-#     with open(f"{Path.home()}/.gitconfig", 'r') as f:
-#         # gitconfig = f.read()
-#         # print(gitconfig)
-#         found = False
-#         for line in f:
-#             if line.find("email =") != -1:
-#                 print(line)
-#                 found = True
-#                 emailStringStart = line.find("email =")
-#                 print(line[emailStringStart + 8:])
-#         if found == False:
-#             print("Can't find email!")
+# # * THIS IS AN EXAMPLE OF READING FILES, GOING TO HAVE TO DO KINDA LIKE THIS FOR THE ORIGIN IN GIT DIRS!
+# # email = ""
+# # emailStringStart = 0
+# # if checkGitconfig == "Yes":
+# #     print("Okay ")
+# #     with open(f"{Path.home()}/.gitconfig", 'r') as f:
+# #         # gitconfig = f.read()
+# #         # print(gitconfig)
+# #         found = False
+# #         for line in f:
+# #             if line.find("email =") != -1:
+# #                 print(line)
+# #                 found = True
+# #                 emailStringStart = line.find("email =")
+# #                 print(line[emailStringStart + 8:])
+# #         if found == False:
+# #             print("Can't find email!")
 
-# * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH
-# PATCH /repos/:owner/:repo
-# default_branch? string
+# # * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH
+# # PATCH /repos/:owner/:repo
+# # default_branch? string
 
-# * THIS MIGHT BE A BETTER WAY OF MAKING THIS SCRIPT EXECUTABLE!
-# __main__ — Top-level script environment¶
-# '__main__' is the name of the scope in which top-level code executes. A module’s __name__ is set equal to '__main__' when read from standard input, a script, or from an interactive prompt.
+# # * THIS MIGHT BE A BETTER WAY OF MAKING THIS SCRIPT EXECUTABLE!
+# # __main__ — Top-level script environment¶
+# # '__main__' is the name of the scope in which top-level code executes. A module’s __name__ is set equal to '__main__' when read from standard input, a script, or from an interactive prompt.
 
-# A module can discover whether or not it is running in the main scope by checking its own __name__, which allows a common idiom for conditionally executing code in a module when it is run as a script or with python -m but not when it is imported:
+# # A module can discover whether or not it is running in the main scope by checking its own __name__, which allows a common idiom for conditionally executing code in a module when it is run as a script or with python -m but not when it is imported:
 
-# if __name__ == "__main__":
-#     # execute only if run as a script
-#     main()
-# For a package, the same effect can be achieved by including a __main__.py module, the contents of which will be executed when the module is run with -m.
+# # if __name__ == "__main__":
+# #     # execute only if run as a script
+# #     main()
+# # For a package, the same effect can be achieved by including a __main__.py module, the contents of which will be executed when the module is run with -m.
 
-# * MUST REVIEW THE PROTOCOL FOR LOCAL REPOS!
-# Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
+# # * MUST REVIEW THE PROTOCOL FOR LOCAL REPOS!
+# # Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
