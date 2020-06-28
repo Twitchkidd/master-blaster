@@ -203,11 +203,10 @@ questionsOne = [
 answersOne = questionary.prompt(questionsOne)
 
 # * Custom questionary flow!
-# TODO CUSTOM CODE GOES HERE
 print(answersOne)
+repoTypes = answersOne['repoTypes']
 response = questionary.confirm(
     customNameConfirmPrompt(answersOne['customName'])).ask()
-# Please figure out how to do this with a slice
 print(response)
 
 # * Second set of questions after custom flow required!
@@ -226,14 +225,15 @@ questionsTwo = [
         "type": "text",
         "name": "repoPublicRepoToken",
         "message": repoPublicRepoTokenPrompt,
-        "when": lambda x: x['repoTypes'] == "All repositories I'm the owner, collaborator, and/or organization member, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of and/or a collaborator on, only public, not private." or x['repoTypes'] == "All repositories I'm the owner of and/or a member of the organization, only public, not private."
+        "when": lambda x: repoTypes == "All repositories I'm the owner, collaborator, and/or organization member, only public, not private." or repoTypes == "All repositories I'm the owner of, only public, not private." or repoTypes == "All repositories I'm the owner of and/or a collaborator on, only public, not private." or repoTypes == "All repositories I'm the owner of and/or a member of the organization, only public, not private."
+        # "when": lambda x: any(repoTypes in ["All repositories I'm the owner, collaborator, and/or organization member, only public, not private.", "All repositories I'm the owner of, only public, not private.", "All repositories I'm the owner of and/or a collaborator on, only public, not private.", "All repositories I'm the owner of and/or a member of the organization, only public, not private."])
         # why can't I get this work with any()?
     },
     {
         "type": "text",
         "name": "repoToken",
         "message": repoTokenPrompt,
-        "when": lambda x: x['repoTypes'] == "All repositories I'm the owner, collaborator, and/or organization member, public and private." or x['repoTypes'] == "All repositories I'm the owner of, public and private." or x['repoTypes'] == "All repositories I'm the owner of and/or a collaborator on, public and private." or x['repoTypes'] == "All repositories I'm the owner of and/or a member of the organization, public and private."
+        "when": lambda x: repoTypes == "All repositories I'm the owner, collaborator, and/or organization member, public and private." or repoTypes == "All repositories I'm the owner of, public and private." or repoTypes == "All repositories I'm the owner of and/or a collaborator on, public and private." or repoTypes == "All repositories I'm the owner of and/or a member of the organization, public and private."
     }
 ]
 answersTwo = questionary.prompt(questionsTwo)
