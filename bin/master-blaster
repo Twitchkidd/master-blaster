@@ -59,8 +59,8 @@ repos = []
 repoNames = []
 repoUrls = []
 
-# * Placeholder variable for the set of local repos!
-localRepos = []
+# * Placeholder variable for the set of local repos, by url!
+localRepoUrls = []
 
 # * ``` Intro text! ```
 intro = """
@@ -143,7 +143,7 @@ localDirectoriesPrompt = """
 
 localDirectoryPrompt = """
     Do you keep your projects in a certain directory? Type that in here to
-    speed up search! Default is ~/, hit enter for default.
+    speed up search! Like /Users/gareth/Code ... default is ~/, hit enter for default.
 """
 
 gitNewPrompt = """
@@ -289,6 +289,7 @@ answersTwo = questionary.prompt(questionsTwo)
 localDirectories = answersTwo['localDirectories']
 if 'localDirectory' in answersTwo and answersTwo['localDirectory'] != "":
     localDirectory = answersTwo['localDirectory']
+print(localDirectory)
 gitNew = answersTwo['gitNew']
 
 # * Set the token!
@@ -333,7 +334,6 @@ reposResponse = requests.get(
 
 # * Extract the data from the API call!
 for repository in reposResponse.json():
-    print(json.dumps(repository, indent=2, sort_keys=True))
     repos.append(
         {"htmlUrl": repository['html_url'], "name": repository['name'], "primaryBranchName": name})
     repoNames.append(repository['name'])
@@ -346,23 +346,32 @@ if 'interactiveNamingConfirm' in answersOne:
             f"Primary branch name for {repo['htmlUrl']}?").ask()
         repo['primaryBranchName'] = repoName
 
-# TODO
-# * def getRemoteUrl()
+
+def getUrl(repoPath):
+    with open(f"{repoPath}/.git/config", 'r') as configFile:
+        url = ""
+        for line in configFile:
+            if line.find('url =') != -1:
+                remoteOriginUrlStart = line.find('url =')
+                url = line[remoteOriginUrlStart + 6:-1]
+                print(url)
+                return url
+
 
 # * If they wanted to use local clones, this is where we differentiate that set!
 if 'localDirectories' in answersTwo:
-    # for root, subdirs, files in os.walk(f"{localDirectory}"):
-    for root, subdirs, files in os.walk(f"{localDirectory}/Code"):
+    for root, subdirs, files in os.walk(f"{localDirectory}"):
         for subdir in subdirs:
             if any(subdir == repoName for repoName in repoNames):
-                for root2, subdirs2, files2 in os.walk(f"{root}/{d}"):
-                    if ".git" in subdirs2:
-                        #!HERE!!!!!!!!!!!!!
-                        localRepos.append(f"{root}/{d}")
-                        localRepoNames.append(d)
-                        # * okay so {subdirs2}/.git/config after [remote "origin"] \n url = contains the remoteorigin url
-    print(sorted(localRepoNames))
-    print(len(localRepoNames))
+                for root2, subdirs2, files2 in os.walk(f"{root}/{subdir}"):
+                    for subdir2 in subdirs2:
+                        # ! It's short circuiting here!
+                        if ".git" in subdirs2:
+                            # ! Or here!
+                            localRepoUrls.append(
+                                getUrl(f"{root}/{subdir}"))
+    print(localRepoUrls)
+
 
 # # * requests.patch is a thing!
 
