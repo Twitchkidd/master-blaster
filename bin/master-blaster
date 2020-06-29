@@ -27,7 +27,6 @@ GITHUB_API = "https://api.github.com"
 
 # * ``` Placeholder variable for the name(s)! ```
 name = "main"
-names = {}
 
 # * ``` Placeholder variable for repository types! ```
 repoTypes = ""
@@ -35,8 +34,9 @@ repoTypes = ""
 # * ``` Placeholder variable for names selection! ```
 namesSelection = ""
 
-# * ``` Placeholder variable for local directories selection! ```
+# * ``` Placeholder variable for local directories selection(s)! ```
 localDirectories = True
+localDirectory = Path.home()
 
 # * ``` Placeholder variable for git alias selection! ```
 gitNew = True
@@ -54,8 +54,13 @@ with open("./repo.txt", 'r') as repoF:
 with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
     tokenPublicRepoScope = repoPublicRepoF.read(40)
 
-# * Placeholder variable for the set of repos!
+# * Placeholder variable for the total set of repos, and repoNames and repoUrls!
 repos = []
+repoNames = []
+repoUrls = []
+
+# * Placeholder variable for the set of local repos!
+localRepos = []
 
 # * ``` Intro text! ```
 intro = """
@@ -134,6 +139,11 @@ localDirectoriesPrompt = """
   and then deleted locally. We can decrease the use of bandwidth and reduce
   potential conflicts by scanning for repositories that *are* present locally.
   Is this okay? (No other changes will be added or committed.)
+"""
+
+localDirectoryPrompt = """
+    Do you keep your projects in a certain directory? Type that in here to
+    speed up search! Default is ~/, hit enter for default.
 """
 
 gitNewPrompt = """
@@ -248,6 +258,12 @@ questionsTwo = [
         "message": localDirectoriesPrompt
     },
     {
+        "type": "text",
+        "name": "localDirectory",
+        "message": localDirectoryPrompt,
+        "when": lambda x: x['localDirectories']
+    },
+    {
         "type": "confirm",
         "name": "gitNew",
         "message": gitNewPrompt
@@ -271,8 +287,11 @@ answersTwo = questionary.prompt(questionsTwo)
 
 # * Extract the data from the second set of prompts!
 localDirectories = answersTwo['localDirectories']
+if 'localDirectory' in answersTwo and answersTwo['localDirectory'] != "":
+    localDirectory = answersTwo['localDirectory']
 gitNew = answersTwo['gitNew']
 
+# * Set the token!
 if 'repoPublicRepoToken' in answersTwo:
     token = answersTwo['repoPublicRepoToken']
 else:
@@ -317,28 +336,33 @@ for repository in reposResponse.json():
     print(json.dumps(repository, indent=2, sort_keys=True))
     repos.append(
         {"htmlUrl": repository['html_url'], "name": repository['name'], "primaryBranchName": name})
+    repoNames.append(repository['name'])
+    repoUrls.append(repository['html_url'])
 
+# * If they wanted to name each primary branch, do so now!
 if 'interactiveNamingConfirm' in answersOne:
     for repo in repos:
         repoName = questionary.text(
             f"Primary branch name for {repo['htmlUrl']}?").ask()
         repo['primaryBranchName'] = repoName
-print(repos)
 
-# # * THIS PART IS WHERE WE SEARCH FOR LOCAL REPOS AND COMPARE AGAINST REPOS ON GITHUB
-# localRepoNames = []
-# localRepos = []
-# # for root, subdirs, files in os.walk(Path.home()):
-# for root, subdirs, files in os.walk(f"{Path.home()}/Code"):
-#     for d in subdirs:
-#         if any(d == name for name in repos):
-#             for root2, subdirs2, files2 in os.walk(f"{root}/{d}"):
-#                 if ".git" in subdirs2:
-#                     localRepos.append(f"{root}/{d}")
-#                     localRepoNames.append(d)
-#                     # * okay so {subdirs2}/.git/config after [remote "origin"] \n url = contains the remoteorigin url
-# print(sorted(localRepoNames))
-# print(len(localRepoNames))
+# TODO
+# * def getRemoteUrl()
+
+# * If they wanted to use local clones, this is where we differentiate that set!
+if 'localDirectories' in answersTwo:
+    # for root, subdirs, files in os.walk(f"{localDirectory}"):
+    for root, subdirs, files in os.walk(f"{localDirectory}/Code"):
+        for subdir in subdirs:
+            if any(subdir == repoName for repoName in repoNames):
+                for root2, subdirs2, files2 in os.walk(f"{root}/{d}"):
+                    if ".git" in subdirs2:
+                        #!HERE!!!!!!!!!!!!!
+                        localRepos.append(f"{root}/{d}")
+                        localRepoNames.append(d)
+                        # * okay so {subdirs2}/.git/config after [remote "origin"] \n url = contains the remoteorigin url
+    print(sorted(localRepoNames))
+    print(len(localRepoNames))
 
 # # * requests.patch is a thing!
 
@@ -359,6 +383,8 @@ print(repos)
 # #                 print(line[emailStringStart + 8:])
 # #         if found == False:
 # #             print("Can't find email!")
+
+# ! Heya, big todo is actually change the branch!
 
 # # * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH
 # # PATCH /repos/:owner/:repo
