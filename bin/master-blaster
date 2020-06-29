@@ -119,6 +119,12 @@ customNamePrompt = """
   What name are you choosing for primary branches?
 """
 
+# * ``` Confirmation that interactive naming mode will happen! ```
+# TODO Make interactive naming mode happen ...
+interactiveNamingConfirmPrompt = """
+    Okay! We'll name them after we fetch the set of repos!
+"""
+
 # * ~~~ Second set of questionary dict questions! ~~~
 
 
@@ -194,6 +200,12 @@ questionsOne = [
         "message": customNamePrompt,
         "when": lambda x: x['namesSelection'] == "Choose another name to rename all primary branches to."
     },
+    {
+        "type": "confirm",
+        "name": "interactiveNamingConfirm",
+        "message": interactiveNamingConfirmPrompt,
+        "when": lambda x: x['namesSelection'] == "Interactively choose a name for the primary branch for each repo."
+    }
 ]
 answersOne = questionary.prompt(questionsOne)
 
@@ -226,6 +238,7 @@ if 'customName' in answersOne:
             ).ask()
         if response:
             nameConfirmed = True
+
 
 # * Second set of questions after custom flow required!
 questionsTwo = [
@@ -300,18 +313,17 @@ reposResponse = requests.get(
     f"{GITHUB_API}/user/repos", headers=headers, params=params)
 
 # * Extract the data from the API call!
-# for repository in reposResponse.json():
-#     print(repository)
-# * COLLISIONS BETWEEN SAME NAME/DUPLICATE REPOS MEANS WE NEED TO GRAB MORE INFO HERE
-# repos.append({repository['name']})
-# print(sorted(repos))
-# print(len(repos))
-# print(json.dumps(reposResponse.json(), indent=2, sort_keys=True))
-# for repository in reposResponse.json():
-#     if repository['name'] == "Who2Heal":
-#         print(repository)
-# repository['htmlUrl']
-# repos.append({htmlUrl:repository['htmlUrl'],name:repository['name'],primaryBranchName:name})
+for repository in reposResponse.json():
+    print(json.dumps(repository, indent=2, sort_keys=True))
+    repos.append(
+        {"htmlUrl": repository['html_url'], "name": repository['name'], "primaryBranchName": name})
+
+if 'interactiveNamingConfirm' in answersOne:
+    for repo in repos:
+        repoName = questionary.text(
+            f"Primary branch name for {repo['htmlUrl']}?").ask()
+        repo['primaryBranchName'] = repoName
+print(repos)
 
 # # * THIS PART IS WHERE WE SEARCH FOR LOCAL REPOS AND COMPARE AGAINST REPOS ON GITHUB
 # localRepoNames = []
