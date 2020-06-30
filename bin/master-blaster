@@ -334,11 +334,13 @@ reposResponse = requests.get(
     f"{GITHUB_API}/user/repos", headers=headers, params=params)
 
 # * Extract the data from the API call!
+# TODO Any error handling please!
 for repository in reposResponse.json():
     repos.append(
         {"defaultBranch": repository['default_branch'], "htmlUrl": repository['html_url'], "name": repository['name'], "primaryBranchName": name})
     repoNames.append(repository['name'])
     repoUrls.append(repository['html_url'])
+
 
 # * If they wanted to name each primary branch, do so now!
 if 'interactiveNamingConfirm' in answersOne:
@@ -390,6 +392,16 @@ print(localRepos)
 
 # TODO Next up!
 # TODO How to check for there being a local branch master/main/what the default is?
+# * Step 1! Check if remote branches exist with GET /repos/{username}/{repo}/branches/{branch}!
+# * Error returns {
+# *   "message": "Branch not found",
+# *   "documentation_url": "https://developer.github.com/v3/repos/branches/#get-branch"
+# * }
+
+# * ... Okay so after the first request is made ... Which we should probably be handling errors for, lol!
+
+# * Anyway, then the possible interactive naming happens, and then you have every
+
 # TODO Only go through the base move and push if local and remote branches are master!
 # TODO Handle all other cases somehow, but this seems like where you REALLY need the error checking.
 
@@ -409,6 +421,8 @@ for repo in repos:
 
 
 # TODO * Add the `git new` alias!
+if gitNew:
+    print(gitNew)
 
 # TODO * THIS MIGHT BE A BETTER WAY OF MAKING THIS SCRIPT EXECUTABLE!
 # # __main__ — Top-level script environment¶
