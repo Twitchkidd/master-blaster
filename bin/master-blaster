@@ -21,6 +21,7 @@ import requests
 import json
 from pathlib import Path
 import os
+import subprocess
 
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
@@ -59,8 +60,8 @@ repos = []
 repoNames = []
 repoUrls = []
 
-# * Placeholder variable for the set of local repos, by url!
-localRepoUrls = []
+# * Placeholder variable for the set of local repos!
+localRepos = []
 
 # * ``` Intro text! ```
 intro = """
@@ -335,7 +336,7 @@ reposResponse = requests.get(
 # * Extract the data from the API call!
 for repository in reposResponse.json():
     repos.append(
-        {"htmlUrl": repository['html_url'], "name": repository['name'], "primaryBranchName": name})
+        {"defaultBranch": repository['default_branch'], "htmlUrl": repository['html_url'], "name": repository['name'], "primaryBranchName": name})
     repoNames.append(repository['name'])
     repoUrls.append(repository['html_url'])
 
@@ -347,15 +348,13 @@ if 'interactiveNamingConfirm' in answersOne:
         repo['primaryBranchName'] = repoName
 
 
-def getUrl(repoPath):
-    with open(f"{repoPath}/.git/config", 'r') as configFile:
-        url = ""
-        for line in configFile:
-            if line.find('url =') != -1:
-                remoteOriginUrlStart = line.find('url =')
-                url = line[remoteOriginUrlStart + 6:-1]
-                print(url)
-                return url
+def getUrl(configFile):
+    url = ""
+    for line in configFile:
+        if line.find('url =') != -1:
+            remoteOriginUrlStart = line.find('url =')
+            url = line[remoteOriginUrlStart + 6:-1]
+            return url
 
 
 # * If they wanted to use local clones, this is where we differentiate that set!
@@ -363,43 +362,55 @@ if 'localDirectories' in answersTwo:
     for root, subdirs, files in os.walk(f"{localDirectory}"):
         for subdir in subdirs:
             if any(subdir == repoName for repoName in repoNames):
-                for root2, subdirs2, files2 in os.walk(f"{root}/{subdir}"):
-                    for subdir2 in subdirs2:
-                        # ! It's short circuiting here!
-                        if ".git" in subdirs2:
-                            # ! Or here!
-                            localRepoUrls.append(
-                                getUrl(f"{root}/{subdir}"))
-    print(localRepoUrls)
+                try:
+                    with open(f"{root}/{subdir}/.git/config", "r") as configFile:
+                        localRepos.append(
+                            {"url": getUrl(configFile), "path": f"{root}/{subdir}"})
+                except Exception as err:
+                    # print(f"Exception: {err}")
+                    pass
+print(localRepos)
+
+# * Learning about how this works for multiple systems!
+# *     When master-blaster is run,
+# *         any other systems with local clones must run
+# *             $ git checkout master
+# *             $ git branch -m master main
+# *             $ git fetch
+# *             $ git branch --unset-upstream
+# *             $ git branch -u origin/main
+# *             $ git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
+# *         Tested: they don't need to push any changes first or even commit them or even add them to staging!
+
+# * So, this needs to be communicated and preferably a tool provided.
+# * Also, should I be testing if the repo already has a remote branch main? That it's the default branch?
+# * Oooh, okay, so capture default branch when you get the initial list of repos back,
+# * And then you only need to ... well search for any the same way, but if you get a difference between the
+# * remote value and the local value, you'll have to handle that ...
+
+# TODO Next up!
+# TODO How to check for there being a local branch master/main/what the default is?
+# TODO Only go through the base move and push if local and remote branches are master!
+# TODO Handle all other cases somehow, but this seems like where you REALLY need the error checking.
+
+# * Change the branch!
+# TODO All of this!
+for repo in repos:
+    if repo['htmlUrl'] in localRepoUrls:
+        # # * MUST REVIEW THE PROTOCOL FOR LOCAL REPOS!
+        # # Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
+        localProcess(repo['path'])
+    else:
+        remoteProcess(repo['htmlUrl'])
+        # # * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH
+        # # PATCH /repos/:owner/:repo
+        # # default_branch? string
+        # * requests.patch is a thing!
 
 
-# # * requests.patch is a thing!
+# TODO * Add the `git new` alias!
 
-# # * THIS IS AN EXAMPLE OF READING FILES, GOING TO HAVE TO DO KINDA LIKE THIS FOR THE ORIGIN IN GIT DIRS!
-# # email = ""
-# # emailStringStart = 0
-# # if checkGitconfig == "Yes":
-# #     print("Okay ")
-# #     with open(f"{Path.home()}/.gitconfig", 'r') as f:
-# #         # gitconfig = f.read()
-# #         # print(gitconfig)
-# #         found = False
-# #         for line in f:
-# #             if line.find("email =") != -1:
-# #                 print(line)
-# #                 found = True
-# #                 emailStringStart = line.find("email =")
-# #                 print(line[emailStringStart + 8:])
-# #         if found == False:
-# #             print("Can't find email!")
-
-# ! Heya, big todo is actually change the branch!
-
-# # * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH
-# # PATCH /repos/:owner/:repo
-# # default_branch? string
-
-# # * THIS MIGHT BE A BETTER WAY OF MAKING THIS SCRIPT EXECUTABLE!
+# TODO * THIS MIGHT BE A BETTER WAY OF MAKING THIS SCRIPT EXECUTABLE!
 # # __main__ — Top-level script environment¶
 # # '__main__' is the name of the scope in which top-level code executes. A module’s __name__ is set equal to '__main__' when read from standard input, a script, or from an interactive prompt.
 
@@ -410,5 +421,4 @@ if 'localDirectories' in answersTwo:
 # #     main()
 # # For a package, the same effect can be achieved by including a __main__.py module, the contents of which will be executed when the module is run with -m.
 
-# # * MUST REVIEW THE PROTOCOL FOR LOCAL REPOS!
-# # Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
+# * So you're telling me all I have to do is put this in __main__.py and tell users to run with -m?
