@@ -33,6 +33,7 @@ name = "main"
 repoTypes = ""
 
 # * ``` Placeholder variable for names selection! ```
+# ! I don't think we use this ...
 namesSelection = ""
 
 # * ``` Placeholder variable for local directories selection(s)! ```
@@ -78,6 +79,7 @@ licenseText = """
     under certain conditions; type `show c' for details.
 """
 print(licenseText)
+print("Working on `show w' and `show c', actually! It's GNU public 3+! No closed versions!")
 
 # * ``` Explanation of token thing! ```
 tokenExplanation = """
@@ -126,7 +128,6 @@ customNamePrompt = """
 """
 
 # * ``` Confirmation that interactive naming mode will happen! ```
-# TODO Make interactive naming mode happen ...
 interactiveNamingConfirmPrompt = """
     Okay! We'll name them after we fetch the set of repos!
 """
@@ -249,6 +250,7 @@ if 'customName' in answersOne:
             ).ask()
         if response:
             nameConfirmed = True
+# ! Oh this never sets it!! Whoops!
 
 
 # * Second set of questions after custom flow required!
@@ -341,8 +343,11 @@ for repository in reposResponse.json():
     repoNames.append(repository['name'])
     repoUrls.append(repository['html_url'])
 
+# * At this point we know whether "d" == "n" only if ... whoops, custom didn't set the name variable ... actually only if the default option is chosen!
+# * We need whether ... actually, maybe we can rule out some causes for requests here, if it doesn't matter what the info is we get back based on our decision tree ...
 
 # * If they wanted to name each primary branch, do so now!
+# ! Oh, you know, this needs updating, the name variable is still going to be main, and then we're thinking of using that for n later, but we can't
 if 'interactiveNamingConfirm' in answersOne:
     for repo in repos:
         repoName = questionary.text(
@@ -384,7 +389,8 @@ print(localRepos)
 # *             $ git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
 # *         Tested: they don't need to push any changes first or even commit them or even add them to staging!
 
-# * So, this needs to be communicated and preferably a tool provided.
+# TODO Communicate that!
+# TODO Provide a tool!
 # * Also, should I be testing if the repo already has a remote branch main? That it's the default branch?
 # * Oooh, okay, so capture default branch when you get the initial list of repos back,
 # * And then you only need to ... well search for any the same way, but if you get a difference between the
