@@ -129,7 +129,7 @@ customNamePrompt = """
 """
 
 # * ``` Confirmation that interactive naming mode will happen! ```
-interactiveNamingConfirmPrompt = """
+interactiveNamingConfirmationPrompt = """
     Okay! We'll name them after we fetch the set of repos!
 """
 
@@ -212,15 +212,13 @@ questionsOne = [
         "name": "customName",
         "message": customNamePrompt,
         "when": lambda x: x['namesSelection'] == "Choose another name to rename all primary branches to."
-    },
-    {
-        "type": "confirm",
-        "name": "interactiveNamingConfirm",
-        "message": interactiveNamingConfirmPrompt,
-        "when": lambda x: x['namesSelection'] == "Interactively choose a name for the primary branch for each repo."
     }
 ]
 answersOne = questionary.prompt(questionsOne)
+
+if answersOne['namesSelection'] == "Interactively choose a name for the primary branch for each repo.":
+    print(interactiveNamingConfirmationPrompt)
+
 
 # * Extract the data from the first set of prompts!
 username = answersOne['username']
@@ -251,6 +249,7 @@ if 'customName' in answersOne:
         if response:
             nameConfirmed = True
 # ! Oh this never sets it!! Whoops!
+# ! Oh, and you never test confirm if newNameResponse was true or false, lol
 
 
 # * Second set of questions after custom flow required!
