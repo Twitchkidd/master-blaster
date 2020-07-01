@@ -26,11 +26,12 @@ import subprocess
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
 
-# * ``` Placeholder variable for the name(s)! ```
+# * ``` Placeholder variable for the name! ```
 name = "main"
 
 # * ``` Placeholder variable for repository types! ```
 repoTypes = ""
+# >> Why?
 
 # * ``` Placeholder variable for names selection! ```
 # ! I don't think we use this ...
@@ -227,7 +228,6 @@ username = answersOne['username']
 username = "Twitchkidd"
 
 repoTypes = answersOne['repoTypes']
-namesSelection = answersOne['namesSelection']
 
 # * Custom questionary flow!
 
