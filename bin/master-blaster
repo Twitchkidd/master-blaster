@@ -296,11 +296,10 @@ answersTwo = questionary.prompt(questionsTwo)
 #     sys.exit('Error: No token detected! Try again please!')
 
 # * Extract the data from the second set of prompts!
+gitNew = answersTwo['gitNew']
 localDirectories = answersTwo['localDirectories']
 if 'localDirectory' in answersTwo and answersTwo['localDirectory'] != "":
     localDirectory = answersTwo['localDirectory']
-print(localDirectory)
-gitNew = answersTwo['gitNew']
 
 # * Set the token!
 if 'repoPublicRepoToken' in answersTwo:
@@ -348,6 +347,7 @@ reposResponse = requests.get(
 if reposResponse.status_code >= 400:
     sys.exit('Network Error: Possibly the token! Try again please!')
 
+# TODO Not like this ... not like this ...
 # * Extract the data from the API call!
 for repository in reposResponse.json():
     repos.append(
