@@ -17,6 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import questionary
+import sys
 import requests
 import json
 from pathlib import Path
@@ -28,6 +29,12 @@ GITHUB_API = "https://api.github.com"
 
 # * ``` Placeholder variable for the name! ```
 name = "main"
+
+
+# * ``` Choosing a custom name happens in a loop! ```
+def customNameConfirmPrompt(inputName):
+    return f'''{inputName} for all primary branches?'''
+
 
 # * ``` Placeholder variable for repository types!```
 repoTypes = ""
@@ -93,7 +100,6 @@ tokenExplanation = """
 print(tokenExplanation)
 
 # * ~~~ First set of questionary dict questions! ~~~
-
 # * ``` Ask for username! ```
 usernamePrompt = """
   Please enter your GitHub username!
@@ -122,19 +128,23 @@ namesMain = "All primary branches renamed to 'main'."
 namesCustom = "Choose another name to rename all primary branches to."
 namesPerRepo = "Interactively choose a name for the primary branch for each repo."
 
-# * ``` Custom name for all branches! ```
-customNamePrompt = """
-  What name are you choosing for primary branches?
-"""
 
+# * ``` Custom questionary text! ```
 # * ``` Confirmation that interactive naming mode will happen! ```
 interactiveNamingConfirmationPrompt = """
     Okay! We'll name them after we fetch the set of repos!
 """
+# * ``` Custom name for all branches! ```
+customNamePrompt = """
+  What name are you choosing for primary branches?
+"""
+# * ``` Confirm reset to main! ```
+confirmResetToMainPrompt = """
+    Default: use 'main' for all primary branches?
+"""
+
 
 # * ~~~ Second set of questionary dict questions! ~~~
-
-
 localDirectoriesPrompt = """
   Repositories not present locally will be cloned to a temporary folder,
   updated, the update pushed, (the default branch on GitHub.com updated,)
@@ -205,19 +215,9 @@ questionsOne = [
             "Choose another name to rename all primary branches to.",
             "Interactively choose a name for the primary branch for each repo."
         ]
-    },
-    {
-        "type": "text",
-        "name": "customName",
-        "message": customNamePrompt,
-        "when": lambda x: x['namesSelection'] == "Choose another name to rename all primary branches to."
     }
 ]
 answersOne = questionary.prompt(questionsOne)
-
-if answersOne['namesSelection'] == "Interactively choose a name for the primary branch for each repo.":
-    print(interactiveNamingConfirmationPrompt)
-
 
 # * Extract the data from the first set of prompts!
 username = answersOne['username']
@@ -228,28 +228,28 @@ repoTypes = answersOne['repoTypes']
 
 # * Custom questionary flow!
 
+if answersOne['namesSelection'] == "Interactively choose a name for the primary branch for each repo.":
+    print(interactiveNamingConfirmationPrompt)
 
-def customNameConfirmPrompt(inputName):
-    name = inputName
-    return f'''{inputName} for all primary branches?'''
-
-
-if 'customName' in answersOne:
-    name = answersOne['customName']
+if answersOne['namesSelection'] == "Choose another name to rename all primary branches to.":
     nameConfirmed = False
     while not nameConfirmed:
-        response = questionary.confirm(
-            customNameConfirmPrompt(name)).ask()
-        if not response:
-            newName = questionary.text(customNamePrompt).ask()
-            newNameResponse = questionary.confirm(
-                customNameConfirmPrompt(newName)
-            ).ask()
-        if response:
-            nameConfirmed = True
-# ! Oh this never sets it!! Whoops!
-# ! Oh, and you never test confirm if newNameResponse was true or false, lol
-
+        customNameResponse = questionary.text(customNamePrompt).ask()
+        if customNameResponse == "":
+            confirmResetToMainResponse = questionary.confirm(
+                confirmResetToMainPrompt).ask()
+            if confirmResetToMainResponse:
+                name = "main"
+                nameConfirmed = True
+            else:
+                continue
+        else:
+            confirmCustomNameResponse = questionary.confirm(
+                customNameConfirmPrompt(customNameResponse)).ask()
+            if confirmCustomNameResponse:
+                name = customNameResponse
+                nameConfirmed = True
+                pass
 
 # * Second set of questions after custom flow required!
 questionsTwo = [
@@ -285,6 +285,12 @@ questionsTwo = [
     }
 ]
 answersTwo = questionary.prompt(questionsTwo)
+
+# * Check if a token was entered!
+# ! You know, as it gets closer to the end of a long series of prompts, isn't now when you really want more graceful collapses?
+# ! Which is what I'd like to do right now, my back is killing me, lol. Go supa saiyan!
+if not answersTwo['repoToken'] or answersTwo['repoPublicRepoToken']:
+    sys.exit('Error: No token detected! Try again please!')
 
 # * Extract the data from the second set of prompts!
 localDirectories = answersTwo['localDirectories']
