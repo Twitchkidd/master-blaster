@@ -29,17 +29,14 @@ GITHUB_API = "https://api.github.com"
 # * ``` Placeholder variable for the name! ```
 name = "main"
 
-# * ``` Placeholder variable for repository types! ```
+# * ``` Placeholder variable for repository types!```
 repoTypes = ""
-# >> Why?
-
-# * ``` Placeholder variable for names selection! ```
-# ! I don't think we use this ...
-namesSelection = ""
 
 # * ``` Placeholder variable for local directories selection(s)! ```
 localDirectories = True
 localDirectory = Path.home()
+# ! TESTING!
+localDirectory = f"{Path.home()}/Code"
 
 # * ``` Placeholder variable for git alias selection! ```
 gitNew = True
@@ -57,7 +54,9 @@ with open("./repo.txt", 'r') as repoF:
 with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
     tokenPublicRepoScope = repoPublicRepoF.read(40)
 
-# * Placeholder variable for the total set of repos, and repoNames and repoUrls!
+# // Placeholder variable for the total set of repos, and repoNames and repoUrls!
+# [d['value'] for d in l]
+# * Placeholder variable for the total set of repos!
 repos = []
 repoNames = []
 repoUrls = []
@@ -353,6 +352,24 @@ if 'interactiveNamingConfirm' in answersOne:
             f"Primary branch name for {repo['htmlUrl']}?").ask()
         repo['primaryBranchName'] = repoName
 
+# * Take all these repos and test them against what the name is supposed to be!
+# * n = primaryBranchName
+
+# * /repos/{username}/{repo}/branches/{branch}!
+# * So we need ... has primaryBranchName on remote, has master on remote ...  and then we do the logic for if theyu have neither later
+
+for repo in repos:
+    primaryBranchResponse = requests.get(
+        f"{GITHUB_API}/repos/{username}/{repo['name']}/branches/{repo['primaryBranchName']}", headers=headers)
+    masterBranchResponse = requests.get(
+        f"{GITHUB_API}/repos/{username}/{repo['name']}/branches/master", headers=headers)
+    # if primaryBranchResponse.json()['message'] == "Branch not found":
+    #     print(f"No primary branch for {repo['htmlUrl']}")
+    # if masterBranchResponse.json()['message'] == "Branch not found":
+    #     print(f"No master branch for {repo['htmlUrl']}")
+    print(json.dumps(primaryBranchResponse.json()), sort_keys=True, indent=2)
+    print(json.dumps(masterBranchResponse.json()), sort_keys=True, indent=2)
+
 
 def getUrl(configFile):
     url = ""
@@ -413,7 +430,7 @@ print(localRepos)
 # * Change the branch!
 # TODO All of this!
 for repo in repos:
-    if repo['htmlUrl'] in localRepoUrls:
+    if repo['htmlUrl'] in [localRepo['htmlUrl'] for localRepo in localRepos]:
         # # * MUST REVIEW THE PROTOCOL FOR LOCAL REPOS!
         # # Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
         localProcess(repo['path'])
