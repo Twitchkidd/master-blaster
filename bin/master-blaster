@@ -286,11 +286,11 @@ questionsTwo = [
 ]
 answersTwo = questionary.prompt(questionsTwo)
 
+# TODO More graceful collapse
 # * Check if a token was entered!
-# ! You know, as it gets closer to the end of a long series of prompts, isn't now when you really want more graceful collapses?
-# ! Which is what I'd like to do right now, my back is killing me, lol. Go supa saiyan!
-if not answersTwo['repoToken'] or answersTwo['repoPublicRepoToken']:
-    sys.exit('Error: No token detected! Try again please!')
+# ! Testing!
+# if not answersTwo['repoToken'] or answersTwo['repoPublicRepoToken']:
+#     sys.exit('Error: No token detected! Try again please!')
 
 # * Extract the data from the second set of prompts!
 localDirectories = answersTwo['localDirectories']
@@ -307,6 +307,7 @@ else:
 
 # ! TESTING!
 token = tokenRepoScope
+# token = "fermf"
 
 # * ~~~ Constructing the url! ~~~
 
@@ -339,8 +340,12 @@ if repoTypes == repoTypesOrganizationPublic:
 reposResponse = requests.get(
     f"{GITHUB_API}/user/repos", headers=headers, params=params)
 
+# TODO More graceful collapse
+# * Bad token returns a 401!
+if reposResponse.status_code >= 400:
+    sys.exit('Network Error: Possibly the token! Try again please!')
+
 # * Extract the data from the API call!
-# TODO Any error handling please!
 for repository in reposResponse.json():
     repos.append(
         {"defaultBranch": repository['default_branch'], "htmlUrl": repository['html_url'], "name": repository['name'], "primaryBranchName": name})
