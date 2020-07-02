@@ -27,11 +27,13 @@ import subprocess
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
 
-# * ``` Placeholder variable for the name! ```
+# * ``` Placeholder variable for the name and interactive naming mode! ```
 name = "main"
-
+interactive = False
 
 # * ``` Choosing a custom name happens in a loop! ```
+
+
 def customNameConfirmPrompt(inputName):
     return f'''{inputName} for all primary branches?'''
 
@@ -229,6 +231,7 @@ repoTypes = answersOne['repoTypes']
 # * Custom questionary flow!
 
 if answersOne['namesSelection'] == "Interactively choose a name for the primary branch for each repo.":
+    interactive = True
     print(interactiveNamingConfirmationPrompt)
 
 if answersOne['namesSelection'] == "Choose another name to rename all primary branches to.":
@@ -352,23 +355,18 @@ for repository in reposResponse.json():
     repoNames.append(repository['name'])
     repoUrls.append(repository['html_url'])
 
-# * At this point we know whether "d" == "n" only if ... whoops, custom didn't set the name variable ... actually only if the default option is chosen!
-# * We need whether ... actually, maybe we can rule out some causes for requests here, if it doesn't matter what the info is we get back based on our decision tree ...
-
+# TODO Confirmation!
 # * If they wanted to name each primary branch, do so now!
-# ! Oh, you know, this needs updating, the name variable is still going to be main, and then we're thinking of using that for n later, but we can't
-if 'interactiveNamingConfirm' in answersOne:
+if interactive:
     for repo in repos:
         repoName = questionary.text(
             f"Primary branch name for {repo['htmlUrl']}?").ask()
         repo['primaryBranchName'] = repoName
 
+# TODO Weed out some requests by seeing if they have the branch already (maybe? meta-TODO) or don't have a master
 # * Take all these repos and test them against what the name is supposed to be!
-# * n = primaryBranchName
-
 # * /repos/{username}/{repo}/branches/{branch}!
-# * So we need ... has primaryBranchName on remote, has master on remote ...  and then we do the logic for if theyu have neither later
-
+# * So we need ... has primaryBranchName on remote, has master on remote ...  and then we do the logic for if they have neither later
 for repo in repos:
     primaryBranchResponse = requests.get(
         f"{GITHUB_API}/repos/{username}/{repo['name']}/branches/{repo['primaryBranchName']}", headers=headers)
@@ -405,6 +403,28 @@ if 'localDirectories' in answersTwo:
                     pass
 print(localRepos)
 
+# TODO All of this!
+# * Change the branch!
+for repo in repos:
+    if repo['htmlUrl'] in [localRepo['htmlUrl'] for localRepo in localRepos]:
+        # # * MUST REVIEW THE PROTOCOL FOR LOCAL REPOS!
+        # # Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
+        localProcess(repo['path'])
+    else:
+        remoteProcess(repo['htmlUrl'])
+        # # * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH
+        # # PATCH /repos/:owner/:repo
+        # # default_branch? string
+        # * requests.patch is a thing!
+
+
+# TODO All of this!
+# * Add the `git new` alias!
+if gitNew:
+    print(gitNew)
+
+# TODO Communicate this!
+# TODO Provide a tool!
 # * Learning about how this works for multiple systems!
 # *     When master-blaster is run,
 # *         any other systems with local clones must run
@@ -415,9 +435,6 @@ print(localRepos)
 # *             $ git branch -u origin/main
 # *             $ git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
 # *         Tested: they don't need to push any changes first or even commit them or even add them to staging!
-
-# TODO Communicate that!
-# TODO Provide a tool!
 # * Also, should I be testing if the repo already has a remote branch main? That it's the default branch?
 # * Oooh, okay, so capture default branch when you get the initial list of repos back,
 # * And then you only need to ... well search for any the same way, but if you get a difference between the
@@ -437,35 +454,3 @@ print(localRepos)
 
 # TODO Only go through the base move and push if local and remote branches are master!
 # TODO Handle all other cases somehow, but this seems like where you REALLY need the error checking.
-
-# * Change the branch!
-# TODO All of this!
-for repo in repos:
-    if repo['htmlUrl'] in [localRepo['htmlUrl'] for localRepo in localRepos]:
-        # # * MUST REVIEW THE PROTOCOL FOR LOCAL REPOS!
-        # # Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
-        localProcess(repo['path'])
-    else:
-        remoteProcess(repo['htmlUrl'])
-        # # * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH
-        # # PATCH /repos/:owner/:repo
-        # # default_branch? string
-        # * requests.patch is a thing!
-
-
-# TODO * Add the `git new` alias!
-if gitNew:
-    print(gitNew)
-
-# TODO * THIS MIGHT BE A BETTER WAY OF MAKING THIS SCRIPT EXECUTABLE!
-# # __main__ — Top-level script environment¶
-# # '__main__' is the name of the scope in which top-level code executes. A module’s __name__ is set equal to '__main__' when read from standard input, a script, or from an interactive prompt.
-
-# # A module can discover whether or not it is running in the main scope by checking its own __name__, which allows a common idiom for conditionally executing code in a module when it is run as a script or with python -m but not when it is imported:
-
-# # if __name__ == "__main__":
-# #     # execute only if run as a script
-# #     main()
-# # For a package, the same effect can be achieved by including a __main__.py module, the contents of which will be executed when the module is run with -m.
-
-# * So you're telling me all I have to do is put this in __main__.py and tell users to run with -m?
