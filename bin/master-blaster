@@ -399,8 +399,10 @@ if 'localDirectories' in answersTwo:
                         localRepos.append(
                             {"url": getUrl(configFile), "path": f"{root}/{subdir}"})
                 except Exception as err:
+                    # ! Testing!
                     # print(f"Exception: {err}")
                     pass
+# ! Testing!
 print(localRepos)
 
 # TODO All of this!
