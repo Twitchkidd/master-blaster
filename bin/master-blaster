@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# * A log file should be created, data should be put in that would be useful, and mention of it should be made to the user both inline and in the docs. * #
-
 import json
 import logging
 import os
@@ -25,60 +23,6 @@ from pathlib import Path
 import questionary
 import requests
 import subprocess
-import sys
-
-# This defaults to v3 of the api.
-GITHUB_API = "https://api.github.com"
-
-# * ``` Placeholder variable for the username! ``` * #
-username = ""
-
-# * ``` Placeholder variable for the name and interactive naming mode! ``` * #
-name = "main"
-interactive = False
-
-# * ``` Choosing a custom name happens in a loop! ``` * #
-# * ``` The "character selection" app crashed my slowest computer, I was looking for down like carets, lol ``` * #
-
-
-def customNameConfirmPrompt(inputName):
-    return f'''{inputName} for all primary branches?'''
-
-
-# * ``` Placeholder variable for repository types!``` * #
-repoTypes = ""
-
-# * ``` Placeholder variable for local directories selection(s)! ``` * #
-localDirectories = True
-localDirectory = Path.home()
-# ! TESTING # !!
-localDirectory = f"{Path.home()}/Code"
-
-# * ``` Placeholder variable for git alias selection! ``` * #
-gitNew = True
-
-# * ``` Placeholder variables for the tokens! ``` * #
-token = ""
-tokenRepoScope = ""
-tokenPublicRepoScope = ""
-
-# ! TESTING # !!
-with open("./repo.txt", 'r') as repoF:
-    tokenRepoScope = repoF.read(40)
-
-# ! TESTING # !!
-with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
-    tokenPublicRepoScope = repoPublicRepoF.read(40)
-
-# // Placeholder variable for the total set of repos, and repoNames and repoUrls!
-# [d['value'] for d in l]
-# * Placeholder variable for the total set of repos! * #
-repos = []
-repoNames = []
-repoUrls = []
-
-# * Placeholder variable for the set of local repos! * #
-localRepos = []
 
 # * ``` Intro text! ``` * #
 intro = """
@@ -108,7 +52,7 @@ tokenExplanation = """
 """
 print(tokenExplanation)
 
-# * Create a log file, or be ready to write to an existing log file * #
+# * ``` Write to a new or existing log file! ``` * #
 # ! Testing! # !
 # filemode='w' will not append to the file, it'll write over
 logging.basicConfig(filename='info.log', filemode='w',
@@ -116,17 +60,81 @@ logging.basicConfig(filename='info.log', filemode='w',
 print("Log file found at ./info.log!")
 logging.info("Creating a log file!!")
 
-# * ~~~ First set of questionary dict questions! ~~~ * #
+
+# * ``` Placeholder variable for git alias selection! ``` * #
+gitNew = True
+
+# * ``` Placeholder variables for the tokens! ``` * #
+token = ""
+tokenRepoScope = ""
+tokenPublicRepoScope = ""
+
+# ! TESTING # !!
+with open("./repo.txt", 'r') as repoF:
+    tokenRepoScope = repoF.read(40)
+
+# ! TESTING # !!
+with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
+    tokenPublicRepoScope = repoPublicRepoF.read(40)
+
+# // Placeholder variable for the total set of repos, and repoNames and repoUrls!
+# [d['value'] for d in l]
+# * Placeholder variable for the total set of repos! * #
+repos = []
+repoNames = []
+repoUrls = []
+
+# * Placeholder variable for the set of local repos! * #
+localRepos = []
+
+
+# * ~~~  Username gathering! ~~~ * #
+# * ``` Placeholder variable for the username! ``` * #
+username = ""
+
 # * ``` Ask for username! ``` * #
 usernamePrompt = """
   Please enter your GitHub username!
 """
 
+
+def usernameConfirmationPrompt(usernameInput):
+    return f"GitHub username: {usernameInput}?"
+
+
+usernameConfirmed = False
+while not usernameConfirmed:
+    usernameResponse = questionary.text(usernamePrompt).ask()
+    if usernameResponse == "":
+        print("GitHub username blank: Please try again!")
+        continue
+    if len(usernameResponse) >= 40:
+        print("GitHub usernames are 39 chars or less: please try again!")
+        continue
+    else:
+        usernameConfirmationResponse = questionary.confirm(
+            usernameConfirmationPrompt(usernameResponse)).ask()
+        if usernameConfirmationResponse == False:
+            print("Retry!")
+            continue
+        if usernameConfirmationResponse:
+            username = usernameResponse
+            usernameConfirmed = True
+            continue
+
+# ! Testing ! #
+username = "Twitchkidd"
+
+# * ~~~ Set of questionary dictionary questions! ~~~ * #
+# * ``` Placeholder variable for repository types!``` * #
+repoTypes = ""
 # * ``` What types of repos question and choices! ``` * #
+# * Question * #
 repoTypesPrompt = """
   What set of repositories do you want to update?
 """
 
+# * Choices * #
 repoTypesAll = "All repositories I'm the owner, collaborator, and/or organization member, public and private."
 repoTypesAllPublic = "All repositories I'm the owner, collaborator, and/or organization member, only public, not private."
 repoTypesOwner = "All repositories I'm the owner of, public and private."
@@ -137,70 +145,15 @@ repoTypesOrganization = "All repositories I'm the owner of and/or a member of th
 repoTypesOrganizationPublic = "All repositories I'm the owner of and/or a member of the organization, only public, not private."
 
 # * ``` What to name the primary branches and choices! ``` * #
+# * Question * #
 namesSelectionPrompt = """
   What would you like to call your primary branches? (Default 'main'.)
 """
 
+# * Choices * #
 namesMain = "All primary branches renamed to 'main'."
 namesCustom = "Choose another name to rename all primary branches to."
 namesPerRepo = "Interactively choose a name for the primary branch for each repo."
-
-
-# * ``` Custom questionary text! ``` * #
-# * ``` Confirmation that interactive naming mode will happen! ``` * #
-interactiveNamingConfirmationPrompt = """
-    Okay! We'll name them after we fetch the set of repos!
-"""
-# * ``` Custom name for all branches! ``` * #
-customNamePrompt = """
-  What name are you choosing for primary branches?
-"""
-# * ``` Confirm reset to main! ``` * #
-confirmResetToMainPrompt = """
-    Default: use 'main' for all primary branches?
-"""
-
-
-# * ~~~ Second set of questionary dict questions! ~~~ * #
-localDirectoriesPrompt = """
-  Repositories not present locally will be cloned to a temporary folder,
-  updated, the update pushed, (the default branch on GitHub.com updated,)
-  and then deleted locally. We can decrease the use of bandwidth and reduce
-  potential conflicts by scanning for repositories that *are* present locally.
-  Is this okay? (No other changes will be added or committed.)
-"""
-
-localDirectoryPrompt = """
-    Do you keep your projects in a certain directory? Type that in here to
-    speed up search! Like /Users/gareth/Code ... default is ~/, hit enter for default.
-"""
-
-gitNewPrompt = """
-  We can add a git alias 'git new' that initializes new git repos with HEAD as
-  'main', shall we?
-"""
-
-repoPublicRepoTokenPrompt = """
-     Last step! Since password-based token generation is being deprecated, please
-     get a personal access token with the correct scope(s) in order to run this
-     program. To get this token, go to https://github.com, sign in, then go to
-     'Settings', then 'Developer Settings', then 'Personal access tokens', then
-     'Generate new token', confirm your password, name the token in the 'Note'
-     input field, and select the 'public repo' scope, then 'Generate Token', then
-     copy it to your clipboard and either paste it back here into the prompt, or
-     save it first in case there's an error and you need to retry. (Recommended)
-"""
-
-repoTokenPrompt = """
-     Last step! Since password-based token generation is being deprecated, please
-     get a personal access token with the correct scope(s) in order to run this
-     program. To get this token, go to https://github.com, sign in, then go to
-     'Settings', then 'Developer Settings', then 'Personal access tokens', then
-     'Generate new token', confirm your password, name the token in the 'Note'
-     input field, and select the 'repo' scope, then 'Generate Token', then
-     copy it to your clipboard and either paste it back here into the prompt, or
-     save it first in case there's an error and you need to retry. (Recommended)
-"""
 
 questionsOne = [
     {
@@ -230,49 +183,33 @@ questionsOne = [
     }
 ]
 
-
-def usernameConfirmationPrompt(usernameInput):
-    return f"GitHub username: {usernameInput}?"
-
-
-# *  Username gathering! * #
-# TODO
-usernameConfirmed = False
-while not usernameConfirmed:
-    usernameResponse = questionary.text(usernamePrompt).ask()
-    if usernameResponse == "":
-        print("GitHub username blank: Please try again!")
-        continue
-    if len(usernameResponse) >= 40:
-        print("GitHub usernames are 39 chars or less: please try again!")
-        continue
-    else:
-        usernameConfirmationResponse = questionary.confirm(
-            usernameConfirmationPrompt(usernameResponse)).ask()
-        if usernameConfirmationResponse == False:
-            print("Retry!")
-            continue
-        if usernameConfirmationResponse:
-            username = usernameResponse
-            usernameConfirmed = True
-            continue
-
-# ! Testing ! #
-username = "Twitchkidd"
-
-
-answersOne = questionary.prompt(questionsOne)
-
 # * Extract the data from the first set of prompts from dictionary! * #
+answersOne = questionary.prompt(questionsOne)
 repoTypes = answersOne['repoTypes']
 logging.info(f"Repo types: {repoTypes}")
 logging.info(f"Naming selection: {answersOne['namesSelection']}")
 
-# * Custom questionary flow! Two! * #
+# * Second custom questionary flow! * #
+# * ``` Custom name for all branches! ``` * #
+customNamePrompt = """
+  What name are you choosing for primary branches?
+"""
+# * ``` Confirm reset to main! ``` * #
+confirmResetToMainPrompt = """
+    Default: use 'main' for all primary branches?
+"""
+# * ``` Confirmation that interactive naming mode will happen! ``` * #
+interactiveNamingConfirmationPrompt = """
+    Okay! We'll name them after we fetch the set of repos!
+"""
 
-if answersOne['namesSelection'] == "Interactively choose a name for the primary branch for each repo.":
-    interactive = True
-    print(interactiveNamingConfirmationPrompt)
+# * ``` Placeholder variable for the primary branch name! ``` * #
+name = "main"
+
+
+def customNameConfirmPrompt(inputName):
+    return f'''{inputName} for all primary branches?'''
+
 
 if answersOne['namesSelection'] == "Choose another name to rename all primary branches to.":
     nameConfirmed = False
@@ -296,70 +233,141 @@ if answersOne['namesSelection'] == "Choose another name to rename all primary br
                 logging.info(f"Name for primary branches: {name}")
                 pass
 
-# * Second set of questions after custom flow required! * #
-questionsTwo = [
-    # This needs a custom flow, confirm and default
-    {
-        "type": "confirm",
-        "name": "localDirectories",
-        "message": localDirectoriesPrompt
-    },
-    {
-        "type": "text",
-        "name": "localDirectory",
-        "message": localDirectoryPrompt,
-        "when": lambda x: x['localDirectories']
-    },
-    {
-        "type": "confirm",
-        "name": "gitNew",
-        "message": gitNewPrompt
-    },
-    # This needs a custom flow, empty string
-    {
-        "type": "text",
-        "name": "repoPublicRepoToken",
-        "message": repoPublicRepoTokenPrompt,
-        "when": lambda x: repoTypes == "All repositories I'm the owner, collaborator, and/or organization member, only public, not private." or repoTypes == "All repositories I'm the owner of, only public, not private." or repoTypes == "All repositories I'm the owner of and/or a collaborator on, only public, not private." or repoTypes == "All repositories I'm the owner of and/or a member of the organization, only public, not private."
-        # "when": lambda x: any(repoTypes in ["All repositories I'm the owner, collaborator, and/or organization member, only public, not private.", "All repositories I'm the owner of, only public, not private.", "All repositories I'm the owner of and/or a collaborator on, only public, not private.", "All repositories I'm the owner of and/or a member of the organization, only public, not private."])
-        # why can't I get this work with any()?
-    },
-    {
-        "type": "text",
-        "name": "repoToken",
-        "message": repoTokenPrompt,
-        "when": lambda x: repoTypes == "All repositories I'm the owner, collaborator, and/or organization member, public and private." or repoTypes == "All repositories I'm the owner of, public and private." or repoTypes == "All repositories I'm the owner of and/or a collaborator on, public and private." or repoTypes == "All repositories I'm the owner of and/or a member of the organization, public and private."
-    }
-    # And then we should have one more step to confirm that we're a-go ... maybe that should be after the data scraping and sorting part with the branches happens though
-]
-answersTwo = questionary.prompt(questionsTwo)
+# * ``` Placeholder variable for interactive naming mode! ``` * #
+interactive = False
 
-# * Extract the data from the second set of prompts! * #
-# TODO logging when this gets customized
-localDirectories = answersTwo['localDirectories']
-if 'localDirectory' in answersTwo and answersTwo['localDirectory'] != "":
-    localDirectory = answersTwo['localDirectory']
+if answersOne['namesSelection'] == "Interactively choose a name for the primary branch for each repo.":
+    interactive = True
+    print(interactiveNamingConfirmationPrompt)
 
-gitNew = answersTwo['gitNew']
+
+# * ``` Local directory yay or nay! ``` * #
+localDirectoriesPrompt = """
+  Repositories not present locally will be cloned to a temporary folder,
+  updated, the update pushed, (the default branch on GitHub.com updated,)
+  and then deleted locally. We can decrease the use of bandwidth and reduce
+  potential conflicts by scanning for repositories that *are* present locally.
+  Is this okay? (No other changes will be added or committed.)
+"""
+localDirectories = questionary.confirm(localDirectoriesPrompt).ask()
+
+
+# * ``` Which local directory? ``` * #
+# * ``` Placeholder variable for local directory selection! ``` * #
+localDirectory = Path.home()
+
+localDirectoryPrompt = """
+    Do you keep your projects in a certain directory? Type that in here to
+    speed up search! Like /Users/gareth/Code ... default is ~/, hit enter for default.
+"""
+
+# * ``` Confirm reset to home! ``` * #
+confirmResetToHomePrompt = """
+    Default: use '~/' for local directory search?
+"""
+
+
+def customLocalDirectoryConfirmPrompt(inputDir):
+    return f'''{inputDir} for all primary branches?'''
+
+
+if localDirectories:
+    localDirectoryConfirmed = False
+    while not localDirectoryConfirmed:
+        customLocalDirectoryResponse = questionary.text(
+            localDirectoryPrompt).ask()
+        if customLocalDirectoryResponse == "":
+            confirmResetToHomeResponse = questionary.confirm(
+                confirmResetToHomePrompt).ask()
+            if confirmResetToHomeResponse:
+                localDirectory = Path.home()
+                localDirectoryConfirmed = True
+                logging.info(f"Local directory to search: {localDirectory}")
+            else:
+                continue
+        else:
+            confirmCustomLocalDirectoryResponse = questionary.confirm(
+                customLocalDirectoryConfirmPrompt(customLocalDirectoryResponse)).ask()
+            if confirmCustomNameResponse:
+                localDirectory = customLocalDirectoryResponse
+                localDirectoryConfirmed = True
+                logging.info(f"Local directory to search: {localDirectory}")
+                pass
+
+# ! TESTING # !!
+localDirectory = f"{Path.home()}/Code"
+
+# * ~~~ New Git Alias! ~~~ * #
+gitNewPrompt = """
+  We can add a git alias 'git new' that initializes new git repos with HEAD as
+  'main', shall we?
+"""
+gitNew = questionary.confirm(gitNewPrompt)
 logging.info(f"Add git alias `git new`: {gitNew}")
 
-# * Set the token! * #
-if 'repoPublicRepoToken' in answersTwo:
-    token = answersTwo['repoPublicRepoToken']
+# * ~~~ Token Time! ~~~ * #
+
+repoTokenPrompt = """
+     Last step! Since password-based token generation is being deprecated, please
+     get a personal access token with the correct scope(s) in order to run this
+     program. To get this token, go to https://github.com, sign in, then go to
+     'Settings', then 'Developer Settings', then 'Personal access tokens', then
+     'Generate new token', confirm your password, name the token in the 'Note'
+     input field, and select the 'repo' scope, then 'Generate Token', then
+     copy it to your clipboard and either paste it back here into the prompt, or
+     save it first in case there's an error and you need to retry. (Recommended)
+"""
+
+repoPublicRepoTokenPrompt = """
+     Last step! Since password-based token generation is being deprecated, please
+     get a personal access token with the correct scope(s) in order to run this
+     program. To get this token, go to https://github.com, sign in, then go to
+     'Settings', then 'Developer Settings', then 'Personal access tokens', then
+     'Generate new token', confirm your password, name the token in the 'Note'
+     input field, and select the 'public repo' scope, then 'Generate Token', then
+     copy it to your clipboard and either paste it back here into the prompt, or
+     save it first in case there's an error and you need to retry. (Recommended)
+"""
+
+repoTypes = questionary.select(
+    repoTypesPrompt,
+    choices=[
+        repoTypesAll,
+        repoTypesAllPublic,
+        repoTypesOwner,
+        repoTypesOwnerPublic,
+        repoTypesCollaborator,
+        repoTypesCollaboratorPublic,
+        repoTypesOrganization,
+        repoTypesOrganizationPublic
+    ]).ask()
+
+# ! I think the order is all over the place, I'm like done though!
+
+tokenPrompt = ""
+if repoTypes == "All repositories I'm the owner, collaborator, and/or organization member, public and private." or repoTypes == "All repositories I'm the owner of, public and private." or repoTypes == "All repositories I'm the owner of and/or a collaborator on, public and private." or repoTypes == "All repositories I'm the owner of and/or a member of the organization, public and private.":
+    tokenPrompt = repoTokenPrompt
 else:
-    token = answersTwo['repoToken']
+    tokenPrompt = repoPublicRepoTokenPrompt
+
+tokenConfirmed = False
+# while not localDirectoryConfirmed:
+while not tokenConfirmed:
+    customTokenResponse = questionary.text(tokenPrompt).ask()
+    if customTokenResponse == "":
+        print("Please enter the token!")
+        continue
+    else:
+        token = customTokenResponse
+        tokenConfirmed = True
+        pass
 # ! Testing # !
 # token = "fermf"
 token = tokenRepoScope
 
-# * Check if a token was entered! * #
-# TODO More graceful collapse
-# TODO logging when this gets customized
-# ! Testing # !
-# if not answersTwo['repoToken'] or answersTwo['repoPublicRepoToken']:
-#     sys.exit('Error: No token detected! Try again please!')
-
 # * ~~~ Constructing the url! ~~~ * #
+# This defaults to v3 of the api.
+GITHUB_API = "https://api.github.com"
 
 # * Construct the headers! * #
 headers = {"Authorization": 'token ' + token}
@@ -387,6 +395,7 @@ if repoTypes == repoTypesOrganizationPublic:
               "type": "owner,collaborator,organization_member"}
 
 # * Make the API call! * #
+
 reposResponse = requests.get(
     f"{GITHUB_API}/user/repos", headers=headers, params=params)
 
