@@ -30,11 +30,15 @@ import sys
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
 
+# * ``` Placeholder variable for the username! ``` * #
+username = ""
+
 # * ``` Placeholder variable for the name and interactive naming mode! ``` * #
 name = "main"
 interactive = False
 
 # * ``` Choosing a custom name happens in a loop! ``` * #
+# * ``` The "character selection" app crashed my slowest computer, I was looking for down like carets, lol ``` * #
 
 
 def customNameConfirmPrompt(inputName):
@@ -200,11 +204,6 @@ repoTokenPrompt = """
 
 questionsOne = [
     {
-        "type": "text",
-        "name": "username",
-        "message": usernamePrompt,
-    },
-    {
         "type": "select",
         "name": "repoTypes",
         "message": repoTypesPrompt,
@@ -230,19 +229,46 @@ questionsOne = [
         ]
     }
 ]
-answersOne = questionary.prompt(questionsOne)
 
-# * Extract the data from the first set of prompts! * #
-username = answersOne['username']
+
+def usernameConfirmationPrompt(usernameInput):
+    return f"GitHub username: {usernameInput}?"
+
+
+# *  Username gathering! * #
+# TODO
+usernameConfirmed = False
+while not usernameConfirmed:
+    usernameResponse = questionary.text(usernamePrompt).ask()
+    if usernameResponse == "":
+        print("GitHub username blank: Please try again!")
+        continue
+    if len(usernameResponse) >= 40:
+        print("GitHub usernames are 39 chars or less: please try again!")
+        continue
+    else:
+        usernameConfirmationResponse = questionary.confirm(
+            usernameConfirmationPrompt(usernameResponse)).ask()
+        if usernameConfirmationResponse == False:
+            print("Retry!")
+            continue
+        if usernameConfirmationResponse:
+            username = usernameResponse
+            usernameConfirmed = True
+            continue
+
 # ! Testing ! #
 username = "Twitchkidd"
-# ! Testing ! #
 
+
+answersOne = questionary.prompt(questionsOne)
+
+# * Extract the data from the first set of prompts from dictionary! * #
 repoTypes = answersOne['repoTypes']
 logging.info(f"Repo types: {repoTypes}")
 logging.info(f"Naming selection: {answersOne['namesSelection']}")
 
-# * Custom questionary flow! * #
+# * Custom questionary flow! Two! * #
 
 if answersOne['namesSelection'] == "Interactively choose a name for the primary branch for each repo.":
     interactive = True
@@ -272,6 +298,7 @@ if answersOne['namesSelection'] == "Choose another name to rename all primary br
 
 # * Second set of questions after custom flow required! * #
 questionsTwo = [
+    # This needs a custom flow, confirm and default
     {
         "type": "confirm",
         "name": "localDirectories",
@@ -288,6 +315,7 @@ questionsTwo = [
         "name": "gitNew",
         "message": gitNewPrompt
     },
+    # This needs a custom flow, empty string
     {
         "type": "text",
         "name": "repoPublicRepoToken",
@@ -302,6 +330,7 @@ questionsTwo = [
         "message": repoTokenPrompt,
         "when": lambda x: repoTypes == "All repositories I'm the owner, collaborator, and/or organization member, public and private." or repoTypes == "All repositories I'm the owner of, public and private." or repoTypes == "All repositories I'm the owner of and/or a collaborator on, public and private." or repoTypes == "All repositories I'm the owner of and/or a member of the organization, public and private."
     }
+    # And then we should have one more step to confirm that we're a-go ... maybe that should be after the data scraping and sorting part with the branches happens though
 ]
 answersTwo = questionary.prompt(questionsTwo)
 
