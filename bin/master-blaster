@@ -78,7 +78,7 @@ localRepos = []
 
 # * ``` Intro text! ``` * #
 intro = """
-  Welcome to master-blaster! This program renames primary branches for github users!
+  Welcome to master-blaster! This program renames primary branches for GitHub users!
   We'll go through the options before making any changes!
 """
 print(intro)
