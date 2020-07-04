@@ -173,7 +173,7 @@ questions = [
 # * ``` Extract the data from the set of prompts from dictionary! ``` * #
 answers = questionary.prompt(questions)
 repoTypes = answers['repoTypes']
-logging.info(f"Repo types: {repoTypes}")
+logging.info(f"Repository types chosen: {repoTypes}")
 logging.info(f"Naming selection: {answers['namesSelection']}")
 
 # * ~~~ Custom primary branch flow! ~~~ * #
