@@ -319,6 +319,7 @@ with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
     tokenPublicRepoScope = repoPublicRepoF.read(40)
 
 tokenType = ""
+# try any again?
 if repoTypes == "All repositories I'm the owner, collaborator, and/or organization member, public and private." or repoTypes == "All repositories I'm the owner of, public and private." or repoTypes == "All repositories I'm the owner of and/or a collaborator on, public and private." or repoTypes == "All repositories I'm the owner of and/or a member of the organization, public and private.":
     tokenType = "repo"
 else:
@@ -509,31 +510,70 @@ if localDirectories:
                     pass
 
 # TODO logging when this gets customized
-# * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH * #
-# PATCH /repos/:owner/:repo
-# default_branch? string
-# * requests.patch is a thing! * #
 # * ~~~ Change the branches! ~~~ * #
 
 # * ``` Placeholder variable for the set of local repo origin urls! ``` * #
 localRepoUrls = [localRepo['url'] for localRepo in localRepos]
 
 
-def remoteProcess():
+def remoteProcess(repo):
     print("remote process!")
+    # So we're assuming that the handler handled for:
+    # the primary branch not existing on the remote and
+    # master existing on the remote
+    # if there is a local clone
+    #   it not having a branch with the primary branch name and
+    #   it having master
+    #
+    #   Then we blaster.
+    # subprocess.run(["cd", repo['path']])
+    # subprocess.run(["git", "branch", "-m", "master", "main"])
+    # subprocess.run(["git", "push", "-u", "origin", "main"])
+    # requests.patch(somethingDefault)
+    # PATCH /repos/:owner/:repo
+    # default_branch? string
+    # requests.patch is a thing! #
+    # Don't even bang unless you planning this whole thang.
+    print(repo)
 
 
-def localProcess():
+def localProcess(repo):
     print("local process!")
+    # Now here we're assuming the handler handled for:
+    # the primary branch existing on the remote and
+    # master not existing on the remote
+    # if there is a local clone
+    #   it having a branch with the primary branch name and
+    #   it not having master
+    #
+    #   Then we reverse-blaster.
+    #   Retsalb. Take that. Taht. Ahht!
+    #   Yea, losing it a little here, lol.
+    # subprocess.run(["cd", repo['path']])
+    # subprocess.run(["git", "checkout", "master"])
+    # subprocess.run(["git", "branch", "-m", "master", "main"])
+    # subprocess.run(["git", "fetch"])
+    # subprocess.run(["git", "branch", "--unset-upstream"])
+    # subprocess.run(["git", "branch", "-u", "origin/main"])
+    # subprocess.run(["git", "symbolic-ref", "refs/remotes/origin/HEAD", "refs/remotes/origin/main"])
 
 
-for repo in repos:
-    if localRepoUrls.get(repo['htmlUrl']):
-        # localProcess(repo['path'])
-        localProcess()
-    else:
-        # remoteProcess(repo['htmlUrl'])
-        remoteProcess()
+if localDirectories:
+    for repo in repos:
+        if repo['htmlUrl'] in localRepoUrls:
+            # localProcess(repo['path'])
+            # TODO Handle it!
+            localProcess(repo)
+        else:
+            # remoteProcess(repo['htmlUrl'])
+            # TODO Handle it!
+            remoteProcess(repo)
+else:
+    for repo in repos:
+        if repo['we-good']:
+            doTheThing()
+        else
+        imOnmnNeedYouToSaySummnBoutIt()
 
 
 # TODO All of this!
@@ -541,6 +581,9 @@ for repo in repos:
 # * Add the `git new` alias! * #
 if gitNew:
     print(gitNew)
+    # subprocess.run(["git", "config", "--global", "alias.new", "'!git", "init"])
+    # subprocess.run(["git", "symbolic-ref", "HEAD", "refs/heads/main"])
+    # BOB
 
 # TODO Denoument
 
