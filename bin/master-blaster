@@ -558,11 +558,20 @@ def localProcess(repo):
     # subprocess.run(["git", "symbolic-ref", "refs/remotes/origin/HEAD", "refs/remotes/origin/main"])
 
 
+def doTheThing():
+    print("I'm ohnneed you to")
+
+
+def imOnmnNeedYouToSaySummnBoutIt():
+    print("saaay somethin' bout it!")
+
+
 if localDirectories:
     for repo in repos:
         if repo['htmlUrl'] in localRepoUrls:
             # localProcess(repo['path'])
             # TODO Handle it!
+            # * Check for ... oh my back
             localProcess(repo)
         else:
             # remoteProcess(repo['htmlUrl'])
