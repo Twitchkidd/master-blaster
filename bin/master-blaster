@@ -360,8 +360,8 @@ def getToken():
     token = tokenRepoScope
 
 
-# * ~~~ Constructing the url! ~~~ * #
-def constructReposUrl():
+# * ~~~ Constructing the request! ~~~ * #
+def constructReposRequest():
 
     # This defaults to v3 of the api.
     GITHUB_API = "https://api.github.com"
@@ -402,8 +402,8 @@ repos = []
 reposResponseConfirmed = False
 while not reposResponseConfirmed:
     getToken()
-    url = constructReposUrl()
-    reposResponse = requests.get(url)
+    request = constructReposRequest()
+    reposResponse = requests.get(request)
     # Bad token returns a 401! #
     if reposResponse.status_code >= 400:
         logging.warning(f"Response status: {reposResponse.status_code}")
@@ -448,15 +448,27 @@ if interactive:
                     pass
 
 
-# * Take all these repos and test them against what the name is supposed to be! * #
-# /repos/{username}/{repo}/branches/{branch}!
+# * ~~~ Take all these repos and test them against what the name is supposed to be! ~~~ * #
+
+# * ``` Constructing the request! ``` * #
+
+
+def constructBranchesRequest(repo, which):
+
+    # This defaults to v3 of the api.
+    GITHUB_API = "https://api.github.com"
+
+    # * Construct the headers! * #
+    headers = {"Authorization": 'token ' + token}
+
+    return f'"{GITHUB_API}/repos/{repo['owner']['login']}/{repo['name']}/branches/{which}", headers={headers}'
+
+
 # TODO logging
-# TODO make it work
-for repo in repos:
+for repo in [repos:3]:
     primaryBranchResponse = requests.get(
-        f"{GITHUB_API}/repos/{username}/{repo['name']}/branches/{repo['primaryBranchName']}", headers=headers)
-    masterBranchResponse = requests.get(
-        f"{GITHUB_API}/repos/{username}/{repo['name']}/branches/master", headers=headers)
+        constructBranchesRequest(repo, repo['primaryBranchName']))
+    masterBranchResponse = requests.get(constructBranchesRequest(repo, 'master')
     # if primaryBranchResponse.json()['message'] == "Branch not found":
     #     print(f"No primary branch for {repo['htmlUrl']}")
     # if masterBranchResponse.json()['message'] == "Branch not found":
@@ -466,11 +478,11 @@ for repo in repos:
 
 
 def getUrl(configFile):
-    url = ""
+    url=""
     for line in configFile:
         if line.find('url =') != -1:
-            remoteOriginUrlStart = line.find('url =')
-            url = line[remoteOriginUrlStart + 6:-1]
+            remoteOriginUrlStart=line.find('url =')
+            url=line[remoteOriginUrlStart + 6:-1]
             return url
 
 
