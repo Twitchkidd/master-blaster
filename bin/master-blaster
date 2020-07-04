@@ -572,8 +572,8 @@ else:
     for repo in repos:
         if repo['we-good']:
             doTheThing()
-        else
-        imOnmnNeedYouToSaySummnBoutIt()
+        else:
+            imOnmnNeedYouToSaySummnBoutIt()
 
 
 # TODO All of this!
