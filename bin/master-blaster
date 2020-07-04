@@ -360,16 +360,25 @@ def getToken():
     token = tokenRepoScope
 
 
-# * ~~~ Constructing the request! ~~~ * #
-def constructReposRequest():
+# * ``` Constructing the url! ``` * #
 
+
+def constructReposUrl():
     # This defaults to v3 of the api.
     GITHUB_API = "https://api.github.com"
+    return f"{GITHUB_API}/user/repos"
 
-    # * Construct the headers! * #
+# * ``` Construct the headers! ``` * #
+
+
+def constructReposHeaders():
     headers = {"Authorization": 'token ' + token}
+    return headers
 
-    # * Custruct the parameters! * #
+# * ``` Custruct the parameters! ``` * #
+
+
+def constructReposParams():
     params = {}
     if repoTypes == repoTypesAll:
         params = {"per_page": "1000"}
@@ -390,8 +399,7 @@ def constructReposRequest():
     if repoTypes == repoTypesOrganizationPublic:
         params = {"per_page": "1000", "visibility": "public",
                   "type": "owner,collaborator,organization_member"}
-
-    return f'"{GITHUB_API}/user/repos", headers={headers}, params={params}'
+    return params
 
 
 # TODO [d['value'] for d in l]
@@ -402,8 +410,10 @@ repos = []
 reposResponseConfirmed = False
 while not reposResponseConfirmed:
     getToken()
-    request = constructReposRequest()
-    reposResponse = requests.get(request)
+    url = constructReposUrl()
+    params = constructReposParams()
+    headers = constructReposHeaders()
+    reposResponse = requests.get(url, params=params, headers=headers)
     # Bad token returns a 401! #
     if reposResponse.status_code >= 400:
         logging.warning(f"Response status: {reposResponse.status_code}")
@@ -425,7 +435,7 @@ if interactive:
         while not primaryBranchNameConfirmed:
             repoNameResponse = questionary.text(
                 f"Primary branch name for {repo['htmlUrl']}?").ask()
-            if repoNameResponse = "":
+            if repoNameResponse == "":
                 defaultNameResponse = questionary.confirm(
                     f"Default primary branch name {name} for {repo['htmlUrl']}?")
                 if defaultNameResponse:
@@ -448,113 +458,113 @@ if interactive:
                     pass
 
 
-# * ~~~ Take all these repos and test them against what the name is supposed to be! ~~~ * #
+# # * ~~~ Take all these repos and test them against what the name is supposed to be! ~~~ * #
 
-# * ``` Constructing the request! ``` * #
-
-
-def constructBranchesRequest(repo, which):
-
-    # This defaults to v3 of the api.
-    GITHUB_API = "https://api.github.com"
-
-    # * Construct the headers! * #
-    headers = {"Authorization": 'token ' + token}
-
-    return f'"{GITHUB_API}/repos/{repo['owner']['login']}/{repo['name']}/branches/{which}", headers={headers}'
+# # * ``` Constructing the request! ``` * #
 
 
-# TODO logging
-for repo in [repos:3]:
-    primaryBranchResponse = requests.get(
-        constructBranchesRequest(repo, repo['primaryBranchName']))
-    masterBranchResponse = requests.get(constructBranchesRequest(repo, 'master')
-    # if primaryBranchResponse.json()['message'] == "Branch not found":
-    #     print(f"No primary branch for {repo['htmlUrl']}")
-    # if masterBranchResponse.json()['message'] == "Branch not found":
-    #     print(f"No master branch for {repo['htmlUrl']}")
-    print(json.dumps(primaryBranchResponse.json()), sort_keys=True, indent=2)
-    print(json.dumps(masterBranchResponse.json()), sort_keys=True, indent=2)
+# def constructBranchesRequest(repo, which):
+
+#     # This defaults to v3 of the api.
+#     GITHUB_API = "https://api.github.com"
+
+#     # * Construct the headers! * #
+#     headers = {"Authorization": 'token ' + token}
+#     print(repo)
+#     # return f'"{GITHUB_API}/repos/{repo['owner']['login']}/{repo['name']}/branches/{which}", headers={headers}'
 
 
-def getUrl(configFile):
-    url=""
-    for line in configFile:
-        if line.find('url =') != -1:
-            remoteOriginUrlStart=line.find('url =')
-            url=line[remoteOriginUrlStart + 6:-1]
-            return url
+# # TODO logging
+# for repo in repos:
+#     primaryBranchResponse = requests.get(
+#         constructBranchesRequest(repo, repo['primaryBranchName']))
+#     masterBranchResponse = requests.get(constructBranchesRequest(repo, 'master')
+#     # if primaryBranchResponse.json()['message'] == "Branch not found":
+#     #     print(f"No primary branch for {repo['htmlUrl']}")
+#     # if masterBranchResponse.json()['message'] == "Branch not found":
+#     #     print(f"No master branch for {repo['htmlUrl']}")
+#     # print(json.dumps(primaryBranchResponse.json()), sort_keys=True, indent=2)
+#     # print(json.dumps(masterBranchResponse.json()), sort_keys=True, indent=2)
 
 
-# * If they wanted to use local clones, this is where we differentiate that set! * #
-# TODO logging when this gets customized
-if 'localDirectories' in answersTwo:
-    for root, subdirs, files in os.walk(f"{localDirectory}"):
-        for subdir in subdirs:
-            if any(subdir == repoName for repoName in repoNames):
-                try:
-                    with open(f"{root}/{subdir}/.git/config", "r") as configFile:
-                        localRepos.append(
-                            {"url": getUrl(configFile), "path": f"{root}/{subdir}"})
-                except Exception as err:
-                    # ! Testing # !
-                    # print(f"Exception: {err}")
-                    pass
-# ! Testing # !
-print(localRepos)
-
-# TODO All of this!
-# TODO logging when this gets customized
-# * Change the branch! * #
-for repo in repos:
-    if repo['htmlUrl'] in [localRepo['htmlUrl'] for localRepo in localRepos]:
-        # # * MUST REVIEW THE PROTOCOL FOR LOCAL REPOS! * #
-        # # Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
-        localProcess(repo['path'])
-    else:
-        remoteProcess(repo['htmlUrl'])
-        # # * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH * #
-        # # PATCH /repos/:owner/:repo
-        # # default_branch? string
-        # * requests.patch is a thing! * #
+# def getUrl(configFile):
+#     url=""
+#     for line in configFile:
+#         if line.find('url =') != -1:
+#             remoteOriginUrlStart=line.find('url =')
+#             url=line[remoteOriginUrlStart + 6:-1]
+#             return url
 
 
-# TODO All of this!
-# TODO logging when this gets customized
-# * Add the `git new` alias! * #
-if gitNew:
-    print(gitNew)
+# # * If they wanted to use local clones, this is where we differentiate that set! * #
+# # TODO logging when this gets customized
+# if 'localDirectories' in answersTwo:
+#     for root, subdirs, files in os.walk(f"{localDirectory}"):
+#         for subdir in subdirs:
+#             if any(subdir == repoName for repoName in repoNames):
+#                 try:
+#                     with open(f"{root}/{subdir}/.git/config", "r") as configFile:
+#                         localRepos.append(
+#                             {"url": getUrl(configFile), "path": f"{root}/{subdir}"})
+#                 except Exception as err:
+#                     # ! Testing # !
+#                     # print(f"Exception: {err}")
+#                     pass
+# # ! Testing # !
+# print(localRepos)
 
-# TODO Denoument
+# # TODO All of this!
+# # TODO logging when this gets customized
+# # * Change the branch! * #
+# for repo in repos:
+#     if repo['htmlUrl'] in [localRepo['htmlUrl'] for localRepo in localRepos]:
+#         # # * MUST REVIEW THE PROTOCOL FOR LOCAL REPOS! * #
+#         # # Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
+#         localProcess(repo['path'])
+#     else:
+#         remoteProcess(repo['htmlUrl'])
+#         # # * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH * #
+#         # # PATCH /repos/:owner/:repo
+#         # # default_branch? string
+#         # * requests.patch is a thing! * #
 
-# TODO Communicate this!
-# TODO Provide a tool!
-# * Learning about how this works for multiple systems! * #
-# *     When master-blaster is run, * #
-# *         any other systems with local clones must run * #
-# *             $ git checkout master * #
-# *             $ git branch -m master main * #
-# *             $ git fetch * #
-# *             $ git branch --unset-upstream * #
-# *             $ git branch -u origin/main * #
-# *             $ git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main * #
-# *         Tested: they don't need to push any changes first or even commit them or even add them to staging! * #
-# * Also, should I be testing if the repo already has a remote branch main? That it's the default branch? * #
-# * Oooh, okay, so capture default branch when you get the initial list of repos back, * #
-# * And then you only need to ... well search for any the same way, but if you get a difference between the * #
-# * remote value and the local value, you'll have to handle that ... * #
 
-# TODO Next up!
-# TODO How to check for there being a local branch master/main/what the default is?
-# * Step 1! Check if remote branches exist with GET /repos/{username}/{repo}/branches/{branch}! * #
-# * Error returns { * #
-# *   "message": "Branch not found", * #
-# *   "documentation_url": "https://developer.github.com/v3/repos/branches/#get-branch" * #
-# * } * #
+# # TODO All of this!
+# # TODO logging when this gets customized
+# # * Add the `git new` alias! * #
+# if gitNew:
+#     print(gitNew)
 
-# * ... Okay so after the first request is made ... Which we should probably be handling errors for, lol! * #
+# # TODO Denoument
 
-# * Anyway, then the possible interactive naming happens, and then you have every * #
+# # TODO Communicate this!
+# # TODO Provide a tool!
+# # * Learning about how this works for multiple systems! * #
+# # *     When master-blaster is run, * #
+# # *         any other systems with local clones must run * #
+# # *             $ git checkout master * #
+# # *             $ git branch -m master main * #
+# # *             $ git fetch * #
+# # *             $ git branch --unset-upstream * #
+# # *             $ git branch -u origin/main * #
+# # *             $ git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main * #
+# # *         Tested: they don't need to push any changes first or even commit them or even add them to staging! * #
+# # * Also, should I be testing if the repo already has a remote branch main? That it's the default branch? * #
+# # * Oooh, okay, so capture default branch when you get the initial list of repos back, * #
+# # * And then you only need to ... well search for any the same way, but if you get a difference between the * #
+# # * remote value and the local value, you'll have to handle that ... * #
 
-# TODO Only go through the base move and push if local and remote branches are master!
-# TODO Handle all other cases somehow, but this seems like where you REALLY need the error checking.
+# # TODO Next up!
+# # TODO How to check for there being a local branch master/main/what the default is?
+# # * Step 1! Check if remote branches exist with GET /repos/{username}/{repo}/branches/{branch}! * #
+# # * Error returns { * #
+# # *   "message": "Branch not found", * #
+# # *   "documentation_url": "https://developer.github.com/v3/repos/branches/#get-branch" * #
+# # * } * #
+
+# # * ... Okay so after the first request is made ... Which we should probably be handling errors for, lol! * #
+
+# # * Anyway, then the possible interactive naming happens, and then you have every * #
+
+# # TODO Only go through the base move and push if local and remote branches are master!
+# # TODO Handle all other cases somehow, but this seems like where you REALLY need the error checking.
