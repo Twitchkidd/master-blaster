@@ -1,5 +1,5 @@
-2020-07-04 11:12:23,982 Creating a log file!!
-2020-07-04 11:12:25,414 Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
-2020-07-04 11:12:25,414 Naming selection: All primary branches renamed to 'main'.
-2020-07-04 11:12:26,240 Local directory to search: /Users/gareth
-2020-07-04 11:12:26,254 Add git alias `git new`: <questionary.question.Question object at 0x110df1748>
+2020-07-04 15:22:47,579 Creating a log file!!
+2020-07-04 15:22:48,848 Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
+2020-07-04 15:22:48,848 Naming selection: All primary branches renamed to 'main'.
+2020-07-04 15:22:50,293 Local directory to search: /Users/gareth
+2020-07-04 15:22:50,311 Add git alias `git new`: <questionary.question.Question object at 0x104d5e860>

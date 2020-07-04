@@ -62,14 +62,6 @@ print("""
 """)
 logging.info("Creating a log file!!")
 
-
-# TODO ***************************************************************** ODOT #
-
-# TODO This is in the wrong place ...
-# * ``` Placeholder variable for the set of local repos! ``` * #
-localRepos = []
-# TODO ***************************************************************** ODOT #
-
 # * ~~~  Username gathering! ~~~ * #
 
 # * ``` Placeholder variable for the username! ``` * #
@@ -84,26 +76,27 @@ usernamePrompt = """
 def usernameConfirmationPrompt(usernameInput):
     return f"GitHub username: {usernameInput}?"
 
+
 # ! Testing ! #
-# usernameConfirmed = False
-# while not usernameConfirmed:
-#     usernameResponse = questionary.text(usernamePrompt).ask()
-#     if usernameResponse == "":
-#         print("GitHub username blank: Please try again!")
-#         continue
-#     if len(usernameResponse) >= 40:
-#         print("GitHub usernames are 39 chars or less: please try again!")
-#         continue
-#     else:
-#         usernameConfirmationResponse = questionary.confirm(
-#             usernameConfirmationPrompt(usernameResponse)).ask()
-#         if usernameConfirmationResponse == False:
-#             print("Retry!")
-#             continue
-#         if usernameConfirmationResponse:
-#             username = usernameResponse
-#             usernameConfirmed = True
-#             continue
+usernameConfirmed = False
+while not usernameConfirmed:
+    usernameResponse = questionary.text(usernamePrompt).ask()
+    if usernameResponse == "":
+        print("GitHub username blank: Please try again!")
+        continue
+    if len(usernameResponse) >= 40:
+        print("GitHub usernames are 39 chars or less: please try again!")
+        continue
+    else:
+        usernameConfirmationResponse = questionary.confirm(
+            usernameConfirmationPrompt(usernameResponse)).ask()
+        if usernameConfirmationResponse == False:
+            print("Retry!")
+            continue
+        if usernameConfirmationResponse:
+            username = usernameResponse
+            usernameConfirmed = True
+            continue
 
 
 # ! Testing ! #
@@ -310,7 +303,7 @@ logging.info(f"Add git alias `git new`: {gitNew}")
 # * ~~~ Token Time! ~~~ * #
 
 # * ``` Placeholder variables for the token! ``` * #
-token = "Yoohoo"
+token = ""
 
 # ! ``` Placeholder variables for the testing tokens! ``` ! #
 # ! Testing! #
@@ -346,19 +339,20 @@ def tokenPrompt(tokenTypeArg):
 
 
 def getToken():
-    # tokenConfirmed = False
-    # while not tokenConfirmed:
-    #     customTokenResponse = questionary.text(tokenPrompt(tokenType)).ask()
-    #     if customTokenResponse == "":
-    #         print("Please enter the token!")
-    #         continue
-    #     else:
-    #         token = customTokenResponse
-    #         tokenConfirmed = True
-    #         pass
+    tokenConfirmed = False
+    while not tokenConfirmed:
+        customTokenResponse = questionary.text(tokenPrompt(tokenType)).ask()
+        if customTokenResponse == "":
+            print("Please enter the token!")
+            continue
+        else:
+            token = customTokenResponse
+            tokenConfirmed = True
+            continue
     # ! Testing! #
     # token = "fermf"
     token = tokenRepoScope
+    print(token)
     return token
 
 
@@ -373,7 +367,7 @@ def constructReposUrl():
 # * ``` Construct the headers! ``` * #
 
 
-def constructReposHeaders(token):
+def constructHeaders(token):
     headers = {"Authorization": 'token ' + token}
     return headers
 
@@ -404,7 +398,6 @@ def constructReposParams():
     return params
 
 
-# TODO [d['value'] for d in l]
 # * ``` Placeholder variable for the total set of repos! ``` * #
 repos = []
 
@@ -414,20 +407,20 @@ while not reposResponseConfirmed:
     token = getToken()
     url = constructReposUrl()
     params = constructReposParams()
-    headers = constructReposHeaders(token)
+    headers = constructHeaders(token)
     reposResponse = requests.get(url, params=params, headers=headers)
     # Bad token returns a 401! #
     if reposResponse.status_code >= 400:
         logging.warning(f"Response status: {reposResponse.status_code}")
-        print(reposResponse.json())
         print(
             f"Network error! Possibly the token! Try again please! If this is not your GitHub username, please restart the program: {username}")
-        # continue
-        break
+        continue
     else:
+        reposResponseConfirmed = True
         for repository in reposResponse.json():
             repos.append(
-                {"defaultBranch": repository['default_branch'], "htmlUrl": repository['html_url'], "name": repository['name'], "primaryBranchName": name})
+                {"defaultBranch": repository['default_branch'], "htmlUrl": repository['html_url'], "name": repository['name'], "owner-login": f"{repository['owner']['login']}", "primaryBranchName": name})
+        pass
 
 # * If they wanted to name each primary branch, do so now! * #
 if interactive:
@@ -464,35 +457,36 @@ if interactive:
 
 # * ~~~ Take all these repos and test them against what the name is supposed to be! ~~~ * #
 
-# * ``` Constructing the request! ``` * #
-
-
-def constructBranchesRequest(repo, which):
-
+# * ``` Construct the url! ``` * #
+def constructBranchesUrl(repo, which):
     # This defaults to v3 of the api.
     GITHUB_API = "https://api.github.com"
-
-    # * Construct the headers! * #
-    headers = {"Authorization": 'token ' + token}
-    print(repo)
-    # return f'"{GITHUB_API}/repos/{repo['owner']['login']}/{repo['name']}/branches/{which}", headers={headers}'
+    return f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}/branches/{which}"
 
 
-# TODO logging
 for repo in repos:
-    primaryBranchResponse = requests.get(
-        constructBranchesRequest(repo, repo['primaryBranchName']))
-    masterBranchResponse = requests.get(
-        constructBranchesRequest(repo, 'master'))
-    # if primaryBranchResponse.json()['message'] == "Branch not found":
-    #     print(f"No primary branch for {repo['htmlUrl']}")
-    # if masterBranchResponse.json()['message'] == "Branch not found":
-    #     print(f"No master branch for {repo['htmlUrl']}")
-    # print(json.dumps(primaryBranchResponse.json()), sort_keys=True, indent=2)
-    # print(json.dumps(masterBranchResponse.json()), sort_keys=True, indent=2)
+    primaryBranchUrl = constructBranchesUrl(repo, repo['primaryBranchName'])
+    masterBranchUrl = constructBranchesUrl(repo, "master")
+    headers = constructHeaders(token)
+    primaryBranchResponse = requests.get(primaryBranchUrl, headers=headers)
+    masterBranchResponse = requests.get(masterBranchUrl, headers=headers)
+    if primaryBranchResponse.json().get('message'):
+        repo['hasPrimaryBranchName'] = False
+    if masterBranchResponse.json().get('message'):
+        repo['hasMasterBranch'] = False
+    if primaryBranchResponse.json().get('name'):
+        repo['hasPrimaryBranchName'] = True
+    if masterBranchResponse.json().get('name'):
+        repo['hasMasterBranch'] = True
 
 
-def getUrl(configFile):
+# * ~~~ If they wanted to use local clones, look for them! ~~~ * #
+
+# * ``` Placeholder variable for the set of local repos! ``` * #
+localRepos = []
+
+
+def getLocalRepoUrl(configFile):
     url = ""
     for line in configFile:
         if line.find('url =') != -1:
@@ -501,37 +495,45 @@ def getUrl(configFile):
             return url
 
 
-# * If they wanted to use local clones, this is where we differentiate that set! * #
-# TODO logging when this gets customized
-if 'localDirectories' in answersTwo:
+if localDirectories:
+    repoNames = [repo['name'] for repo in repos]
     for root, subdirs, files in os.walk(f"{localDirectory}"):
         for subdir in subdirs:
             if any(subdir == repoName for repoName in repoNames):
                 try:
                     with open(f"{root}/{subdir}/.git/config", "r") as configFile:
                         localRepos.append(
-                            {"url": getUrl(configFile), "path": f"{root}/{subdir}"})
+                            {"url": getLocalRepoUrl(configFile), "path": f"{root}/{subdir}"})
                 except Exception as err:
-                    # ! Testing # !
                     # print(f"Exception: {err}")
                     pass
-# ! Testing # !
-print(localRepos)
 
-# TODO All of this!
 # TODO logging when this gets customized
-# * Change the branch! * #
+# * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH * #
+# PATCH /repos/:owner/:repo
+# default_branch? string
+# * requests.patch is a thing! * #
+# * ~~~ Change the branches! ~~~ * #
+
+# * ``` Placeholder variable for the set of local repo origin urls! ``` * #
+localRepoUrls = [localRepo['url'] for localRepo in localRepos]
+
+
+def remoteProcess():
+    print("remote process!")
+
+
+def localProcess():
+    print("local process!")
+
+
 for repo in repos:
-    if repo['htmlUrl'] in [localRepo['htmlUrl'] for localRepo in localRepos]:
-        # # * MUST REVIEW THE PROTOCOL FOR LOCAL REPOS! * #
-        # # Oh, there's a different process for local branches, I think I might have messed up on the other machine, lol
-        localProcess(repo['path'])
+    if localRepoUrls.get(repo['htmlUrl']):
+        # localProcess(repo['path'])
+        localProcess()
     else:
-        remoteProcess(repo['htmlUrl'])
-        # # * THIS IS FOR CHANGING THE GITHUB DEFAULT BRANCH * #
-        # # PATCH /repos/:owner/:repo
-        # # default_branch? string
-        # * requests.patch is a thing! * #
+        # remoteProcess(repo['htmlUrl'])
+        remoteProcess()
 
 
 # TODO All of this!
