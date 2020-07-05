@@ -521,6 +521,8 @@ def remoteProcess(repo):
     # So we're assuming that the handler handled for:
     # the primary branch not existing on the remote and
     # master existing on the remote
+    # and default being master
+    #
     # if there is a local clone
     #   it not having a branch with the primary branch name and
     #   it having master
@@ -542,6 +544,7 @@ def localProcess(repo):
     # Now here we're assuming the handler handled for:
     # the primary branch existing on the remote and
     # master not existing on the remote
+    # ! if there is a local clone - Wait ... if?
     # if there is a local clone
     #   it having a branch with the primary branch name and
     #   it not having master
@@ -566,23 +569,29 @@ def imOnmnNeedYouToSaySummnBoutIt():
     print("saaay somethin' bout it!")
 
 
+def remoteProcessReady(repo):
+    if repo['hasMasterBranch'] repo['hasPrimaryBranchName']
+
+
 if localDirectories:
     for repo in repos:
         if repo['htmlUrl'] in localRepoUrls:
+            # Uhh, repo is the remote, so we need the local one that's related ...
             subprocess.run(["cd", f"{repo['path']}"])
+            # ! Bug                   ^^^
             result = subprocess.run(["git", "branch"], universal_newlines=True,
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            print(result.stdout)
-            print(result.stderr)
-            print(result.returncode)
-            # localProcess(repo['path'])
-            # TODO Handle it!
-            # * Check for ... oh my back
-            localProcess(repo)
+            repo['localHasMaster'] = "master" in result.stdout
+            repo['localHasPrimaryBranchName'] = repo['primaryBranchName'] in result.stdout
+            if repo['we-good']:
+                localProcess(repo)
+            else:
+                print("Oh no!")
         else:
-            # remoteProcess(repo['htmlUrl'])
-            # TODO Handle it!
-            remoteProcess(repo)
+            if repo['we-good']:
+                remoteProcess(repo)
+            else:
+                print("Oh no!")
 else:
     for repo in repos:
         if repo['we-good']:
