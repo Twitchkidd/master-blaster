@@ -569,6 +569,12 @@ def imOnmnNeedYouToSaySummnBoutIt():
 if localDirectories:
     for repo in repos:
         if repo['htmlUrl'] in localRepoUrls:
+            subprocess.run(["cd", f"{repo['path']}"])
+            result = subprocess.run(["git", "branch"], universal_newlines=True,
+                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(result.stdout)
+            print(result.stderr)
+            print(result.returncode)
             # localProcess(repo['path'])
             # TODO Handle it!
             # * Check for ... oh my back

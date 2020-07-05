@@ -4,8 +4,11 @@ import subprocess
 
 
 def main():
-    result = subprocess.run(["pwd"], capture_output=True)
-    print(result)
+    result = subprocess.run(["git", "branch"], universal_newlines=True,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(type(result.stdout))
+    print(result.stderr)
+    print(result.returncode)
 
 
 if __name__ == "__main__":
