@@ -618,6 +618,7 @@ else:
         check(repo)
 
 for repo in repos:
+    print(repo['htmlUrl'])
     print(repo['status'])
 
 
