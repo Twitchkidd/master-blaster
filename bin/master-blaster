@@ -579,9 +579,9 @@ def remoteProcess(repo):
     # subprocess.run(["cd", repo['path']])
     # subprocess.run(["git", "branch", "-m", "master", "main"])
     # subprocess.run(["git", "push", "-u", "origin", "main"])
-    # requests.patch(somethingDefault)
     # PATCH /repos/:owner/:repo
     # default_branch? string
+    # requests.patch(somethingDefault)
     # requests.patch is a thing!
 
 
