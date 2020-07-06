@@ -423,6 +423,7 @@ while not reposResponseConfirmed:
                 {"defaultBranch": repository['default_branch'], "htmlUrl": repository['html_url'], "name": repository['name'], "owner-login": f"{repository['owner']['login']}", "primaryBranchName": name})
         pass
 
+
 # * If they wanted to name each primary branch, do so now! * #
 if interactive:
     print("""
@@ -562,28 +563,28 @@ def localProcess(repo):
 
 def check(repo):
     if repo.get('localHasMaster'):
-        if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['default_branch'] == "master" and repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
+        if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master" and repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
             repo['status'] = "ready for remote process"
         elif not repo['hasMasterBranch'] and repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
             repo['status'] = "error: not ready for remote process, remote doesn't have a master branch"
-        elif repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and not repo['default_branch'] == "master" and repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
+        elif repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and not repo['defaultBranch'] == "master" and repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
             repo['status'] = "error: not ready for remote process, default branch of remote isn't master"
         elif repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
             repo['status'] = "error: not ready for remote process, remote has a branch with the primary branch name already"
-        elif repo['hasPrimaryBranchName'] and not repo['hasMasterBranch'] and repo['default_branch'] == repo['primaryBranchName'] and repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
+        elif repo['hasPrimaryBranchName'] and not repo['hasMasterBranch'] and repo['defaultBranch'] == repo['primaryBranchName'] and repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
             repo['status'] = "ready for local process"
-        elif repo['hasPrimaryBranchName'] and not repo['hasMasterBranch'] and not repo['default_branch'] == repo['primaryBranchName'] and repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
+        elif repo['hasPrimaryBranchName'] and not repo['hasMasterBranch'] and not repo['defaultBranch'] == repo['primaryBranchName'] and repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
             repo['status'] = "error: not ready for local process, default branch of remote isn't the primary branch name"
-        elif repo['hasPrimaryBranchName'] and not repo['hasMasterBranch'] and repo['default_branch'] == repo['primaryBranchName'] and not repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
+        elif repo['hasPrimaryBranchName'] and not repo['hasMasterBranch'] and repo['defaultBranch'] == repo['primaryBranchName'] and not repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
             repo['status'] = "error: not ready for local process, local repo has no master branch"
         else:
             print(f"Unknown error with {repo}")
     else:
-        if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['default_branch'] == "master":
+        if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
             repo['status'] = "ready for remote process"
         elif not repo['hasMasterBranch']:
             repo['status'] = "error: not ready for remote process, remote has no master branch"
-        elif repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and not repo['default_branch'] == "master":
+        elif repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and not repo['defaultBranch'] == "master":
             repo['status'] = "error: not ready for remote process, default branch of remote isn't master"
         elif repo['hasPrimaryBranchName']:
             repo['status'] = "error: not ready for remote process, remote has a branch with the primary branch name already"
