@@ -509,10 +509,9 @@ if localDirectories:
                     # print(f"Exception: {err}")
                     pass
 
-# TODO logging when this gets customized
 # * ~~~ Change the branches! ~~~ * #
 
-# * ``` Placeholder variable for the set of local repo origin urls! ``` * #
+# * ``` The set of local repo origin urls! ``` * #
 localRepoUrls = [localRepo['url'] for localRepo in localRepos]
 
 
@@ -570,31 +569,37 @@ def imOnmnNeedYouToSaySummnBoutIt():
 
 
 def remoteProcessReady(repo):
-    if repo['hasMasterBranch'] repo['hasPrimaryBranchName']
+    # * Okay, so here we should probably just lug it out, go check by check and hit everything here.
+    if repo.get('localHasMaster'):
+        return (repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['default_branch'] == "master" and repo['localHasMaster'] and not repo['localHasPrimaryBranchName'])
+    else:
+        return (repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['default_branch'] == "master")
 
 
 if localDirectories:
     for repo in repos:
         if repo['htmlUrl'] in localRepoUrls:
-            # Uhh, repo is the remote, so we need the local one that's related ...
-            subprocess.run(["cd", f"{repo['path']}"])
-            # ! Bug                   ^^^
+            localPath = ""
+            for localRepo in localRepos:
+                if localRepo['url'] == repo['html']
+                localPath = localRepo['path']
+            subprocess.run(["cd", f"{localPath}")
             result = subprocess.run(["git", "branch"], universal_newlines=True,
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             repo['localHasMaster'] = "master" in result.stdout
             repo['localHasPrimaryBranchName'] = repo['primaryBranchName'] in result.stdout
-            if repo['we-good']:
+            if remoteProcessReady(repo):
                 localProcess(repo)
             else:
                 print("Oh no!")
         else:
-            if repo['we-good']:
+            if remoteProcessReady(repo):
                 remoteProcess(repo)
             else:
                 print("Oh no!")
 else:
     for repo in repos:
-        if repo['we-good']:
+        if remoteProcessReady(repo):
             doTheThing()
         else:
             imOnmnNeedYouToSaySummnBoutIt()
@@ -623,22 +628,3 @@ if gitNew:
 # *             $ git branch -u origin/main * #
 # *             $ git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main * #
 # *         Tested: they don't need to push any changes first or even commit them or even add them to staging! * #
-# * Also, should I be testing if the repo already has a remote branch main? That it's the default branch? * #
-# * Oooh, okay, so capture default branch when you get the initial list of repos back, * #
-# * And then you only need to ... well search for any the same way, but if you get a difference between the * #
-# * remote value and the local value, you'll have to handle that ... * #
-
-# TODO Next up!
-# TODO How to check for there being a local branch master/main/what the default is?
-# * Step 1! Check if remote branches exist with GET /repos/{username}/{repo}/branches/{branch}! * #
-# * Error returns { * #
-# *   "message": "Branch not found", * #
-# *   "documentation_url": "https://developer.github.com/v3/repos/branches/#get-branch" * #
-# * } * #
-
-# * ... Okay so after the first request is made ... Which we should probably be handling errors for, lol! * #
-
-# * Anyway, then the possible interactive naming happens, and then you have every * #
-
-# TODO Only go through the base move and push if local and remote branches are master!
-# TODO Handle all other cases somehow, but this seems like where you REALLY need the error checking.
