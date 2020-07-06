@@ -568,14 +568,21 @@ def imOnmnNeedYouToSaySummnBoutIt():
     print("saaay somethin' bout it!")
 
 
-def remoteProcessReady(repo):
-    # * Okay, so here we should probably just lug it out, go check by check and hit everything here.
+def check(repo):
+    # * Three real results ... do the remote thing, do the local thing, or error
     if repo.get('localHasMaster'):
-        return (repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['default_branch'] == "master" and repo['localHasMaster'] and not repo['localHasPrimaryBranchName'])
+        if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['default_branch'] == "master" and repo['localHasMaster'] and not repo['localHasPrimaryBranchName']
     else:
         return (repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['default_branch'] == "master")
 
 
+# * For each of these, we're doing the remote thing, the local thing, or there's an error,
+# * So each of those need to get logged, and then the errors and summary should be presented to the user
+# * repo['status']? ENUM 'ready for remote process' 'ready for local process' 'error: {error}'
+# * So I guess the user should be prompted about the errors and what can go ahead?
+# * These repos have errors: a: err, b: err, c: err
+# * These local clones can be modified locally: a, b, c: okay?
+# * These repos are ready to go: a, b, c: okay?
 if localDirectories:
     for repo in repos:
         if repo['htmlUrl'] in localRepoUrls:
@@ -584,20 +591,24 @@ if localDirectories:
                 if localRepo['url'] == repo['html']
                 localPath = localRepo['path']
             subprocess.run(["cd", f"{localPath}")
-            result = subprocess.run(["git", "branch"], universal_newlines=True,
+            result= subprocess.run(["git", "branch"], universal_newlines=True,
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            repo['localHasMaster'] = "master" in result.stdout
-            repo['localHasPrimaryBranchName'] = repo['primaryBranchName'] in result.stdout
-            if remoteProcessReady(repo):
+            repo['localHasMaster']= "master" in result.stdout
+            repo['localHasPrimaryBranchName']= repo['primaryBranchName'] in result.stdout
+
+            # * if there's a local copy, see if we're good to go
+            check(repo):
                 localProcess(repo)
             else:
                 print("Oh no!")
+        # * if there's no local copy, see if we're good to go
         else:
             if remoteProcessReady(repo):
                 remoteProcess(repo)
             else:
                 print("Oh no!")
 else:
+    # * we're not doing local copies, see if we're good to go
     for repo in repos:
         if remoteProcessReady(repo):
             doTheThing()
