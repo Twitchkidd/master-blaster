@@ -605,20 +605,27 @@ remoteIsAGo = False
 def localProcess(repo):
     for localRepo in localRepos:
         if repo['htmlUrl'] == localRepo['url']:
-            # ! Response not handled! subprocess.run(["cd", localRepo['path']], universal_newlines=True,
-                           stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-            # ! Response not handled! subprocess.run(["git", "checkout", "master"], universal_newlines=True,
-                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            # ! Response not handled! subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']], universal_newlines=True,
-                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            # ! Response not handled! subprocess.run(["git", "fetch"], universal_newlines=True,
-                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            # ! Response not handled! subprocess.run(["git", "branch", "--unset-upstream"], universal_newlines=True,
-                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            # ! Response not handled! subprocess.run(["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"],
-                           universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            # ! Response not handled! subprocess.run(["git", "symbolic-ref", "refs/remotes/origin/HEAD",
-                            f"refs/remotes/origin/{repo['primaryBranchName']}"], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            localProcessCd = subprocess.run(["cd", localRepo['path']], universal_newlines=True,
+                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(localProcessCd.stdout)
+            localProcessGcm = subprocess.run(["git", "checkout", "master"], universal_newlines=True,
+                                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(localProcessGcm.stdout)
+            localProcessGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']], universal_newlines=True,
+                                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(localProcessGbm.stdout)
+            localProcessGf = subprocess.run(["git", "fetch"], universal_newlines=True,
+                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(localProcessGf.stdout)
+            localProcessGbuu = subprocess.run(["git", "branch", "--unset-upstream"], universal_newlines=True,
+                                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(localProcessGbuu.stdout)
+            localProcessGbuo = subprocess.run(["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"],
+                                              universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(localProcessGbuo.stdout)
+            localProcessGsro = subprocess.run(["git", "symbolic-ref", "refs/remotes/origin/HEAD",
+                                               f"refs/remotes/origin/{repo['primaryBranchName']}"], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(localProcessGsro.stdout)
 
 
 def constructPatchDefaultUrl(repo):
@@ -631,48 +638,61 @@ def remoteProcess(repo):
         if repo['htmlUrl'] in localRepoUrls:
             for localRepo in localRepos:
                 if repo['htmlUrl'] == localRepo['url']:
-                    # ! Response not handled! subprocess.run(["cd", localRepo['path']], universal_newlines=True,
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    # ! Response not handled! subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
-                                   universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    # ! Response not handled! subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
-                                   universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    remoteProcessLocalRepoCd = subprocess.run(["cd", localRepo['path']], universal_newlines=True,
+                                                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    print(remoteProcessLocalRepoCd.stdout)
+                    remoteProcessLocalRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
+                                                               universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    print(remoteProcessLocalRepoGbm.stdout)
+                    remoteProcessLocalRepoGpuo = subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
+                                                                universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    print(remoteProcessLocalRepoGpuo.stdout)
                     print(
                         f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
                     logging.info(
                         f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-        # ! Response not handled! subprocess.run(["cd", localDirectory], universal_newlines=True,
-                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # ! Response not handled! subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
-                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # ! Response not handled! subprocess.run(["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
-                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # ! Response not handled! subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
-                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # ! Response not handled! subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
-                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        remoteProcessRemoteRepoCd = subprocess.run(["cd", localDirectory], universal_newlines=True,
+                                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(remoteProcessRemoteRepoCd.stdout)
+        remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
+                                                    universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(remoteProcessRemoteRepoGcl.stdout)
+        remoteProcessRemoteRepoCdCl = subprocess.run(["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
+                                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(remoteProcessRemoteRepoCdCl.stdout)
+        remoteProcessRemoteRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
+                                                    universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(remoteProcessRemoteRepoGbm.stdout)
+        remoteProcessRemoteRepoGpuo = subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
+                                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(remoteProcessRemoteRepoGpuo.stdout)
         print(
             f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
         logging.info(
             f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
     else:
-        # ! Response not handled! subprocess.run(["cd", localDirectory], universal_newlines=True,
-                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # ! Response not handled! subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
-                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # ! Response not handled! subprocess.run(["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
-                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # ! Response not handled! subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
-                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # ! Response not handled! subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
-                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        remoteProcessRemoteRepoCd = subprocess.run(["cd", localDirectory], universal_newlines=True,
+                                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(remoteProcessRemoteRepoCd.stdout)
+        remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
+                                                    universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(remoteProcessRemoteRepoGcl.stdout)
+        remoteProcessRemoteRepoCdCl = subprocess.run(["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
+                                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(remoteProcessRemoteRepoCdCl.stdout)
+        remoteProcessRemoteRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
+                                                    universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(remoteProcessRemoteRepoGbm.stdout)
+        remoteProcessRemoteRepoGpuo = subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
+                                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(remoteProcessRemoteRepoGpuo.stdout)
         print(
             f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
         logging.info(
             f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-    url=constructPatchDefaultUrl(repo)
-    params=json.dumps({"default_branch": f"{repo['primaryBranchName']}"})
-    patchDefaultResponse=requests.patch(url, params=params, headers=headers)
+    url = constructPatchDefaultUrl(repo)
+    params = json.dumps({"default_branch": f"{repo['primaryBranchName']}"})
+    patchDefaultResponse = requests.patch(url, params=params, headers=headers)
     if patchDefaultResponse.status_code >= 400:
         logging.warning(f"Response status: {patchDefaultResponse.status_code}")
         print(
@@ -694,13 +714,13 @@ if len(reposReadyForLocal) > 0:
     print("The following repos are ready to update primary branch and origin locally:")
     for repo in reposReadyForLocal:
         print(repo['htmlUrl'])
-    localIsAGo=questionary.confirm("Continue?").ask()
+    localIsAGo = questionary.confirm("Continue?").ask()
 
 if len(reposReadyForRemote) > 0:
     print("The following repos are ready to update the primary branch:")
     for repo in reposReadyForRemote:
         print(repo['htmlUrl'])
-    remoteIsAGo=questionary.confirm("Continue?").ask()
+    remoteIsAGo = questionary.confirm("Continue?").ask()
     if not remoteIsAGo:
         print("Okay! It's a no-go for remote repos!")
 
@@ -718,10 +738,12 @@ if gitNew:
     if interactive:
         print("Interactive mode enabled, so no one name for `git new`!")
     else:
-        # ! Response not handled! subprocess.run(["git", "config", "--global", "alias.new", "'!git", "init"], universal_newlines=True,
-                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # ! Response not handled! subprocess.run(["git", "symbolic-ref", "HEAD", f"refs/heads/{name}"], universal_newlines=True,
-                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        gitNewGcg = subprocess.run(["git", "config", "--global", "alias.new", "'!git", "init"], universal_newlines=True,
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(gitNewGcg)
+        gitNewGsh = subprocess.run(["git", "symbolic-ref", "HEAD", f"refs/heads/{name}"], universal_newlines=True,
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(gitNewGsh)
         print(
             f"Git alias `git new` created to initialize repos with the HEAD ref at {name}")
         logging.info(
