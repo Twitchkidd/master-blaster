@@ -24,6 +24,9 @@ import questionary
 import requests
 import subprocess
 
+# This defaults to v3 of the api.
+GITHUB_API = "https://api.github.com"
+
 # * ``` Intro text! ``` * #
 intro = """
   Welcome to master-blaster! This program renames primary branches for GitHub users!
@@ -361,8 +364,6 @@ def getToken():
 
 
 def constructReposUrl():
-    # This defaults to v3 of the api.
-    GITHUB_API = "https://api.github.com"
     return f"{GITHUB_API}/user/repos"
 
 # * ``` Construct the headers! ``` * #
@@ -461,8 +462,6 @@ if interactive:
 
 # * ``` Construct the url! ``` * #
 def constructBranchesUrl(repo, which):
-    # This defaults to v3 of the api.
-    GITHUB_API = "https://api.github.com"
     return f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}/branches/{which}"
 
 
@@ -595,7 +594,6 @@ remoteIsAGo = False
 
 
 def localProcess(repo):
-    print("local process!")
     # subprocess.run(["cd", repo['path']])
     # subprocess.run(["git", "checkout", "master"])
     # subprocess.run(["git", "branch", "-m", "master", "main"])
@@ -605,17 +603,19 @@ def localProcess(repo):
     # subprocess.run(["git", "symbolic-ref", "refs/remotes/origin/HEAD", "refs/remotes/origin/main"])
 
 
+def constructPatchDefaultUrl(repo):
+    return f"{GITHUB_API}/repos/{username}/{repo['name']}"
+
+
 def remoteProcess(repo):
-    print("remote process!")
+    url = constructPatchDefaultUrl(repo)
+    params = {"default_branch": {repo['primaryBranchName']}}
+    patchDefaultRequest = requests.patch(url, params=params, headers=headers)
     # subprocess.run(["cd", repo['path']])
     # subprocess.run(["git", "branch", "-m", "master", "main"])
     # subprocess.run(["git", "push", "-u", "origin", "main"])
-    # PATCH /repos/:owner/:repo
-    # default_branch? string
-    # requests.patch(somethingDefault)
-    # requests.patch is a thing!
 
-# * So each of those need to get logged, and then the errors and summary should be presented to the user
+    # * So each of those need to get logged, and then the errors and summary should be presented to the user
 
 
 if len(reposWithErrors) > 0:
