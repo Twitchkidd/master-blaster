@@ -691,13 +691,13 @@ if len(reposReadyForLocal) > 0:
     print("The following repos are ready to update primary branch and origin locally:")
     for repo in reposReadyForLocal:
         print(repo['htmlUrl'])
-    localIsAGo = questionary.confirm("Continue?")
+    localIsAGo = questionary.confirm("Continue?").ask()
 
 if len(reposReadyForRemote) > 0:
     print("The following repos are ready to update the primary branch:")
     for repo in reposReadyForRemote:
         print(repo['htmlUrl'])
-    remoteIsAGo = questionary.confirm("Continue?")
+    remoteIsAGo = questionary.confirm("Continue?").ask()
     if not remoteIsAGo:
         print("Okay! It's a no-go for remote repos!")
 

@@ -1,7 +1,23 @@
-2020-07-07 12:34:46,106 Creating a log file!!
-2020-07-07 12:34:52,973 Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
-2020-07-07 12:34:52,973 Naming selection: All primary branches renamed to 'main'.
-2020-07-07 12:34:56,969 Local directory to search: /Users/gareth
-2020-07-07 12:34:56,988 Add git alias `git new`: main
-2020-07-07 12:35:58,441 Primary branch for https://github.com/LIGameDev/Who2Heal updated to main.
-2020-07-07 12:35:58,706 Response status: 400
+2020-07-07 12:38:59,194 Creating a log file!!
+2020-07-07 12:39:04,183 Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
+2020-07-07 12:39:04,184 Naming selection: All primary branches renamed to 'main'.
+2020-07-07 12:39:06,484 Local directory to search: /Users/gareth
+2020-07-07 12:39:06,504 Add git alias `git new`: main
+2020-07-07 12:39:49,131 Primary branch for https://github.com/LIGameDev/Who2Heal updated to main.
+2020-07-07 12:39:49,374 Response status: 400
+2020-07-07 12:40:03,157 Primary branch for https://github.com/TrailCity/run-club-server updated to main.
+2020-07-07 12:40:03,563 Response status: 400
+2020-07-07 12:40:50,767 Primary branch for https://github.com/TrailCity/RunClub updated to main.
+2020-07-07 12:40:51,168 Response status: 400
+2020-07-07 12:40:52,583 Primary branch for https://github.com/TrailCity/tcnet updated to main.
+2020-07-07 12:40:52,786 Response status: 404
+2020-07-07 12:40:54,016 Primary branch for https://github.com/Twitchkidd/accountNumber updated to main.
+2020-07-07 12:40:54,258 Response status: 400
+2020-07-07 12:41:00,118 Primary branch for https://github.com/Twitchkidd/beginner-javascript updated to main.
+2020-07-07 12:41:00,364 Response status: 400
+2020-07-07 12:41:02,235 Primary branch for https://github.com/Twitchkidd/bookBoxSort updated to main.
+2020-07-07 12:41:02,519 Response status: 400
+2020-07-07 12:41:04,191 Primary branch for https://github.com/Twitchkidd/borg-david updated to main.
+2020-07-07 12:41:04,434 Response status: 400
+2020-07-07 12:41:06,023 Primary branch for https://github.com/Twitchkidd/CheeryTomato updated to main.
+2020-07-07 12:41:06,246 Response status: 400
