@@ -716,15 +716,15 @@ if remoteIsAGo:
 if gitNew:
     if interactive:
         print("Interactive mode enabled, so no one name for `git new`!")
-        break
-    subprocess.run(["git", "config", "--global", "alias.new", "'!git", "init"], universal_newlines=True,
-                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    subprocess.run(["git", "symbolic-ref", "HEAD", f"refs/heads/{name}"], universal_newlines=True,
-                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    print(
-        f"Git alias `git new` created to initialize repos with the HEAD ref at {name}")
-    logging.info(
-        f"Git alias `git new` created to initialize repos with the HEAD ref at {name}")
+    else:
+        subprocess.run(["git", "config", "--global", "alias.new", "'!git", "init"], universal_newlines=True,
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["git", "symbolic-ref", "HEAD", f"refs/heads/{name}"], universal_newlines=True,
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(
+            f"Git alias `git new` created to initialize repos with the HEAD ref at {name}")
+        logging.info(
+            f"Git alias `git new` created to initialize repos with the HEAD ref at {name}")
 
 if not remoteIsAGo:
     sys.exit(1)
