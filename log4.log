@@ -1,0 +1,1130 @@
+(master-blaster) gareth@MacBook-Pro-2-4 ~/Code/master-blaster ±dev » blm
+
+  Welcome to master-blaster! This program renames primary branches for GitHub users!
+  We'll go through the options before making any changes!
+
+
+    master-blaster  Copyright (C) 2020  Gareth Field
+    This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
+    This is free software, and you are welcome to redistribute it
+    under certain conditions; type `show c' for details.
+
+Working on `show w' and `show c', actually! It's GNU public 3+! No closed versions!
+
+  GitHub is deprecating password-based token generation! This is great for
+  security, it's going to mean you're going to have to go to GitHub.com and
+  come back with an access token to make this program work, though. The next
+  question will determine whether the program needs a token with the more
+  general `repo` scope or the more limited `public_repo` scope. You can run
+  this program again if you're happy with the results!
+
+
+    Log file found at ./info.log!
+
+? 
+  Please enter your GitHub username!                                                      
+ f                                                                                        
+? GitHub username: f?  Yes                                                                
+? 
+  What set of repositories do you want to update?                                         
+  All repositories I'm the owner, collaborator, and/or organization member, public and pri
+vate.                                                                                     
+? 
+  What would you like to call your primary branches? (Default 'main'.)                    
+  All primary branches renamed to 'main'.                                                 
+? 
+  Repositories not present locally will be cloned to a temporary folder,
+  updated, the update pushed, (the default branch on GitHub.com updated,)
+  and then deleted locally. We can decrease the use of bandwidth and reduce
+  potential conflicts by scanning for repositories that *are* present locally.
+  Is this okay? (No other changes will be added or committed.)                            
+  Yes                                                                                     
+? 
+    Do you keep your projects in a certain directory? Type that in here to
+    speed up search! Like /Users/gareth/Code ... default is ~/, hit enter for default.    
+                                                                                          
+? 
+    Default: use '~/' for local directory search?                                         
+  Yes                                                                                     
+? 
+        Last step! Since password-based token generation is being deprecated, please
+        get a personal access token with the correct scope(s) in order to run this
+        program. To get this token, go to https://github.com, sign in, then go to
+        'Settings', then 'Developer Settings', then 'Personal access tokens', then
+        'Generate new token', confirm your password, name the token in the 'Note'
+        input field, and select the repo scope, then 'Generate Token', then
+        copy it to your clipboard and either paste it back here into the prompt, or
+        save it first in case there's an error and you need to retry. (Recommended)       
+     f                                                                                    
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/LIGameDev/Who2Heal.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/TrailCity/run-club-server.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/TrailCity/RunClub.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/TrailCity/tcnet.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/accountNumber.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/beginner-javascript.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/bookBoxSort.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/borg-david.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/CheeryTomato.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/code-etc.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/dang-thats-delicious.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/dep-gfcom.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/dep-run-club-web.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/dep-server.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/dots.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/EggheadToDoApp.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/Enzyme-React-Native-32.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/fonts.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/forms.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/GarethDotCom.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/gfcom.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/gfcom-blog.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/gfcom-public-html.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/jetifier.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/laa.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/learn-node.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/level-up-react-2.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/Logoed.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/logoed-server.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/logoed-web-app.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/master-blaster.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/moodbit.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/Moving-Circle.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/MultiBounce.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/NaderDabitNavigatorExperimentalCodeAlong.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/phpTest.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/polar-pairs.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/pom.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/ReactNavigationReduxTest.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/recurring.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/RNWebviewMicPermission.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/rocktober.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/Roll-a-Ball.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/RR-TodoList.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/run-club-server.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/run-club-web.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/RunClub.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/server.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/shellScripts.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/site-deets.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/slider-app.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/spukee-site-react.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/sqrrlSite.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/tc-net.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/tech-test-react-wordcloud.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/test-cra.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/test-html.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/TrailCity.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/web-dev-reboot.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/Who2Heal.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/whole-code-folder.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/whole-logoed-folder.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/wild-rydes-react-native-no-mfa.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/yusuff-faruq-context-demo.
+Sending network request ...
+Got the network request!
+The following repos had errors that prevented any process to run on them:
+https://github.com/Twitchkidd/dots
+error: unknown error
+https://github.com/Twitchkidd/gfcom
+error: unknown error
+https://github.com/Twitchkidd/learn-node
+error: unknown error
+https://github.com/Twitchkidd/master-blaster
+error: unknown error
+https://github.com/Twitchkidd/moodbit
+error: not ready for remote process, remote doesn't have a master branch
+https://github.com/Twitchkidd/polar-pairs
+error: not ready for remote process, remote has a branch with the primary branch name already
+The following repos are ready to update the primary branch:
+https://github.com/LIGameDev/Who2Heal
+https://github.com/TrailCity/run-club-server
+https://github.com/TrailCity/RunClub
+https://github.com/TrailCity/tcnet
+https://github.com/Twitchkidd/accountNumber
+https://github.com/Twitchkidd/beginner-javascript
+https://github.com/Twitchkidd/bookBoxSort
+https://github.com/Twitchkidd/borg-david
+https://github.com/Twitchkidd/CheeryTomato
+https://github.com/Twitchkidd/code-etc
+https://github.com/Twitchkidd/dang-thats-delicious
+https://github.com/Twitchkidd/dep-gfcom
+https://github.com/Twitchkidd/dep-run-club-web
+https://github.com/Twitchkidd/dep-server
+https://github.com/Twitchkidd/EggheadToDoApp
+https://github.com/Twitchkidd/Enzyme-React-Native-32
+https://github.com/Twitchkidd/fonts
+https://github.com/Twitchkidd/forms
+https://github.com/Twitchkidd/GarethDotCom
+https://github.com/Twitchkidd/gfcom-blog
+https://github.com/Twitchkidd/gfcom-public-html
+https://github.com/Twitchkidd/jetifier
+https://github.com/Twitchkidd/laa
+https://github.com/Twitchkidd/level-up-react-2
+https://github.com/Twitchkidd/Logoed
+https://github.com/Twitchkidd/logoed-server
+https://github.com/Twitchkidd/logoed-web-app
+https://github.com/Twitchkidd/Moving-Circle
+https://github.com/Twitchkidd/MultiBounce
+https://github.com/Twitchkidd/NaderDabitNavigatorExperimentalCodeAlong
+https://github.com/Twitchkidd/phpTest
+https://github.com/Twitchkidd/pom
+https://github.com/Twitchkidd/ReactNavigationReduxTest
+https://github.com/Twitchkidd/recurring
+https://github.com/Twitchkidd/RNWebviewMicPermission
+https://github.com/Twitchkidd/rocktober
+https://github.com/Twitchkidd/Roll-a-Ball
+https://github.com/Twitchkidd/RR-TodoList
+https://github.com/Twitchkidd/run-club-server
+https://github.com/Twitchkidd/run-club-web
+https://github.com/Twitchkidd/RunClub
+https://github.com/Twitchkidd/server
+https://github.com/Twitchkidd/shellScripts
+https://github.com/Twitchkidd/site-deets
+https://github.com/Twitchkidd/slider-app
+https://github.com/Twitchkidd/spukee-site-react
+https://github.com/Twitchkidd/sqrrlSite
+https://github.com/Twitchkidd/tc-net
+https://github.com/Twitchkidd/tech-test-react-wordcloud
+https://github.com/Twitchkidd/test-cra
+https://github.com/Twitchkidd/test-html
+https://github.com/Twitchkidd/TrailCity
+https://github.com/Twitchkidd/web-dev-reboot
+https://github.com/Twitchkidd/Who2Heal
+https://github.com/Twitchkidd/whole-code-folder
+https://github.com/Twitchkidd/whole-logoed-folder
+https://github.com/Twitchkidd/wild-rydes-react-native-no-mfa
+https://github.com/Twitchkidd/yusuff-faruq-context-demo
+? Continue?  No                                                                           
+Okay! It's a no-go for remote repos!
+CompletedProcess(args=['git', 'config', '--global', 'alias.new', "'!git", 'init'], returncode=0, stdout='', stderr='')
+CompletedProcess(args=['git', 'symbolic-ref', 'HEAD', 'refs/heads/main'], returncode=0, stdout='', stderr='')
+Git alias `git new` created to initialize repos with the HEAD ref at main
+(master-blaster) gareth@MacBook-Pro-2-4 ~/Code/master-blaster ±main⚡ » blm           1 ↵
+
+  Welcome to master-blaster! This program renames primary branches for GitHub users!
+  We'll go through the options before making any changes!
+
+
+    master-blaster  Copyright (C) 2020  Gareth Field
+    This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
+    This is free software, and you are welcome to redistribute it
+    under certain conditions; type `show c' for details.
+
+Working on `show w' and `show c', actually! It's GNU public 3+! No closed versions!
+
+  GitHub is deprecating password-based token generation! This is great for
+  security, it's going to mean you're going to have to go to GitHub.com and
+  come back with an access token to make this program work, though. The next
+  question will determine whether the program needs a token with the more
+  general `repo` scope or the more limited `public_repo` scope. You can run
+  this program again if you're happy with the results!
+
+
+    Log file found at ./info.log!
+
+? 
+  Please enter your GitHub username!                                                      
+ s                                                                                        
+? GitHub username: s?  Yes                                                                
+? 
+  What set of repositories do you want to update?                                         
+  All repositories I'm the owner, collaborator, and/or organization member, public and pri
+vate.                                                                                     
+? 
+  What would you like to call your primary branches? (Default 'main'.)                    
+  All primary branches renamed to 'main'.                                                 
+? 
+  Repositories not present locally will be cloned to a temporary folder,
+  updated, the update pushed, (the default branch on GitHub.com updated,)
+  and then deleted locally. We can decrease the use of bandwidth and reduce
+  potential conflicts by scanning for repositories that *are* present locally.
+  Is this okay? (No other changes will be added or committed.)                            
+  Yes                                                                                     
+? 
+    Do you keep your projects in a certain directory? Type that in here to
+    speed up search! Like /Users/gareth/Code ... default is ~/, hit enter for default.    
+                                                                                          
+? 
+    Default: use '~/' for local directory search?                                         
+  Yes                                                                                     
+? 
+        Last step! Since password-based token generation is being deprecated, please
+        get a personal access token with the correct scope(s) in order to run this
+        program. To get this token, go to https://github.com, sign in, then go to
+        'Settings', then 'Developer Settings', then 'Personal access tokens', then
+        'Generate new token', confirm your password, name the token in the 'Note'
+        input field, and select the repo scope, then 'Generate Token', then
+        copy it to your clipboard and either paste it back here into the prompt, or
+        save it first in case there's an error and you need to retry. (Recommended)       
+     s                                                                                    
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/LIGameDev/Who2Heal.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/TrailCity/run-club-server.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/TrailCity/RunClub.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/TrailCity/tcnet.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/accountNumber.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/beginner-javascript.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/bookBoxSort.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/borg-david.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/CheeryTomato.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/code-etc.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/dang-thats-delicious.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/dep-gfcom.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/dep-run-club-web.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/dep-server.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/dots.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/EggheadToDoApp.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/Enzyme-React-Native-32.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/fonts.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/forms.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/GarethDotCom.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/gfcom.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/gfcom-blog.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/gfcom-public-html.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/jetifier.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/laa.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/learn-node.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/level-up-react-2.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/Logoed.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/logoed-server.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/logoed-web-app.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/master-blaster.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/moodbit.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/Moving-Circle.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/MultiBounce.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/NaderDabitNavigatorExperimentalCodeAlong.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/phpTest.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/polar-pairs.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/pom.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/ReactNavigationReduxTest.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/recurring.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/RNWebviewMicPermission.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/rocktober.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/Roll-a-Ball.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/RR-TodoList.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/run-club-server.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/run-club-web.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/RunClub.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/server.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/shellScripts.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/site-deets.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/slider-app.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/spukee-site-react.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/sqrrlSite.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/tc-net.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/tech-test-react-wordcloud.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/test-cra.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/test-html.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/TrailCity.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/web-dev-reboot.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/Who2Heal.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/whole-code-folder.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/whole-logoed-folder.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/wild-rydes-react-native-no-mfa.
+Sending network request ...
+Got the network request!
+Checking branches for https://github.com/Twitchkidd/yusuff-faruq-context-demo.
+Sending network request ...
+Got the network request!
+{'defaultBranch': 'main', 'htmlUrl': 'https://github.com/Twitchkidd/dots', 'name': 'dots', 'owner-login': 'Twitchkidd', 'primaryBranchName': 'main', 'hasMasterBranch': False, 'hasPrimaryBranchName': True, 'status': 'error: unknown error'}
+{'defaultBranch': 'main', 'htmlUrl': 'https://github.com/Twitchkidd/gfcom', 'name': 'gfcom', 'owner-login': 'Twitchkidd', 'primaryBranchName': 'main', 'hasMasterBranch': False, 'hasPrimaryBranchName': True, 'status': 'error: unknown error'}
+{'defaultBranch': 'main', 'htmlUrl': 'https://github.com/Twitchkidd/learn-node', 'name': 'learn-node', 'owner-login': 'Twitchkidd', 'primaryBranchName': 'main', 'hasMasterBranch': False, 'hasPrimaryBranchName': True, 'status': 'error: unknown error'}
+{'defaultBranch': 'main', 'htmlUrl': 'https://github.com/Twitchkidd/master-blaster', 'name': 'master-blaster', 'owner-login': 'Twitchkidd', 'primaryBranchName': 'main', 'hasMasterBranch': False, 'hasPrimaryBranchName': True, 'status': 'error: unknown error'}
+{'defaultBranch': 'leExit', 'htmlUrl': 'https://github.com/Twitchkidd/moodbit', 'name': 'moodbit', 'owner-login': 'Twitchkidd', 'primaryBranchName': 'main', 'hasPrimaryBranchName': False, 'hasMasterBranch': False, 'status': "error: not ready for remote process, remote doesn't have a master branch"}
+{'defaultBranch': 'master', 'htmlUrl': 'https://github.com/Twitchkidd/polar-pairs', 'name': 'polar-pairs', 'owner-login': 'Twitchkidd', 'primaryBranchName': 'main', 'hasPrimaryBranchName': True, 'hasMasterBranch': True, 'status': 'error: not ready for remote process, remote has a branch with the primary branch name already'}
+The following repos had errors that prevented any process to run on them:
+https://github.com/Twitchkidd/dots
+error: unknown error
+https://github.com/Twitchkidd/gfcom
+error: unknown error
+https://github.com/Twitchkidd/learn-node
+error: unknown error
+https://github.com/Twitchkidd/master-blaster
+error: unknown error
+https://github.com/Twitchkidd/moodbit
+error: not ready for remote process, remote doesn't have a master branch
+https://github.com/Twitchkidd/polar-pairs
+error: not ready for remote process, remote has a branch with the primary branch name already
+The following repos are ready to update the primary branch:
+https://github.com/LIGameDev/Who2Heal
+https://github.com/TrailCity/run-club-server
+https://github.com/TrailCity/RunClub
+https://github.com/TrailCity/tcnet
+https://github.com/Twitchkidd/accountNumber
+https://github.com/Twitchkidd/beginner-javascript
+https://github.com/Twitchkidd/bookBoxSort
+https://github.com/Twitchkidd/borg-david
+https://github.com/Twitchkidd/CheeryTomato
+https://github.com/Twitchkidd/code-etc
+https://github.com/Twitchkidd/dang-thats-delicious
+https://github.com/Twitchkidd/dep-gfcom
+https://github.com/Twitchkidd/dep-run-club-web
+https://github.com/Twitchkidd/dep-server
+https://github.com/Twitchkidd/EggheadToDoApp
+https://github.com/Twitchkidd/Enzyme-React-Native-32
+https://github.com/Twitchkidd/fonts
+https://github.com/Twitchkidd/forms
+https://github.com/Twitchkidd/GarethDotCom
+https://github.com/Twitchkidd/gfcom-blog
+https://github.com/Twitchkidd/gfcom-public-html
+https://github.com/Twitchkidd/jetifier
+https://github.com/Twitchkidd/laa
+https://github.com/Twitchkidd/level-up-react-2
+https://github.com/Twitchkidd/Logoed
+https://github.com/Twitchkidd/logoed-server
+https://github.com/Twitchkidd/logoed-web-app
+https://github.com/Twitchkidd/Moving-Circle
+https://github.com/Twitchkidd/MultiBounce
+https://github.com/Twitchkidd/NaderDabitNavigatorExperimentalCodeAlong
+https://github.com/Twitchkidd/phpTest
+https://github.com/Twitchkidd/pom
+https://github.com/Twitchkidd/ReactNavigationReduxTest
+https://github.com/Twitchkidd/recurring
+https://github.com/Twitchkidd/RNWebviewMicPermission
+https://github.com/Twitchkidd/rocktober
+https://github.com/Twitchkidd/Roll-a-Ball
+https://github.com/Twitchkidd/RR-TodoList
+https://github.com/Twitchkidd/run-club-server
+https://github.com/Twitchkidd/run-club-web
+https://github.com/Twitchkidd/RunClub
+https://github.com/Twitchkidd/server
+https://github.com/Twitchkidd/shellScripts
+https://github.com/Twitchkidd/site-deets
+https://github.com/Twitchkidd/slider-app
+https://github.com/Twitchkidd/spukee-site-react
+https://github.com/Twitchkidd/sqrrlSite
+https://github.com/Twitchkidd/tc-net
+https://github.com/Twitchkidd/tech-test-react-wordcloud
+https://github.com/Twitchkidd/test-cra
+https://github.com/Twitchkidd/test-html
+https://github.com/Twitchkidd/TrailCity
+https://github.com/Twitchkidd/web-dev-reboot
+https://github.com/Twitchkidd/Who2Heal
+https://github.com/Twitchkidd/whole-code-folder
+https://github.com/Twitchkidd/whole-logoed-folder
+https://github.com/Twitchkidd/wild-rydes-react-native-no-mfa
+https://github.com/Twitchkidd/yusuff-faruq-context-demo
+? Continue?  Yes                                                                          
+
+
+
+
+
+Primary branch for https://github.com/LIGameDev/Who2Heal updated to main.
+https://api.github.com/repos/LIGameDev/Who2Heal
+Network error! Status code: 404
+
+
+
+
+
+Primary branch for https://github.com/TrailCity/run-club-server updated to main.
+https://api.github.com/repos/TrailCity/run-club-server
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/TrailCity/RunClub updated to main.
+https://api.github.com/repos/TrailCity/RunClub
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/TrailCity/tcnet updated to main.
+https://api.github.com/repos/TrailCity/tcnet
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/accountNumber updated to main.
+https://api.github.com/repos/Twitchkidd/accountNumber
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/beginner-javascript updated to main.
+https://api.github.com/repos/Twitchkidd/beginner-javascript
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/bookBoxSort updated to main.
+https://api.github.com/repos/Twitchkidd/bookBoxSort
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/borg-david updated to main.
+https://api.github.com/repos/Twitchkidd/borg-david
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/CheeryTomato updated to main.
+https://api.github.com/repos/Twitchkidd/CheeryTomato
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/code-etc updated to main.
+https://api.github.com/repos/Twitchkidd/code-etc
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/dang-thats-delicious updated to main.
+https://api.github.com/repos/Twitchkidd/dang-thats-delicious
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/dep-gfcom updated to main.
+https://api.github.com/repos/Twitchkidd/dep-gfcom
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/dep-run-club-web updated to main.
+https://api.github.com/repos/Twitchkidd/dep-run-club-web
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/dep-server updated to main.
+https://api.github.com/repos/Twitchkidd/dep-server
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/EggheadToDoApp updated to main.
+https://api.github.com/repos/Twitchkidd/EggheadToDoApp
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/Enzyme-React-Native-32 updated to main.
+https://api.github.com/repos/Twitchkidd/Enzyme-React-Native-32
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/fonts updated to main.
+https://api.github.com/repos/Twitchkidd/fonts
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/forms updated to main.
+https://api.github.com/repos/Twitchkidd/forms
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/GarethDotCom updated to main.
+https://api.github.com/repos/Twitchkidd/GarethDotCom
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/gfcom-blog updated to main.
+https://api.github.com/repos/Twitchkidd/gfcom-blog
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/gfcom-public-html updated to main.
+https://api.github.com/repos/Twitchkidd/gfcom-public-html
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/jetifier updated to main.
+https://api.github.com/repos/Twitchkidd/jetifier
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/laa updated to main.
+https://api.github.com/repos/Twitchkidd/laa
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/level-up-react-2 updated to main.
+https://api.github.com/repos/Twitchkidd/level-up-react-2
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/Logoed updated to main.
+https://api.github.com/repos/Twitchkidd/Logoed
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/logoed-server updated to main.
+https://api.github.com/repos/Twitchkidd/logoed-server
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/logoed-web-app updated to main.
+https://api.github.com/repos/Twitchkidd/logoed-web-app
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/Moving-Circle updated to main.
+https://api.github.com/repos/Twitchkidd/Moving-Circle
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/MultiBounce updated to main.
+https://api.github.com/repos/Twitchkidd/MultiBounce
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/NaderDabitNavigatorExperimentalCodeAlong updated to main.
+https://api.github.com/repos/Twitchkidd/NaderDabitNavigatorExperimentalCodeAlong
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/phpTest updated to main.
+https://api.github.com/repos/Twitchkidd/phpTest
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/pom updated to main.
+https://api.github.com/repos/Twitchkidd/pom
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/ReactNavigationReduxTest updated to main.
+https://api.github.com/repos/Twitchkidd/ReactNavigationReduxTest
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/recurring updated to main.
+https://api.github.com/repos/Twitchkidd/recurring
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/RNWebviewMicPermission updated to main.
+https://api.github.com/repos/Twitchkidd/RNWebviewMicPermission
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/rocktober updated to main.
+https://api.github.com/repos/Twitchkidd/rocktober
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/Roll-a-Ball updated to main.
+https://api.github.com/repos/Twitchkidd/Roll-a-Ball
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/RR-TodoList updated to main.
+https://api.github.com/repos/Twitchkidd/RR-TodoList
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/run-club-server updated to main.
+https://api.github.com/repos/Twitchkidd/run-club-server
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/run-club-web updated to main.
+https://api.github.com/repos/Twitchkidd/run-club-web
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/RunClub updated to main.
+https://api.github.com/repos/Twitchkidd/RunClub
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/server updated to main.
+https://api.github.com/repos/Twitchkidd/server
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/shellScripts updated to main.
+https://api.github.com/repos/Twitchkidd/shellScripts
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/site-deets updated to main.
+https://api.github.com/repos/Twitchkidd/site-deets
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/slider-app updated to main.
+https://api.github.com/repos/Twitchkidd/slider-app
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/spukee-site-react updated to main.
+https://api.github.com/repos/Twitchkidd/spukee-site-react
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/sqrrlSite updated to main.
+https://api.github.com/repos/Twitchkidd/sqrrlSite
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/tc-net updated to main.
+https://api.github.com/repos/Twitchkidd/tc-net
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/tech-test-react-wordcloud updated to main.
+https://api.github.com/repos/Twitchkidd/tech-test-react-wordcloud
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/test-cra updated to main.
+https://api.github.com/repos/Twitchkidd/test-cra
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/test-html updated to main.
+https://api.github.com/repos/Twitchkidd/test-html
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/TrailCity updated to main.
+https://api.github.com/repos/Twitchkidd/TrailCity
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/web-dev-reboot updated to main.
+https://api.github.com/repos/Twitchkidd/web-dev-reboot
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/Who2Heal updated to main.
+https://api.github.com/repos/Twitchkidd/Who2Heal
+Network error! Status code: 400
+
+  
+
+
+
+Primary branch for https://github.com/Twitchkidd/whole-code-folder updated to main.
+https://api.github.com/repos/Twitchkidd/whole-code-folder
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/whole-logoed-folder updated to main.
+https://api.github.com/repos/Twitchkidd/whole-logoed-folder
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/wild-rydes-react-native-no-mfa updated to main.
+https://api.github.com/repos/Twitchkidd/wild-rydes-react-native-no-mfa
+Network error! Status code: 400
+
+
+
+
+
+Primary branch for https://github.com/Twitchkidd/yusuff-faruq-context-demo updated to main.
+https://api.github.com/repos/Twitchkidd/yusuff-faruq-context-demo
+Network error! Status code: 400
+CompletedProcess(args=['git', 'config', '--global', 'alias.new', "'!git", 'init'], returncode=0, stdout='', stderr='')
+CompletedProcess(args=['git', 'symbolic-ref', 'HEAD', 'refs/heads/main'], returncode=0, stdout='', stderr='')
+Git alias `git new` created to initialize repos with the HEAD ref at main
+58 repos updated!
+Check the log file at ./info.log for details!
+Thank you for using master-blaster!

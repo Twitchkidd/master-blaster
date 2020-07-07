@@ -1,0 +1,122 @@
+2020-07-07 13:20:33,946 Creating a log file!!
+2020-07-07 13:20:36,876 Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
+2020-07-07 13:20:36,876 Naming selection: All primary branches renamed to 'main'.
+2020-07-07 13:20:38,494 Local directory to search: /Users/gareth
+2020-07-07 13:20:38,515 Add git alias `git new`: main
+2020-07-07 13:22:42,248 Primary branch for https://github.com/LIGameDev/Who2Heal updated to main.
+2020-07-07 13:22:42,521 Response status: 404
+2020-07-07 13:22:43,147 Primary branch for https://github.com/TrailCity/run-club-server updated to main.
+2020-07-07 13:22:43,395 Response status: 400
+2020-07-07 13:22:44,008 Primary branch for https://github.com/TrailCity/RunClub updated to main.
+2020-07-07 13:22:44,251 Response status: 400
+2020-07-07 13:22:44,873 Primary branch for https://github.com/TrailCity/tcnet updated to main.
+2020-07-07 13:22:45,134 Response status: 400
+2020-07-07 13:22:45,728 Primary branch for https://github.com/Twitchkidd/accountNumber updated to main.
+2020-07-07 13:22:45,962 Response status: 400
+2020-07-07 13:22:46,549 Primary branch for https://github.com/Twitchkidd/beginner-javascript updated to main.
+2020-07-07 13:22:46,779 Response status: 400
+2020-07-07 13:22:47,393 Primary branch for https://github.com/Twitchkidd/bookBoxSort updated to main.
+2020-07-07 13:22:47,666 Response status: 400
+2020-07-07 13:22:48,406 Primary branch for https://github.com/Twitchkidd/borg-david updated to main.
+2020-07-07 13:22:48,643 Response status: 400
+2020-07-07 13:22:49,248 Primary branch for https://github.com/Twitchkidd/CheeryTomato updated to main.
+2020-07-07 13:22:49,542 Response status: 400
+2020-07-07 13:22:50,165 Primary branch for https://github.com/Twitchkidd/code-etc updated to main.
+2020-07-07 13:22:50,421 Response status: 400
+2020-07-07 13:23:03,248 Primary branch for https://github.com/Twitchkidd/dang-thats-delicious updated to main.
+2020-07-07 13:23:03,510 Response status: 400
+2020-07-07 13:23:05,172 Primary branch for https://github.com/Twitchkidd/dep-gfcom updated to main.
+2020-07-07 13:23:05,410 Response status: 400
+2020-07-07 13:23:06,860 Primary branch for https://github.com/Twitchkidd/dep-run-club-web updated to main.
+2020-07-07 13:23:07,142 Response status: 400
+2020-07-07 13:23:08,570 Primary branch for https://github.com/Twitchkidd/dep-server updated to main.
+2020-07-07 13:23:08,824 Response status: 400
+2020-07-07 13:23:09,896 Primary branch for https://github.com/Twitchkidd/EggheadToDoApp updated to main.
+2020-07-07 13:23:10,110 Response status: 400
+2020-07-07 13:23:11,203 Primary branch for https://github.com/Twitchkidd/Enzyme-React-Native-32 updated to main.
+2020-07-07 13:23:11,444 Response status: 400
+2020-07-07 13:23:20,301 Primary branch for https://github.com/Twitchkidd/fonts updated to main.
+2020-07-07 13:23:20,531 Response status: 400
+2020-07-07 13:23:22,086 Primary branch for https://github.com/Twitchkidd/forms updated to main.
+2020-07-07 13:23:22,347 Response status: 400
+2020-07-07 13:23:23,706 Primary branch for https://github.com/Twitchkidd/GarethDotCom updated to main.
+2020-07-07 13:23:23,932 Response status: 400
+2020-07-07 13:23:26,439 Primary branch for https://github.com/Twitchkidd/gfcom-blog updated to main.
+2020-07-07 13:23:26,669 Response status: 400
+2020-07-07 13:23:36,669 Primary branch for https://github.com/Twitchkidd/gfcom-public-html updated to main.
+2020-07-07 13:23:36,975 Response status: 400
+2020-07-07 13:23:40,070 Primary branch for https://github.com/Twitchkidd/jetifier updated to main.
+2020-07-07 13:23:40,279 Response status: 400
+2020-07-07 13:23:42,950 Primary branch for https://github.com/Twitchkidd/laa updated to main.
+2020-07-07 13:23:43,191 Response status: 400
+2020-07-07 13:23:46,328 Primary branch for https://github.com/Twitchkidd/level-up-react-2 updated to main.
+2020-07-07 13:23:46,556 Response status: 400
+2020-07-07 13:23:51,113 Primary branch for https://github.com/Twitchkidd/Logoed updated to main.
+2020-07-07 13:23:51,327 Response status: 400
+2020-07-07 13:23:52,968 Primary branch for https://github.com/Twitchkidd/logoed-server updated to main.
+2020-07-07 13:23:53,201 Response status: 400
+2020-07-07 13:23:56,686 Primary branch for https://github.com/Twitchkidd/logoed-web-app updated to main.
+2020-07-07 13:23:56,921 Response status: 400
+2020-07-07 13:23:58,520 Primary branch for https://github.com/Twitchkidd/Moving-Circle updated to main.
+2020-07-07 13:23:58,774 Response status: 400
+2020-07-07 13:23:59,942 Primary branch for https://github.com/Twitchkidd/MultiBounce updated to main.
+2020-07-07 13:24:00,181 Response status: 400
+2020-07-07 13:24:01,406 Primary branch for https://github.com/Twitchkidd/NaderDabitNavigatorExperimentalCodeAlong updated to main.
+2020-07-07 13:24:01,632 Response status: 400
+2020-07-07 13:24:02,936 Primary branch for https://github.com/Twitchkidd/phpTest updated to main.
+2020-07-07 13:24:03,209 Response status: 400
+2020-07-07 13:24:05,647 Primary branch for https://github.com/Twitchkidd/pom updated to main.
+2020-07-07 13:24:05,877 Response status: 400
+2020-07-07 13:24:07,352 Primary branch for https://github.com/Twitchkidd/ReactNavigationReduxTest updated to main.
+2020-07-07 13:24:07,589 Response status: 400
+2020-07-07 13:24:08,843 Primary branch for https://github.com/Twitchkidd/recurring updated to main.
+2020-07-07 13:24:09,069 Response status: 400
+2020-07-07 13:24:10,700 Primary branch for https://github.com/Twitchkidd/RNWebviewMicPermission updated to main.
+2020-07-07 13:24:10,954 Response status: 400
+2020-07-07 13:24:12,211 Primary branch for https://github.com/Twitchkidd/rocktober updated to main.
+2020-07-07 13:24:12,436 Response status: 400
+2020-07-07 13:24:13,553 Primary branch for https://github.com/Twitchkidd/Roll-a-Ball updated to main.
+2020-07-07 13:24:13,779 Response status: 400
+2020-07-07 13:24:16,488 Primary branch for https://github.com/Twitchkidd/RR-TodoList updated to main.
+2020-07-07 13:24:16,720 Response status: 400
+2020-07-07 13:24:18,108 Primary branch for https://github.com/Twitchkidd/run-club-server updated to main.
+2020-07-07 13:24:18,461 Response status: 400
+2020-07-07 13:25:03,738 Primary branch for https://github.com/Twitchkidd/run-club-web updated to main.
+2020-07-07 13:25:04,123 Response status: 400
+2020-07-07 13:25:54,022 Primary branch for https://github.com/Twitchkidd/RunClub updated to main.
+2020-07-07 13:25:54,303 Response status: 400
+2020-07-07 13:25:55,580 Primary branch for https://github.com/Twitchkidd/server updated to main.
+2020-07-07 13:25:56,000 Response status: 400
+2020-07-07 13:25:57,285 Primary branch for https://github.com/Twitchkidd/shellScripts updated to main.
+2020-07-07 13:25:57,573 Response status: 400
+2020-07-07 13:25:58,776 Primary branch for https://github.com/Twitchkidd/site-deets updated to main.
+2020-07-07 13:25:59,036 Response status: 400
+2020-07-07 13:26:00,256 Primary branch for https://github.com/Twitchkidd/slider-app updated to main.
+2020-07-07 13:26:00,479 Response status: 400
+2020-07-07 13:26:02,057 Primary branch for https://github.com/Twitchkidd/spukee-site-react updated to main.
+2020-07-07 13:26:02,318 Response status: 400
+2020-07-07 13:26:03,567 Primary branch for https://github.com/Twitchkidd/sqrrlSite updated to main.
+2020-07-07 13:26:03,788 Response status: 400
+2020-07-07 13:26:06,098 Primary branch for https://github.com/Twitchkidd/tc-net updated to main.
+2020-07-07 13:26:08,176 Response status: 400
+2020-07-07 13:26:09,528 Primary branch for https://github.com/Twitchkidd/tech-test-react-wordcloud updated to main.
+2020-07-07 13:26:09,763 Response status: 400
+2020-07-07 13:26:11,111 Primary branch for https://github.com/Twitchkidd/test-cra updated to main.
+2020-07-07 13:26:11,395 Response status: 400
+2020-07-07 13:26:13,607 Primary branch for https://github.com/Twitchkidd/test-html updated to main.
+2020-07-07 13:26:13,837 Response status: 400
+2020-07-07 13:26:15,505 Primary branch for https://github.com/Twitchkidd/TrailCity updated to main.
+2020-07-07 13:26:15,764 Response status: 400
+2020-07-07 13:26:19,924 Primary branch for https://github.com/Twitchkidd/web-dev-reboot updated to main.
+2020-07-07 13:26:20,161 Response status: 400
+2020-07-07 13:26:23,399 Primary branch for https://github.com/Twitchkidd/Who2Heal updated to main.
+2020-07-07 13:26:23,659 Response status: 400
+2020-07-07 13:42:25,932 Primary branch for https://github.com/Twitchkidd/whole-code-folder updated to main.
+2020-07-07 13:42:27,248 Response status: 400
+2020-07-07 13:50:06,114 Primary branch for https://github.com/Twitchkidd/whole-logoed-folder updated to main.
+2020-07-07 13:50:06,615 Response status: 400
+2020-07-07 13:50:31,083 Primary branch for https://github.com/Twitchkidd/wild-rydes-react-native-no-mfa updated to main.
+2020-07-07 13:50:31,435 Response status: 400
+2020-07-07 13:50:33,277 Primary branch for https://github.com/Twitchkidd/yusuff-faruq-context-demo updated to main.
+2020-07-07 13:50:33,572 Response status: 400
+2020-07-07 13:50:33,825 Git alias `git new` created to initialize repos with the HEAD ref at main
