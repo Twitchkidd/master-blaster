@@ -609,8 +609,8 @@ def localProcess(repo):
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             subprocess.run(["git", "checkout", "master"], universal_newlines=True,
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']] universal_newlines=True,
-                           stdout=subprocess.PIPE, stderr=subprocess.PIPE,)
+            subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']], universal_newlines=True,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             subprocess.run(["git", "fetch"], universal_newlines=True,
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             subprocess.run(["git", "branch", "--unset-upstream"], universal_newlines=True,
