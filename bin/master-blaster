@@ -473,11 +473,10 @@ for repo in repos:
     primaryBranchUrl = constructBranchesUrl(repo, repo['primaryBranchName'])
     masterBranchUrl = constructBranchesUrl(repo, "master")
     headers = constructHeaders(token)
-    print("Sending network request ...")
+    print(f"Checking branches for {repo['htmlUrl']}.")
     print("Sending network request ...")
     primaryBranchResponse = requests.get(primaryBranchUrl, headers=headers)
     masterBranchResponse = requests.get(masterBranchUrl, headers=headers)
-    print("Got the network request!")
     print("Got the network request!")
     if primaryBranchResponse.json().get('message'):
         repo['hasPrimaryBranchName'] = False
@@ -670,7 +669,7 @@ def remoteProcess(repo):
         logging.info(
             f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
     url = constructPatchDefaultUrl(repo)
-    params = json.dumps({"default_branch": {repo['primaryBranchName']}})
+    params = json.dumps({"default_branch": f"{repo['primaryBranchName']}"})
     patchDefaultResponse = requests.patch(url, params=params, headers=headers)
     if patchDefaultResponse.status_code >= 400:
         logging.warning(f"Response status: {patchDefaultResponse.status_code}")
