@@ -278,7 +278,7 @@ if localDirectories:
         else:
             confirmCustomLocalDirectoryResponse = questionary.confirm(
                 customLocalDirectoryConfirmPrompt(customLocalDirectoryResponse)).ask()
-            if confirmCustomNameResponse:
+            if confirmCustomLocalDirectoryResponse:
                 localDirectory = customLocalDirectoryResponse
                 localDirectoryConfirmed = True
                 logging.info(f"Local directory to search: {localDirectory}")
