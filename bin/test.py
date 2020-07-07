@@ -29,7 +29,7 @@ def main():
     params = json.dumps({"default_branch": "main"})
     response = requests.patch("https://api.github.com/repos/Twitchkidd/master-blaster",
                               data=params, headers=headers)
-    print(response.json())
+    print(response.status_code)
 
 
 if __name__ == "__main__":

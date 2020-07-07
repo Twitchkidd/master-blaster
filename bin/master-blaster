@@ -23,6 +23,7 @@ from pathlib import Path
 import questionary
 import requests
 import subprocess
+import sys
 
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
@@ -289,19 +290,20 @@ localDirectory = f"{Path.home()}/Code"
 # * ~~~ New Git Alias! ~~~ * #
 
 # * ``` Placeholder variable for git alias selection! ``` * #
-gitNew = True
+gitNew = False
 
 # * ``` Prompt! ``` * #
-gitNewPrompt = """
-  We can add a git alias 'git new' that initializes new git repos with HEAD as
-  'main', shall we?
+gitNewPrompt = f"""
+    We can add a git alias 'git new' that initializes new git repos with HEAD as
+    '{name}', shall we?
 """
 
 # * ``` Ask it! ``` * #
-gitNew = questionary.confirm(gitNewPrompt)
+if not interactive:
+    gitNew = questionary.confirm(gitNewPrompt)
+    # * ``` Log the choice! ``` * #
+    logging.info(f"Add git alias `git new`: {name}")
 
-# * ``` Log the choice! ``` * #
-logging.info(f"Add git alias `git new`: {gitNew}")
 
 # * ~~~ Token Time! ~~~ * #
 
@@ -576,7 +578,8 @@ if localDirectories:
             for localRepo in localRepos:
                 if localRepo['url'] == repo['html']:
                     localPath = localRepo['path']
-            subprocess.run(["cd", f"{localPath}"])
+            subprocess.run(["cd", f"{localPath}"], universal_newlines=True,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             result = subprocess.run(["git", "branch"], universal_newlines=True,
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             repo['localHasMaster'] = "master" in result.stdout
@@ -594,13 +597,25 @@ remoteIsAGo = False
 
 
 def localProcess(repo):
-    # subprocess.run(["cd", repo['path']])
-    # subprocess.run(["git", "checkout", "master"])
-    # subprocess.run(["git", "branch", "-m", "master", "main"])
-    # subprocess.run(["git", "fetch"])
-    # subprocess.run(["git", "branch", "--unset-upstream"])
-    # subprocess.run(["git", "branch", "-u", "origin/main"])
-    # subprocess.run(["git", "symbolic-ref", "refs/remotes/origin/HEAD", "refs/remotes/origin/main"])
+    for localRepo in localRepos:
+        if repo['htmlUrl'] == localRepo['url']:
+            subprocess.run(["cd", localRepo['path']], universal_newlines=True,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["git", "checkout", "master"], universal_newlines=True,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["git", "branch", "-m", "master", universal_newlines=True,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            repo['primaryBranchName']])
+            subprocess.run(["git", "fetch"], universal_newlines=True,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["git", "branch", "--unset-upstream"], universal_newlines=True,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run, universal_newlines = True,
+            stdout = subprocess.PIPE, stderr = subprocess.PIPE(
+                ["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"])
+            subprocess.run(["git", "symbolic-ref", "refs/remotes/origin/HEAD", universal_newlines=True,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            f"refs/remotes/origin/{repo['primaryBranchName']}"])
 
 
 def constructPatchDefaultUrl(repo):
@@ -608,18 +623,75 @@ def constructPatchDefaultUrl(repo):
 
 
 def remoteProcess(repo):
+    if localDirectories:
+        if repo['htmlUrl'] in localRepoUrls:
+            for localRepo in localRepos:
+                if repo['htmlUrl'] == localRepo['url']:
+                    subprocess.run(["cd", localRepo['path']], universal_newlines=True,
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    subprocess.run, universal_newlines = True,
+                    stdout = subprocess.PIPE, stderr = subprocess.PIPE(
+                        ["git", "branch", "-m", "master", repo['primaryBranchName']])
+                    subprocess.run, universal_newlines = True,
+                    stdout = subprocess.PIPE, stderr = subprocess.PIPE(
+                        ["git", "push", "-u", "origin", repo['primaryBranchName']])
+                    print(
+                        f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+                    logging.info(
+                        f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+        subprocess.run(["cd", localDirectory], universal_newlines=True,
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", universal_newlines=True,
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                        f"{localDirectory}/{repo['owner-login']}/{repo['name']}"])
+        subprocess.run, universal_newlines = True,
+        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
+            ["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"])
+        subprocess.run, universal_newlines = True,
+        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
+            ["git", "branch", "-m", "master", repo['primaryBranchName']])
+        subprocess.run, universal_newlines = True,
+        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
+            ["git", "push", "-u", "origin", repo['primaryBranchName']])
+        print(
+            f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+        logging.info(
+            f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+    else:
+        subprocess.run(["cd", localDirectory], universal_newlines=True,
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", universal_newlines=True,
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                        f"{localDirectory}/{repo['owner-login']}/{repo['name']}"])
+        subprocess.run, universal_newlines = True,
+        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
+            ["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"])
+        subprocess.run, universal_newlines = True,
+        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
+            ["git", "branch", "-m", "master", repo['primaryBranchName']])
+        subprocess.run, universal_newlines = True,
+        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
+            ["git", "push", "-u", "origin", repo['primaryBranchName']])
+        print(
+            f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+        logging.info(
+            f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
     url = constructPatchDefaultUrl(repo)
-    params = {"default_branch": {repo['primaryBranchName']}}
-    patchDefaultRequest = requests.patch(url, params=params, headers=headers)
-    # subprocess.run(["cd", repo['path']])
-    # subprocess.run(["git", "branch", "-m", "master", "main"])
-    # subprocess.run(["git", "push", "-u", "origin", "main"])
-
-    # * So each of those need to get logged, and then the errors and summary should be presented to the user
+    params = json.dumps({"default_branch": {repo['primaryBranchName']}})
+    patchDefaultResponse = requests.patch(url, params=params, headers=headers)
+    if patchDefaultResponse.status_code >= 400:
+        logging.warning(f"Response status: {patchDefaultResponse.status_code}")
+        print(
+            f"Network error! Status code: {patchDefaultResponse.status_code}, message: {[responseJson['message'] for responseJson in patchDefaultResponse.json()][0]}")
+        break
+    print(
+        f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+    logging.info(
+        f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
 
 
 if len(reposWithErrors) > 0:
-    print("The following repos had errors:")
+    print("The following repos had errors that prevented any process to run on them:")
     for repo in reposWithErrors:
         print(repo['htmlUrl'])
         print(repo['status'])
@@ -635,6 +707,9 @@ if len(reposReadyForRemote) > 0:
     for repo in reposReadyForRemote:
         print(repo['htmlUrl'])
     remoteIsAGo = questionary.confirm("Continue?")
+    if not remoteIsAGo:
+        print("Okay! It's a no-go for remote repos!")
+
 
 if localIsAGo:
     for repo in reposReadyForLocal:
@@ -646,27 +721,26 @@ if remoteIsAGo:
 
 # * Add the `git new` alias! * #
 if gitNew:
-    # subprocess.run(["git", "config", "--global", "alias.new", "'!git", "init"])
-    # subprocess.run(["git", "symbolic-ref", "HEAD", "refs/heads/main"])
+    if interactive:
+        print("Interactive mode enabled, so no one name for `git new`!")
+        break
+    subprocess.run(["git", "config", "--global", "alias.new", "'!git", "init"], universal_newlines=True,
+                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    subprocess.run(["git", "symbolic-ref", "HEAD", f"refs/heads/{name}"], universal_newlines=True,
+                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(
+        f"Git alias `git new` created to initialize repos with the HEAD ref at {name}")
+    logging.info(
+        f"Git alias `git new` created to initialize repos with the HEAD ref at {name}")
+
+if not remoteIsAGo:
+    sys.exit(1)
 
 if len(reposReadyForLocal) > 0:
-    print("Local repos updated!")
+    print(f"{len(reposReadyForLocal)} local repos updated!")
 
 if len(reposReadyForRemote) > 0:
-    print("Repos updated!")
+    print(f"{len(reposReadyForRemote)} repos updated!")
 
 print("Check the log file at ./info.log for details!")
 print("Thank you for using master-blaster!")
-
-# TODO Communicate this!
-# TODO Provide a tool!
-# * Learning about how this works for multiple systems! * #
-# *     When master-blaster is run, * #
-# *         any other systems with local clones must run * #
-# *             $ git checkout master * #
-# *             $ git branch -m master main * #
-# *             $ git fetch * #
-# *             $ git branch --unset-upstream * #
-# *             $ git branch -u origin/main * #
-# *             $ git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main * #
-# *         Tested: they don't need to push any changes first or even commit them or even add them to staging! * #
