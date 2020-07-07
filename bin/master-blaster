@@ -676,11 +676,11 @@ def remoteProcess(repo):
         logging.warning(f"Response status: {patchDefaultResponse.status_code}")
         print(
             f"Network error! Status code: {patchDefaultResponse.status_code}, message: {[responseJson['message'] for responseJson in patchDefaultResponse.json()][0]}")
-        break
-    print(
-        f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-    logging.info(
-        f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+    else:
+        print(
+            f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+        logging.info(
+            f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
 
 
 if len(reposWithErrors) > 0:
