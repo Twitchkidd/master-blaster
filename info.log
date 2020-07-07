@@ -1,6 +1,7 @@
-2020-07-07 12:27:09,938 Creating a log file!!
-2020-07-07 12:27:23,602 Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
-2020-07-07 12:27:23,602 Naming selection: All primary branches renamed to 'main'.
-2020-07-07 12:27:30,671 Local directory to search: /Users/gareth
-2020-07-07 12:27:30,691 Add git alias `git new`: main
-2020-07-07 12:28:43,212 Primary branch for https://github.com/LIGameDev/Who2Heal updated to main.
+2020-07-07 12:34:46,106 Creating a log file!!
+2020-07-07 12:34:52,973 Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
+2020-07-07 12:34:52,973 Naming selection: All primary branches renamed to 'main'.
+2020-07-07 12:34:56,969 Local directory to search: /Users/gareth
+2020-07-07 12:34:56,988 Add git alias `git new`: main
+2020-07-07 12:35:58,441 Primary branch for https://github.com/LIGameDev/Who2Heal updated to main.
+2020-07-07 12:35:58,706 Response status: 400
