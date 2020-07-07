@@ -412,6 +412,7 @@ while not reposResponseConfirmed:
     url = constructReposUrl()
     params = constructReposParams()
     headers = constructHeaders(token)
+    print("Sending network request ...")
     reposResponse = requests.get(url, params=params, headers=headers)
     # Bad token returns a 401! #
     if reposResponse.status_code >= 400:
@@ -420,6 +421,7 @@ while not reposResponseConfirmed:
             f"Network error! Possibly the token! Try again please! If this is not your GitHub username, please restart the program: {username}")
         continue
     else:
+        print("Got the network request!")
         reposResponseConfirmed = True
         for repository in reposResponse.json():
             repos.append(
@@ -471,8 +473,12 @@ for repo in repos:
     primaryBranchUrl = constructBranchesUrl(repo, repo['primaryBranchName'])
     masterBranchUrl = constructBranchesUrl(repo, "master")
     headers = constructHeaders(token)
+    print("Sending network request ...")
+    print("Sending network request ...")
     primaryBranchResponse = requests.get(primaryBranchUrl, headers=headers)
     masterBranchResponse = requests.get(masterBranchUrl, headers=headers)
+    print("Got the network request!")
+    print("Got the network request!")
     if primaryBranchResponse.json().get('message'):
         repo['hasPrimaryBranchName'] = False
     if masterBranchResponse.json().get('message'):
@@ -603,19 +609,16 @@ def localProcess(repo):
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             subprocess.run(["git", "checkout", "master"], universal_newlines=True,
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            subprocess.run(["git", "branch", "-m", "master", universal_newlines=True,
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            repo['primaryBranchName']])
+            subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']] universal_newlines=True,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE,)
             subprocess.run(["git", "fetch"], universal_newlines=True,
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             subprocess.run(["git", "branch", "--unset-upstream"], universal_newlines=True,
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            subprocess.run, universal_newlines = True,
-            stdout = subprocess.PIPE, stderr = subprocess.PIPE(
-                ["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"])
-            subprocess.run(["git", "symbolic-ref", "refs/remotes/origin/HEAD", universal_newlines=True,
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            f"refs/remotes/origin/{repo['primaryBranchName']}"])
+            subprocess.run(["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"],
+                           universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["git", "symbolic-ref", "refs/remotes/origin/HEAD",
+                            f"refs/remotes/origin/{repo['primaryBranchName']}"], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
 def constructPatchDefaultUrl(repo):
@@ -629,30 +632,24 @@ def remoteProcess(repo):
                 if repo['htmlUrl'] == localRepo['url']:
                     subprocess.run(["cd", localRepo['path']], universal_newlines=True,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    subprocess.run, universal_newlines = True,
-                    stdout = subprocess.PIPE, stderr = subprocess.PIPE(
-                        ["git", "branch", "-m", "master", repo['primaryBranchName']])
-                    subprocess.run, universal_newlines = True,
-                    stdout = subprocess.PIPE, stderr = subprocess.PIPE(
-                        ["git", "push", "-u", "origin", repo['primaryBranchName']])
+                    subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
+                                   universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
+                                   universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     print(
                         f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
                     logging.info(
                         f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
         subprocess.run(["cd", localDirectory], universal_newlines=True,
                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", universal_newlines=True,
-                        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                        f"{localDirectory}/{repo['owner-login']}/{repo['name']}"])
-        subprocess.run, universal_newlines = True,
-        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
-            ["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"])
-        subprocess.run, universal_newlines = True,
-        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
-            ["git", "branch", "-m", "master", repo['primaryBranchName']])
-        subprocess.run, universal_newlines = True,
-        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
-            ["git", "push", "-u", "origin", repo['primaryBranchName']])
+        subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
+                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
+                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
+                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
+                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(
             f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
         logging.info(
@@ -660,18 +657,14 @@ def remoteProcess(repo):
     else:
         subprocess.run(["cd", localDirectory], universal_newlines=True,
                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", universal_newlines=True,
-                        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                        f"{localDirectory}/{repo['owner-login']}/{repo['name']}"])
-        subprocess.run, universal_newlines = True,
-        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
-            ["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"])
-        subprocess.run, universal_newlines = True,
-        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
-            ["git", "branch", "-m", "master", repo['primaryBranchName']])
-        subprocess.run, universal_newlines = True,
-        stdout = subprocess.PIPE, stderr = subprocess.PIPE(
-            ["git", "push", "-u", "origin", repo['primaryBranchName']])
+        subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
+                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
+                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
+                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
+                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(
             f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
         logging.info(
