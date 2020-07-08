@@ -553,42 +553,52 @@ reposReadyForRemote = []
 def check(repo):
     if repo['hasMasterBranch'] and repo['hasPrimaryBranchName']:
         repo['status'] = "error: remote has both master branch and new primary branch name"
+        print(f"{repo['htmlUrl']} {repo['status']}")
         reposWithErrors.append(repo)
         return
     if not repo['hasMasterBranch'] and not repo['hasPrimaryBranchName']:
         repo['status'] = "error: remote has neither master nor new primary branch name"
+        print(f"{repo['htmlUrl']} {repo['status']}")
         reposWithErrors.append(repo)
         return
     if repo.get('localHasPrimaryBranchName'):
         if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName'] and not repo['localHasMaster'] and repo['localHasPrimaryBranchName']:
             repo['status'] = "already blasted"
+            print(f"{repo['htmlUrl']} {repo['status']}")
             reposAlreadyBlasted.append(repo)
             return
         if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName'] and repo['localHasMaster'] and repo['localHasPrimaryBranchName']:
             repo['status'] = "candidate to delete local master"
+            print(f"{repo['htmlUrl']} {repo['status']}")
             reposReadyForLocalMasterDelete.append(repo)
             return
         if repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
             if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName']:
                 repo['status'] = "candidate for local process"
+                print(f"{repo['htmlUrl']} {repo['status']}")
                 reposReadyForLocal.append(repo)
                 return
             if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
                 repo['status'] = "candidate for remote process"
+                print(f"{repo['htmlUrl']} {repo['status']}")
                 reposReadyForRemote.append(repo)
                 return
         repo['status'] = f"error: {repo}"
+        print(f"{repo['htmlUrl']} {repo['status']}")
         reposWithErrors.append(repo)
         return
     if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName']:
         repo['status'] = "already blasted"
+        print(f"{repo['htmlUrl']} {repo['status']}")
         reposAlreadyBlasted.append(repo)
         return
     if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
         repo['status'] = "candidate for remote process"
+        print(f"{repo['htmlUrl']} {repo['status']}")
         reposReadyForRemote.append(repo)
         return
     repo['status'] = f"error: {repo}"
+    print(f"{repo['htmlUrl']} {repo['status']}")
     reposWithErrors.append(repo)
     return
 

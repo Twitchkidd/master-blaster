@@ -1,0 +1,327 @@
+(master-blaster) gareth@MacBook-Pro-2-4 ~/Code/master-blaster ±dev » blm
+
+  Welcome to master-blaster! This program renames primary branches for GitHub users!
+  We'll go through the options before making any changes!
+
+
+    master-blaster  Copyright (C) 2020  Gareth Field
+    This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
+    This is free software, and you are welcome to redistribute it
+    under certain conditions; type `show c' for details.
+
+Working on `show w' and `show c', actually! It's GNU public 3+! No closed versions!
+
+  GitHub is deprecating password-based token generation! This is great for
+  security, it just means you're going to have to go to GitHub.com and
+  come back with an access token to make this program work, is the thing.
+
+  The next question will determine whether the program needs a token with the more
+  general `repo` scope or the more limited `public_repo` scope, and there will
+  be instructions for what to do at GitHub.com when we're ready to go here. This
+  program can be run again for further and any future repos.
+
+
+    Log file found at ./info.log!
+
+? 
+  Please enter your GitHub username!                                                      
+ f                                                                                        
+? GitHub username: f?  Yes                                                                
+? 
+  What set of repositories do you want to update?                                         
+  All repositories I'm the owner, collaborator, and/or organization member, public and pri
+vate.                                                                                     
+? 
+  What would you like to call your primary branches? (Default 'main'.)                    
+  All primary branches renamed to 'main'.                                                 
+? 
+  Repositories not present locally will be cloned to a temporary folder,
+  updated, the update pushed, (the default branch on GitHub.com updated,) and
+  then deleted locally depending on your choice in two questions. This can
+  decrease the use of bandwidth and reduce potential conflicts by scanning for
+  repositories that are present locally. Is this okay?                                    
+  Yes                                                                                     
+? 
+    Do you keep all of your projects in a certain directory? Type that in here
+    to limit and speed up search. Default is ~/, hit enter for default.
+    Example: /Users/gareth/Code                                                           
+                                                                                          
+? 
+    Default: use '~/' for local directory search?                                         
+  Yes                                                                                     
+? 
+    Remove newly cloned repositories after process complete? Defaults to yes.             
+  Yes                                                                                     
+? 
+        Last step! Since password-based token generation is being deprecated, please
+        get a personal access token with the correct scope(s) in order to run this
+        program. To get this token, go to https://github.com, sign in, then go to
+        'Settings', then 'Developer Settings', then 'Personal access tokens', then
+        'Generate new token', confirm your password, name the token in the 'Note'
+        input field, and select the repo scope, then 'Generate Token', then
+        copy it to your clipboard and either paste it back here into the prompt, or
+        save it first in case there's an error and you need to retry. (Recommended)       
+     f                                                                                    
+Checking for repos ...
+Repos received!
+Checking branches for https://github.com/LIGameDev/Who2Heal.
+Checking branches for https://github.com/TrailCity/run-club-server.
+Checking branches for https://github.com/TrailCity/RunClub.
+Checking branches for https://github.com/TrailCity/tcnet.
+Checking branches for https://github.com/Twitchkidd/accountNumber.
+Checking branches for https://github.com/Twitchkidd/beginner-javascript.
+Checking branches for https://github.com/Twitchkidd/bookBoxSort.
+Checking branches for https://github.com/Twitchkidd/borg-david.
+Checking branches for https://github.com/Twitchkidd/CheeryTomato.
+Checking branches for https://github.com/Twitchkidd/code-etc.
+Checking branches for https://github.com/Twitchkidd/dang-thats-delicious.
+Checking branches for https://github.com/Twitchkidd/defaultBranchNotMaster.
+Checking branches for https://github.com/Twitchkidd/defaultBranchNotPbn.
+Checking branches for https://github.com/Twitchkidd/dep-gfcom.
+Checking branches for https://github.com/Twitchkidd/dep-run-club-web.
+Checking branches for https://github.com/Twitchkidd/dep-server.
+Checking branches for https://github.com/Twitchkidd/dots.
+Checking branches for https://github.com/Twitchkidd/EggheadToDoApp.
+Checking branches for https://github.com/Twitchkidd/Enzyme-React-Native-32.
+Checking branches for https://github.com/Twitchkidd/fonts.
+Checking branches for https://github.com/Twitchkidd/forms.
+Checking branches for https://github.com/Twitchkidd/GarethDotCom.
+Checking branches for https://github.com/Twitchkidd/gfcom.
+Checking branches for https://github.com/Twitchkidd/gfcom-blog.
+Checking branches for https://github.com/Twitchkidd/gfcom-public-html.
+Checking branches for https://github.com/Twitchkidd/jetifier.
+Checking branches for https://github.com/Twitchkidd/laa.
+Checking branches for https://github.com/Twitchkidd/learn-node.
+Checking branches for https://github.com/Twitchkidd/level-up-react-2.
+Checking branches for https://github.com/Twitchkidd/Logoed.
+Checking branches for https://github.com/Twitchkidd/logoed-server.
+Checking branches for https://github.com/Twitchkidd/logoed-web-app.
+Checking branches for https://github.com/Twitchkidd/master-blaster.
+Checking branches for https://github.com/Twitchkidd/moodbit.
+Checking branches for https://github.com/Twitchkidd/Moving-Circle.
+Checking branches for https://github.com/Twitchkidd/MultiBounce.
+Checking branches for https://github.com/Twitchkidd/NaderDabitNavigatorExperimentalCodeAlong.
+Checking branches for https://github.com/Twitchkidd/phpTest.
+Checking branches for https://github.com/Twitchkidd/polar-pairs.
+Checking branches for https://github.com/Twitchkidd/pom.
+Checking branches for https://github.com/Twitchkidd/ReactNavigationReduxTest.
+Checking branches for https://github.com/Twitchkidd/recurring.
+Checking branches for https://github.com/Twitchkidd/RNWebviewMicPermission.
+Checking branches for https://github.com/Twitchkidd/rocktober.
+Checking branches for https://github.com/Twitchkidd/Roll-a-Ball.
+Checking branches for https://github.com/Twitchkidd/RR-TodoList.
+Checking branches for https://github.com/Twitchkidd/run-club-server.
+Checking branches for https://github.com/Twitchkidd/run-club-web.
+Checking branches for https://github.com/Twitchkidd/RunClub.
+Checking branches for https://github.com/Twitchkidd/server.
+Checking branches for https://github.com/Twitchkidd/shellScripts.
+Checking branches for https://github.com/Twitchkidd/site-deets.
+Checking branches for https://github.com/Twitchkidd/slider-app.
+Checking branches for https://github.com/Twitchkidd/spukee-site-react.
+Checking branches for https://github.com/Twitchkidd/sqrrlSite.
+Checking branches for https://github.com/Twitchkidd/tc-net.
+Checking branches for https://github.com/Twitchkidd/tech-test-react-wordcloud.
+Checking branches for https://github.com/Twitchkidd/test-cra.
+Checking branches for https://github.com/Twitchkidd/test-html.
+Checking branches for https://github.com/Twitchkidd/TrailCity.
+Checking branches for https://github.com/Twitchkidd/web-dev-reboot.
+Checking branches for https://github.com/Twitchkidd/Who2Heal.
+Checking branches for https://github.com/Twitchkidd/whole-code-folder.
+Checking branches for https://github.com/Twitchkidd/whole-logoed-folder.
+Checking branches for https://github.com/Twitchkidd/wild-rydes-react-native-no-mfa.
+Checking branches for https://github.com/Twitchkidd/yusuff-faruq-context-demo.
+The following repos have already been blasted:
+https://github.com/Twitchkidd/dots
+https://github.com/Twitchkidd/gfcom
+https://github.com/Twitchkidd/learn-node
+https://github.com/Twitchkidd/master-blaster
+The following repos had errors that prevented any process to run on them:
+https://github.com/Twitchkidd/moodbit error: remote has neither master nor new primary branch name
+https://github.com/Twitchkidd/polar-pairs error: remote has both master branch and new primary branch name
+The following repos are ready to update the primary branch:
+https://github.com/LIGameDev/Who2Heal
+https://github.com/TrailCity/run-club-server
+https://github.com/TrailCity/RunClub
+https://github.com/TrailCity/tcnet
+https://github.com/Twitchkidd/accountNumber
+https://github.com/Twitchkidd/beginner-javascript
+https://github.com/Twitchkidd/bookBoxSort
+https://github.com/Twitchkidd/borg-david
+https://github.com/Twitchkidd/CheeryTomato
+https://github.com/Twitchkidd/code-etc
+https://github.com/Twitchkidd/dang-thats-delicious
+https://github.com/Twitchkidd/defaultBranchNotMaster
+https://github.com/Twitchkidd/defaultBranchNotPbn
+https://github.com/Twitchkidd/dep-gfcom
+https://github.com/Twitchkidd/dep-run-club-web
+https://github.com/Twitchkidd/dep-server
+https://github.com/Twitchkidd/EggheadToDoApp
+https://github.com/Twitchkidd/Enzyme-React-Native-32
+https://github.com/Twitchkidd/fonts
+https://github.com/Twitchkidd/forms
+https://github.com/Twitchkidd/GarethDotCom
+https://github.com/Twitchkidd/gfcom-blog
+https://github.com/Twitchkidd/gfcom-public-html
+https://github.com/Twitchkidd/jetifier
+https://github.com/Twitchkidd/laa
+https://github.com/Twitchkidd/level-up-react-2
+https://github.com/Twitchkidd/Logoed
+https://github.com/Twitchkidd/logoed-server
+https://github.com/Twitchkidd/logoed-web-app
+https://github.com/Twitchkidd/Moving-Circle
+https://github.com/Twitchkidd/MultiBounce
+https://github.com/Twitchkidd/NaderDabitNavigatorExperimentalCodeAlong
+https://github.com/Twitchkidd/phpTest
+https://github.com/Twitchkidd/pom
+https://github.com/Twitchkidd/ReactNavigationReduxTest
+https://github.com/Twitchkidd/recurring
+https://github.com/Twitchkidd/RNWebviewMicPermission
+https://github.com/Twitchkidd/rocktober
+https://github.com/Twitchkidd/Roll-a-Ball
+https://github.com/Twitchkidd/RR-TodoList
+https://github.com/Twitchkidd/run-club-server
+https://github.com/Twitchkidd/run-club-web
+https://github.com/Twitchkidd/RunClub
+https://github.com/Twitchkidd/server
+https://github.com/Twitchkidd/shellScripts
+https://github.com/Twitchkidd/site-deets
+https://github.com/Twitchkidd/slider-app
+https://github.com/Twitchkidd/spukee-site-react
+https://github.com/Twitchkidd/sqrrlSite
+https://github.com/Twitchkidd/tc-net
+https://github.com/Twitchkidd/tech-test-react-wordcloud
+https://github.com/Twitchkidd/test-cra
+https://github.com/Twitchkidd/test-html
+https://github.com/Twitchkidd/TrailCity
+https://github.com/Twitchkidd/web-dev-reboot
+https://github.com/Twitchkidd/Who2Heal
+https://github.com/Twitchkidd/whole-code-folder
+https://github.com/Twitchkidd/whole-logoed-folder
+https://github.com/Twitchkidd/wild-rydes-react-native-no-mfa
+https://github.com/Twitchkidd/yusuff-faruq-context-demo
+? Continue?  Yes                                                                          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Git alias `git new` created to initialize repos with the HEAD ref at main
+Check the log file at ./info.log for details!
+Thank you for using master-blaster!
