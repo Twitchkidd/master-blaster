@@ -48,11 +48,13 @@ print("Working on `show w' and `show c', actually! It's GNU public 3+! No closed
 # * ``` Explanation of token thing! ``` * #
 tokenExplanation = """
   GitHub is deprecating password-based token generation! This is great for
-  security, it's going to mean you're going to have to go to GitHub.com and
-  come back with an access token to make this program work, though. The next
-  question will determine whether the program needs a token with the more
-  general `repo` scope or the more limited `public_repo` scope. You can run
-  this program again if you're happy with the results!
+  security, it just means you're going to have to go to GitHub.com and
+  come back with an access token to make this program work, is the thing.
+
+  The next question will determine whether the program needs a token with the more
+  general `repo` scope or the more limited `public_repo` scope, and there will
+  be instructions for what to do at GitHub.com when we're ready to go here. This
+  program can be run again for further and any future repos.
 """
 print(tokenExplanation)
 
