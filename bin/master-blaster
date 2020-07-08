@@ -699,6 +699,8 @@ def remoteProcess(repo):
         logging.info(
             f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
 
+# TODO Ask if they want to see errors (with branches, from the check function) rather than just plopping them down!
+
 
 if len(reposWithErrors) > 0:
     print("The following repos had errors that prevented any process to run on them:")
