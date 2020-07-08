@@ -492,6 +492,7 @@ def constructBranchesUrl(repo, which):
     return f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}/branches/{which}"
 
 
+print("Sending network requests ...")
 for repo in repos:
     primaryBranchUrl = constructBranchesUrl(repo, repo['primaryBranchName'])
     masterBranchUrl = constructBranchesUrl(repo, "master")
@@ -507,6 +508,7 @@ for repo in repos:
         repo['hasPrimaryBranchName'] = True
     if masterBranchResponse.json().get('name'):
         repo['hasMasterBranch'] = True
+print("Got the network requests!")
 
 
 # * ~~~ If they wanted to use local clones, look for them! ~~~ * #
@@ -743,6 +745,7 @@ if len(reposAlreadyBlasted) > 0:
     for repo in reposAlreadyBlasted:
         print(repo['htmlUrl'])
 
+# TODO Ask if they want to see errors (with branches, from the check function) rather than just plopping them down!
 if len(reposWithErrors) > 0:
     print("The following repos had errors that prevented any process to run on them:")
     for repo in reposWithErrors:
@@ -784,9 +787,9 @@ if len(reposReadyForRemote) > 0:
 #     for repo in reposReadyForLocalMasterDelete:
 #         localMasterDeleteProcess(repo)
 
-if remoteIsAGo:
-    for repo in reposReadyForRemote:
-        remoteProcess(repo)
+# if remoteIsAGo:
+#     for repo in reposReadyForRemote:
+#         remoteProcess(repo)
 
 # * Add the `git new` alias! * #
 if gitNew:
