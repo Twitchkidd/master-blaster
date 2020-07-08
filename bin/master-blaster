@@ -256,6 +256,9 @@ confirmResetToHomePrompt = """
     Default: use '~/' for local directory search?
 """
 
+# * ``` Confirm remove local directories after! ``` * #
+confirmRemoveLocalDirectoriesAfter = False
+
 
 def customLocalDirectoryConfirmPrompt(inputDir):
     return f'''{inputDir} for all primary branches?'''
@@ -281,11 +284,25 @@ if localDirectories:
             if confirmCustomLocalDirectoryResponse:
                 localDirectory = customLocalDirectoryResponse
                 localDirectoryConfirmed = True
-                logging.info(f"Local directory to search: {localDirectory}")
+                # ! Testing! #
+                # logging.info(f"Local directory to search: {localDirectory}")
                 pass
 
-# ! TESTING # !!
+# ! Testing! #
 localDirectory = f"{Path.home()}/Code"
+logging.info(f"Local directory to search: {localDirectory}")
+
+if localDirectories:
+    confirmRemoveLocalDirectoriesAfter = questionary.confirm(
+        confirmRemoveLocalDirectoriesAfterPrompt).ask()
+    # ! Testing! #
+    logging.info(
+        f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
+
+# ! Testing! #
+confirmRemoveLocalDirectoriesAfter = False
+logging.info(
+    f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
 
 # * ~~~ New Git Alias! ~~~ * #
 
@@ -650,6 +667,7 @@ def remoteProcess(repo):
         remoteProcessRemoteRepoCd = subprocess.run(["cd", localDirectory], universal_newlines=True,
                                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(remoteProcessRemoteRepoCd.stdout)
+        # ! This is a bug! You could have name conflicts at local/owner/repo
         remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
                                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(remoteProcessRemoteRepoGcl.stdout)
@@ -698,10 +716,12 @@ def remoteProcess(repo):
             f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
         logging.info(
             f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+    # TODO if confirmRemoveLocalDirectoriesAfter: cd rm
 
 # TODO Ask if they want to see errors (with branches, from the check function) rather than just plopping them down!
 
 
+# TODO Ask if they want to see errors (with branches, from the check function) rather than just plopping them down!
 if len(reposWithErrors) > 0:
     print("The following repos had errors that prevented any process to run on them:")
     for repo in reposWithErrors:
