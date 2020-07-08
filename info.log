@@ -1,6 +1,9 @@
-2020-07-08 04:58:18,817 Creating a log file!!
-2020-07-08 04:58:22,790 Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
-2020-07-08 04:58:22,791 Naming selection: All primary branches renamed to 'main'.
-2020-07-08 04:58:24,729 Local directory to search: /Users/gareth
-2020-07-08 04:58:24,744 Add git alias `git new`: main
-2020-07-08 05:04:23,948 Git alias `git new` created to initialize repos with the HEAD ref at main
+2020-07-08 11:46:41,308 Creating a log file!!
+2020-07-08 11:46:43,550 Username: t
+2020-07-08 11:46:44,297 Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
+2020-07-08 11:46:44,297 Naming selection: All primary branches renamed to 'main'.
+2020-07-08 11:46:45,549 Local directory to search: /Users/gareth
+2020-07-08 11:46:45,549 Local directory to search: /Users/gareth/Code
+2020-07-08 11:46:45,983 Confirm remove local directories after: False
+2020-07-08 11:46:46,005 Add git alias `git new`: main
+2020-07-08 11:48:24,490 Git alias `git new` created to initialize repos with the HEAD ref at main
