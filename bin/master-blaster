@@ -83,7 +83,6 @@ def usernameConfirmationPrompt(usernameInput):
     return f"GitHub username: {usernameInput}?"
 
 
-# ! Testing ! #
 usernameConfirmed = False
 while not usernameConfirmed:
     usernameResponse = questionary.text(usernamePrompt).ask()
@@ -97,10 +96,11 @@ while not usernameConfirmed:
         usernameConfirmationResponse = questionary.confirm(
             usernameConfirmationPrompt(usernameResponse)).ask()
         if usernameConfirmationResponse == False:
-            print("Retry!")
+            print("Thank you for retrying!")
             continue
         if usernameConfirmationResponse:
             username = usernameResponse
+            logging.info(f"Username: {username}")
             usernameConfirmed = True
             continue
 
@@ -237,10 +237,10 @@ if answers['namesSelection'] == "Interactively choose a name for the primary bra
 # * ``` Local directory yay or nay! ``` * #
 localDirectoriesPrompt = """
   Repositories not present locally will be cloned to a temporary folder,
-  updated, the update pushed, (the default branch on GitHub.com updated,)
-  and then deleted locally. We can decrease the use of bandwidth and reduce
-  potential conflicts by scanning for repositories that *are* present locally.
-  Is this okay? (No other changes will be added or committed.)
+  updated, the update pushed, (the default branch on GitHub.com updated,) and
+  then deleted locally depending on your choice in two questions. This can
+  decrease the use of bandwidth and reduce potential conflicts by scanning for
+  repositories that are present locally. Is this okay?
 """
 localDirectories = questionary.confirm(localDirectoriesPrompt).ask()
 
@@ -249,8 +249,9 @@ localDirectory = Path.home()
 
 # * ``` Which local directory? ``` * #
 localDirectoryPrompt = """
-    Do you keep your projects in a certain directory? Type that in here to
-    speed up search! Like /Users/gareth/Code ... default is ~/, hit enter for default.
+    Do you keep all of your projects in a certain directory? Type that in here
+    to limit and speed up search. Default is ~/, hit enter for default.
+    Example: /Users/gareth/Code
 """
 
 # * ``` Confirm reset to home! ``` * #
@@ -258,7 +259,7 @@ confirmResetToHomePrompt = """
     Default: use '~/' for local directory search?
 """
 
-# * ``` Confirm remove local directories after! ``` * #
+# * ``` Placeholder variable for confirming removal of local directories after! ``` * #
 confirmRemoveLocalDirectoriesAfter = False
 
 
@@ -294,12 +295,16 @@ if localDirectories:
 localDirectory = f"{Path.home()}/Code"
 logging.info(f"Local directory to search: {localDirectory}")
 
+confirmRemoveLocalDirectoriesAfterPrompt = """
+    Remove newly cloned repositories after process complete? Defaults to yes.
+"""
+
 if localDirectories:
     confirmRemoveLocalDirectoriesAfter = questionary.confirm(
         confirmRemoveLocalDirectoriesAfterPrompt).ask()
     # ! Testing! #
-    logging.info(
-        f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
+    # logging.info(
+    #     f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
 
 # ! Testing! #
 confirmRemoveLocalDirectoriesAfter = False
@@ -313,8 +318,8 @@ gitNew = False
 
 # * ``` Prompt! ``` * #
 gitNewPrompt = f"""
-    We can add a git alias 'git new' that initializes new git repos with HEAD as
-    '{name}', shall we?
+    Add a git alias 'git new' that initializes
+    new git repos with commit as {name}? Defaults to yes.
 """
 
 # * ``` Ask it! ``` * #
@@ -430,7 +435,7 @@ while not reposResponseConfirmed:
     url = constructReposUrl()
     params = constructReposParams()
     headers = constructHeaders(token)
-    print("Sending network request ...")
+    print("Checking for repos ...")
     reposResponse = requests.get(url, params=params, headers=headers)
     # Bad token returns a 401! #
     if reposResponse.status_code >= 400:
@@ -439,7 +444,7 @@ while not reposResponseConfirmed:
             f"Network error! Possibly the token! Try again please! If this is not your GitHub username, please restart the program: {username}")
         continue
     else:
-        print("Got the network request!")
+        print("Repos received!")
         reposResponseConfirmed = True
         for repository in reposResponse.json():
             repos.append(
@@ -487,7 +492,6 @@ def constructBranchesUrl(repo, which):
     return f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}/branches/{which}"
 
 
-print("Sending network requests ...")
 for repo in repos:
     primaryBranchUrl = constructBranchesUrl(repo, repo['primaryBranchName'])
     masterBranchUrl = constructBranchesUrl(repo, "master")
@@ -503,7 +507,6 @@ for repo in repos:
         repo['hasPrimaryBranchName'] = True
     if masterBranchResponse.json().get('name'):
         repo['hasMasterBranch'] = True
-print("Got the network requests!")
 
 
 # * ~~~ If they wanted to use local clones, look for them! ~~~ * #
@@ -540,11 +543,11 @@ if localDirectories:
 localRepoUrls = [localRepo['url'] for localRepo in localRepos]
 
 # * ``` Placeholder variables for groups of checked repos! ``` * #
+reposAlreadyBlasted = []
 reposWithErrors = []
 reposReadyForLocal = []
 reposReadyForLocalMasterDelete = []
 reposReadyForRemote = []
-reposAlreadyBlasted = []
 
 
 def check(repo):
@@ -644,8 +647,9 @@ def localProcess(repo):
 
 
 def constructPatchDefaultUrl(repo):
-    print(f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}")
     return f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}"
+
+# ! I have no idea what's doing on here.
 
 
 def remoteProcess(repo):
@@ -666,34 +670,34 @@ def remoteProcess(repo):
                         f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
                     logging.info(
                         f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-        remoteProcessRemoteRepoCd = subprocess.run(["cd", localDirectory], universal_newlines=True,
-                                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(remoteProcessRemoteRepoCd.stdout)
-        # ! This is a bug! You could have name conflicts at local/owner/repo
-        remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
-                                                    universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(remoteProcessRemoteRepoGcl.stdout)
-        remoteProcessRemoteRepoCdCl = subprocess.run(["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
-                                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(remoteProcessRemoteRepoCdCl.stdout)
-        remoteProcessRemoteRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
-                                                    universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(remoteProcessRemoteRepoGbm.stdout)
-        remoteProcessRemoteRepoGpuo = subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
-                                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(remoteProcessRemoteRepoGpuo.stdout)
-        print(
-            f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-        logging.info(
-            f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+        else:
+            remoteProcessRemoteRepoCd = subprocess.run(["cd", localDirectory], universal_newlines=True,
+                                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(remoteProcessRemoteRepoCd.stdout)
+            remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
+                                                        universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(remoteProcessRemoteRepoGcl.stdout)
+            remoteProcessRemoteRepoCdCl = subprocess.run(["cd", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
+                                                         universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(remoteProcessRemoteRepoCdCl.stdout)
+            remoteProcessRemoteRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
+                                                        universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(remoteProcessRemoteRepoGbm.stdout)
+            remoteProcessRemoteRepoGpuo = subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
+                                                         universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(remoteProcessRemoteRepoGpuo.stdout)
+            print(
+                f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+            logging.info(
+                f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
     else:
         remoteProcessRemoteRepoCd = subprocess.run(["cd", localDirectory], universal_newlines=True,
                                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(remoteProcessRemoteRepoCd.stdout)
-        remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
+        remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
                                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(remoteProcessRemoteRepoGcl.stdout)
-        remoteProcessRemoteRepoCdCl = subprocess.run(["cd", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
+        remoteProcessRemoteRepoCdCl = subprocess.run(["cd", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
                                                      universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(remoteProcessRemoteRepoCdCl.stdout)
         remoteProcessRemoteRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
@@ -719,11 +723,12 @@ def remoteProcess(repo):
         logging.info(
             f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
     # TODO if confirmRemoveLocalDirectoriesAfter: cd rm
+        if confirmRemoveLocalDirectoriesAfter:
+            # TODO
+            print("remove the directories, lol")
+            # TODO Ask if they want to see errors (with branches, from the check function) rather than just plopping them down!
 
-# TODO Ask if they want to see errors (with branches, from the check function) rather than just plopping them down!
 
-
-# TODO Ask if they want to see errors (with branches, from the check function) rather than just plopping them down!
 if len(reposWithErrors) > 0:
     print("The following repos had errors that prevented any process to run on them:")
     for repo in reposWithErrors:
@@ -773,9 +778,11 @@ if not remoteIsAGo:
     sys.exit(1)
 
 if len(reposReadyForLocal) > 0:
+    # ... errors?
     print(f"{len(reposReadyForLocal)} local repos updated!")
 
 if len(reposReadyForRemote) > 0:
+    # ... errors?
     print(f"{len(reposReadyForRemote)} repos updated!")
 
 print("Check the log file at ./info.log for details!")
