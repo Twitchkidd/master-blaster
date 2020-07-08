@@ -691,6 +691,7 @@ def remoteProcess(repo):
                                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             print(remoteProcessRemoteRepoCd.stdout)
             print(remoteProcessRemoteRepoCd.stderr)
+            print("Hello?")
             # remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
             #                                             universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             # print(remoteProcessRemoteRepoGcl.stdout)
