@@ -617,6 +617,7 @@ else:
 
 # * ``` Placeholder variable for local and remote processes being a go! ``` * #
 localIsAGo = False
+localMasterDeleteIsANoGo = True
 remoteIsAGo = False
 
 
