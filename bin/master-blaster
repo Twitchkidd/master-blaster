@@ -523,67 +523,52 @@ localRepoUrls = [localRepo['url'] for localRepo in localRepos]
 # * ``` Placeholder variables for groups of checked repos! ``` * #
 reposWithErrors = []
 reposReadyForLocal = []
+reposReadyForLocalMasterDelete = []
 reposReadyForRemote = []
+reposAlreadyBlasted = []
 
 
 def check(repo):
-    if repo.get('localHasMaster'):
+    if repo['hasMasterBranch'] and repo['hasPrimaryBranchName']:
+        repo['status'] = "error: remote has both master branch and new primary branch name"
+        reposWithErrors.append(repo)
+        return
+    if not repo['hasMasterBranch'] and not repo['hasPrimaryBranchName']:
+        repo['status'] = "error: remote has neither master nor new primary branch name"
+        reposWithErrors.append(repo)
+        return
+    if repo.get('localHasPrimaryBranchName'):
+        if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName'] and not repo['localHasMaster'] and repo['localHasPrimaryBranchName']:
+            repo['status'] = "already blasted"
+            reposAlreadyBlasted.append(repo)
+            return
+        if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName'] and repo['localHasMaster'] and repo['localHasPrimaryBranchName']:
+            repo['status'] = "candidate to delete local master"
+            reposReadyForLocalMasterDelete.append(repo)
+            return
         if repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
-            if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and not repo['defaultBranch'] == "master":
-                repo['status'] = "error: not ready for remote process, default branch of remote isn't master"
-                reposWithErrors.append(repo)
-                print(repo)
-            elif repo['hasPrimaryBranchName'] and not repo['hasMasterBranch'] and not repo['defaultBranch'] == repo['primaryBranchName']:
-                repo['status'] = "error: not ready for local process, default branch of remote isn't the primary branch name"
-                reposWithErrors.append(repo)
-                print(repo)
-            elif repo['hasMasterBranch'] and repo['hasPrimaryBranchName']:
-                repo['status'] = "error: not ready for remote process, remote has a branch with the primary branch name already"
-                reposWithErrors.append(repo)
-                print(repo)
-            elif not repo['hasMasterBranch'] and not repo['hasPrimaryBranchName']:
-                repo['status'] = "error: not ready for remote process, remote doesn't have a master branch"
-                reposWithErrors.append(repo)
-                print(repo)
-            elif repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
-                repo['status'] = "ready for remote process"
-                reposReadyForRemote.append(repo)
-            elif repo['hasPrimaryBranchName'] and not repo['hasMasterBranch'] and repo['defaultBranch'] == repo['primaryBranchName']:
-                repo['status'] = "ready for local process"
+            if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName']:
+                repo['status'] = "candidate for local process"
                 reposReadyForLocal.append(repo)
-            else:
-                repo['status'] = "error: unknown error"
-                reposWithErrors.append(repo)
-                print(repo)
-        else:
-            if (not repo['localHasMaster'] and not repo['localHasPrimaryBranchName']) or (repo['localHasMaster'] and repo['localHasPrimaryBranchName']):
-                repo['status'] = "error: local repository branching not ready"
-                reposWithErrors.append(repo)
-                print(repo)
-            else:
-                repo['status'] = "error: unknown error"
-                reposWithErrors.append(repo)
-                print(repo)
-    else:
-        if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and not repo['defaultBranch'] == "master":
-            repo['status'] = "error: not ready for remote process, default branch of remote isn't master"
-            reposWithErrors.append(repo)
-            print(repo)
-        elif repo['hasMasterBranch'] and repo['hasPrimaryBranchName']:
-            repo['status'] = "error: not ready for remote process, remote has a branch with the primary branch name already"
-            reposWithErrors.append(repo)
-            print(repo)
-        elif not repo['hasMasterBranch'] and not repo['hasPrimaryBranchName']:
-            repo['status'] = "error: not ready for remote process, remote doesn't have a master branch"
-            reposWithErrors.append(repo)
-            print(repo)
-        elif repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
-            repo['status'] = "ready for remote process"
-            reposReadyForRemote.append(repo)
-        else:
-            repo['status'] = "error: unknown error"
-            reposWithErrors.append(repo)
-            print(repo)
+                return
+            if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
+                repo['status'] = "candidate for remote process"
+                reposReadyForRemote.append(repo)
+                return
+        repo['status'] = f"error: {repo}"
+        reposWithErrors.append(repo)
+        return
+    if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName']:
+        repo['status'] = "already blasted"
+        reposAlreadyBlasted.append(repo)
+        return
+    if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
+        repo['status'] = "candidate for remote process"
+        reposReadyForRemote.append(repo)
+        return
+    repo['status'] = f"error: {repo}"
+    reposWithErrors.append(repo)
+    return
 
 
 if localDirectories:
@@ -751,10 +736,10 @@ if gitNew:
     else:
         gitNewGcg = subprocess.run(["git", "config", "--global", "alias.new", "'!git", "init"], universal_newlines=True,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(gitNewGcg)
+        print(gitNewGcg.stdout)
         gitNewGsh = subprocess.run(["git", "symbolic-ref", "HEAD", f"refs/heads/{name}"], universal_newlines=True,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(gitNewGsh)
+        print(gitNewGsh.stdout)
         print(
             f"Git alias `git new` created to initialize repos with the HEAD ref at {name}")
         logging.info(
