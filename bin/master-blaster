@@ -646,6 +646,10 @@ def localProcess(repo):
             print(localProcessGsro.stdout)
 
 
+def localMasterDeleteProcess(repo):
+    print(f"{repo['name']}: Deleeete meeeee!")
+
+
 def constructPatchDefaultUrl(repo):
     return f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}"
 
@@ -660,86 +664,106 @@ def remoteProcess(repo):
                     remoteProcessLocalRepoCd = subprocess.run(["cd", localRepo['path']], universal_newlines=True,
                                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     print(remoteProcessLocalRepoCd.stdout)
-                    remoteProcessLocalRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
-                                                               universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    print(remoteProcessLocalRepoGbm.stdout)
-                    remoteProcessLocalRepoGpuo = subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
-                                                                universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    print(remoteProcessLocalRepoGpuo.stdout)
-                    print(
-                        f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-                    logging.info(
-                        f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+                    print(remoteProcessLocalRepoCd.stderr)
+                    # remoteProcessLocalRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
+                    #                                            universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    # print(remoteProcessLocalRepoGbm.stdout)
+                    # remoteProcessLocalRepoGpuo = subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
+                    #                                             universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    # print(remoteProcessLocalRepoGpuo.stdout)
+                    # print(
+                    #     f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+                    # logging.info(
+                    #     f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
         else:
             remoteProcessRemoteRepoCd = subprocess.run(["cd", localDirectory], universal_newlines=True,
                                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             print(remoteProcessRemoteRepoCd.stdout)
-            remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
-                                                        universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            print(remoteProcessRemoteRepoGcl.stdout)
-            remoteProcessRemoteRepoCdCl = subprocess.run(["cd", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
-                                                         universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            print(remoteProcessRemoteRepoCdCl.stdout)
-            remoteProcessRemoteRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
-                                                        universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            print(remoteProcessRemoteRepoGbm.stdout)
-            remoteProcessRemoteRepoGpuo = subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
-                                                         universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            print(remoteProcessRemoteRepoGpuo.stdout)
-            print(
-                f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-            logging.info(
-                f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+            print(remoteProcessRemoteRepoCd.stderr)
+            # remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
+            #                                             universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # print(remoteProcessRemoteRepoGcl.stdout)
+            # remoteProcessRemoteRepoCdCl = subprocess.run(["cd", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
+            #                                              universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # print(remoteProcessRemoteRepoCdCl.stdout)
+            # remoteProcessRemoteRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
+            #                                             universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # print(remoteProcessRemoteRepoGbm.stdout)
+            # remoteProcessRemoteRepoGpuo = subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
+            #                                              universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # print(remoteProcessRemoteRepoGpuo.stdout)
+            # print(
+            #     f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+            # logging.info(
+            #     f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
     else:
         remoteProcessRemoteRepoCd = subprocess.run(["cd", localDirectory], universal_newlines=True,
                                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(remoteProcessRemoteRepoCd.stdout)
-        remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
-                                                    universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(remoteProcessRemoteRepoGcl.stdout)
-        remoteProcessRemoteRepoCdCl = subprocess.run(["cd", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
-                                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(remoteProcessRemoteRepoCdCl.stdout)
-        remoteProcessRemoteRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
-                                                    universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(remoteProcessRemoteRepoGbm.stdout)
-        remoteProcessRemoteRepoGpuo = subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
-                                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(remoteProcessRemoteRepoGpuo.stdout)
-        print(
-            f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-        logging.info(
-            f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-    url = constructPatchDefaultUrl(repo)
-    params = json.dumps({"default_branch": f"{repo['primaryBranchName']}"})
-    patchDefaultResponse = requests.patch(url, params=params, headers=headers)
-    if patchDefaultResponse.status_code >= 400:
-        logging.warning(f"Response status: {patchDefaultResponse.status_code}")
-        print(
-            f"Network error! Status code: {patchDefaultResponse.status_code}")
-    else:
-        print(
-            f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-        logging.info(
-            f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-    # TODO if confirmRemoveLocalDirectoriesAfter: cd rm
-        if confirmRemoveLocalDirectoriesAfter:
-            # TODO
-            print("remove the directories, lol")
-            # TODO Ask if they want to see errors (with branches, from the check function) rather than just plopping them down!
+        print(remoteProcessRemoteRepoCd.stderr)
+        # remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
+        #                                             universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # print(remoteProcessRemoteRepoGcl.stdout)
+        # remoteProcessRemoteRepoCdCl = subprocess.run(["cd", f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}"],
+        #                                              universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # print(remoteProcessRemoteRepoCdCl.stdout)
+        # remoteProcessRemoteRepoGbm = subprocess.run(["git", "branch", "-m", "master", repo['primaryBranchName']],
+        #                                             universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # print(remoteProcessRemoteRepoGbm.stdout)
+        # remoteProcessRemoteRepoGpuo = subprocess.run(["git", "push", "-u", "origin", repo['primaryBranchName']],
+        #                                              universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # print(remoteProcessRemoteRepoGpuo.stdout)
+        # print(
+        #     f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+        # logging.info(
+        #     f"Primary branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+    # url = constructPatchDefaultUrl(repo)
+    # params = json.dumps({"default_branch": f"{repo['primaryBranchName']}"})
+    # patchDefaultResponse = requests.patch(url, params=params, headers=headers)
+    # if patchDefaultResponse.status_code >= 400:
+    #     logging.warning(f"Response status: {patchDefaultResponse.status_code}")
+    #     print(
+    #         f"Network error! Status code: {patchDefaultResponse.status_code}")
+    # else:
+    #     print(
+    #         f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+    #     logging.info(
+    #         f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+    # # TODO if confirmRemoveLocalDirectoriesAfter: cd rm
+    #     if confirmRemoveLocalDirectoriesAfter:
+    #         # TODO
+    #         print("remove the directories, lol")
+    #         # TODO Ask if they want to see errors (with branches, from the check function) rather than just plopping them down!
 
+
+if len(reposAlreadyBlasted) > 0:
+    print("The following repos have already been blasted:")
+    for repo in reposAlreadyBlasted:
+        print(repo['htmlUrl'])
 
 if len(reposWithErrors) > 0:
     print("The following repos had errors that prevented any process to run on them:")
     for repo in reposWithErrors:
-        print(repo['htmlUrl'])
-        print(repo['status'])
+        print(f"{repo['htmlUrl']} {repo['status']}")
 
 if len(reposReadyForLocal) > 0:
     print("The following repos are ready to update primary branch and origin locally:")
     for repo in reposReadyForLocal:
         print(repo['htmlUrl'])
     localIsAGo = questionary.confirm("Continue?").ask()
+    if not localIsAGo:
+        print("Okay! You can run the program again if you change your mind!")
+
+if len(reposReadyForLocalMasterDelete) > 0:
+    print("The following repos could have their local branch 'master' deleted:")
+    for repo in reposReadyForLocalMasterDelete:
+        print(repo['htmlUrl'])
+    localMasterDeleteIsANoGo = questionary.confirm(
+        "Delete? Defaults to no.").ask()
+    if not localMasterDeleteIsANoGo:
+        print("Okay! Local 'master' branches will be deleted!")
+    else:
+        print("Okay! You can run the program again if you change your mind!")
 
 if len(reposReadyForRemote) > 0:
     print("The following repos are ready to update the primary branch:")
@@ -754,14 +778,18 @@ if len(reposReadyForRemote) > 0:
 #     for repo in reposReadyForLocal:
 #         localProcess(repo)
 
-# if remoteIsAGo:
-#     for repo in reposReadyForRemote:
-#         remoteProcess(repo)
+# if not localMasterDeleteIsANoGo:
+#     for repo in reposReadyForLocalMasterDelete:
+#         localMasterDeleteProcess(repo)
+
+if remoteIsAGo:
+    for repo in reposReadyForRemote:
+        remoteProcess(repo)
 
 # * Add the `git new` alias! * #
 if gitNew:
     if interactive:
-        print("Interactive mode enabled, so no one name for `git new`!")
+        print("Interactive mode enabled, so there's no single name for a `git new` alias!")
     else:
         gitNewGcg = subprocess.run(["git", "config", "--global", "alias.new", "'!git", "init"], universal_newlines=True,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -777,13 +805,15 @@ if gitNew:
 if not remoteIsAGo:
     sys.exit(1)
 
-if len(reposReadyForLocal) > 0:
-    # ... errors?
-    print(f"{len(reposReadyForLocal)} local repos updated!")
 
-if len(reposReadyForRemote) > 0:
-    # ... errors?
-    print(f"{len(reposReadyForRemote)} repos updated!")
+# TODO These should be just after the for repo in repos ... es
+# if len(reposReadyForLocal) > 0:
+#     # ... errors?
+#     print(f"{len(reposReadyForLocal)} local repos updated!")
+
+# if len(reposReadyForRemote) > 0:
+#     # ... errors?
+#     print(f"{len(reposReadyForRemote)} repos updated!")
 
 print("Check the log file at ./info.log for details!")
 print("Thank you for using master-blaster!")
