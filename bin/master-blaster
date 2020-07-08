@@ -258,6 +258,9 @@ confirmResetToHomePrompt = """
     Default: use '~/' for local directory search?
 """
 
+# * ``` Confirm remove local directories after! ``` * #
+confirmRemoveLocalDirectoriesAfter = False
+
 
 def customLocalDirectoryConfirmPrompt(inputDir):
     return f'''{inputDir} for all primary branches?'''
@@ -283,11 +286,25 @@ if localDirectories:
             if confirmCustomLocalDirectoryResponse:
                 localDirectory = customLocalDirectoryResponse
                 localDirectoryConfirmed = True
-                logging.info(f"Local directory to search: {localDirectory}")
+                # ! Testing! #
+                # logging.info(f"Local directory to search: {localDirectory}")
                 pass
 
-# ! TESTING # !!
+# ! Testing! #
 localDirectory = f"{Path.home()}/Code"
+logging.info(f"Local directory to search: {localDirectory}")
+
+if localDirectories:
+    confirmRemoveLocalDirectoriesAfter = questionary.confirm(
+        confirmRemoveLocalDirectoriesAfterPrompt).ask()
+    # ! Testing! #
+    logging.info(
+        f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
+
+# ! Testing! #
+confirmRemoveLocalDirectoriesAfter = False
+logging.info(
+    f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
 
 # * ~~~ New Git Alias! ~~~ * #
 
@@ -470,15 +487,14 @@ def constructBranchesUrl(repo, which):
     return f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}/branches/{which}"
 
 
+print("Sending network requests ...")
 for repo in repos:
     primaryBranchUrl = constructBranchesUrl(repo, repo['primaryBranchName'])
     masterBranchUrl = constructBranchesUrl(repo, "master")
     headers = constructHeaders(token)
     print(f"Checking branches for {repo['htmlUrl']}.")
-    print("Sending network request ...")
     primaryBranchResponse = requests.get(primaryBranchUrl, headers=headers)
     masterBranchResponse = requests.get(masterBranchUrl, headers=headers)
-    print("Got the network request!")
     if primaryBranchResponse.json().get('message'):
         repo['hasPrimaryBranchName'] = False
     if masterBranchResponse.json().get('message'):
@@ -487,6 +503,7 @@ for repo in repos:
         repo['hasPrimaryBranchName'] = True
     if masterBranchResponse.json().get('name'):
         repo['hasMasterBranch'] = True
+print("Got the network requests!")
 
 
 # * ~~~ If they wanted to use local clones, look for them! ~~~ * #
@@ -652,6 +669,7 @@ def remoteProcess(repo):
         remoteProcessRemoteRepoCd = subprocess.run(["cd", localDirectory], universal_newlines=True,
                                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(remoteProcessRemoteRepoCd.stdout)
+        # ! This is a bug! You could have name conflicts at local/owner/repo
         remoteProcessRemoteRepoGcl = subprocess.run(["git", "clone", f"{repo['htmlUrl']}.git", f"{localDirectory}/{repo['owner-login']}/{repo['name']}"],
                                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(remoteProcessRemoteRepoGcl.stdout)
@@ -700,10 +718,12 @@ def remoteProcess(repo):
             f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
         logging.info(
             f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+    # TODO if confirmRemoveLocalDirectoriesAfter: cd rm
 
 # TODO Ask if they want to see errors (with branches, from the check function) rather than just plopping them down!
 
 
+# TODO Ask if they want to see errors (with branches, from the check function) rather than just plopping them down!
 if len(reposWithErrors) > 0:
     print("The following repos had errors that prevented any process to run on them:")
     for repo in reposWithErrors:
@@ -725,13 +745,13 @@ if len(reposReadyForRemote) > 0:
         print("Okay! It's a no-go for remote repos!")
 
 
-if localIsAGo:
-    for repo in reposReadyForLocal:
-        localProcess(repo)
+# if localIsAGo:
+#     for repo in reposReadyForLocal:
+#         localProcess(repo)
 
-if remoteIsAGo:
-    for repo in reposReadyForRemote:
-        remoteProcess(repo)
+# if remoteIsAGo:
+#     for repo in reposReadyForRemote:
+#         remoteProcess(repo)
 
 # * Add the `git new` alias! * #
 if gitNew:
