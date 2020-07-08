@@ -532,17 +532,6 @@ def check(repo):
             if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and not repo['defaultBranch'] == "master":
                 repo['status'] = "error: not ready for remote process, default branch of remote isn't master"
                 reposWithErrors.append(repo)
-<<<<<<< HEAD
-            elif repo['hasPrimaryBranchName'] and not repo['hasMasterBranch'] and not repo['defaultBranch'] == repo['primaryBranchName']:
-                repo['status'] = "error: not ready for local process, default branch of remote isn't the primary branch name"
-                reposWithErrors.append(repo)
-            elif repo['hasMasterBranch'] and repo['hasPrimaryBranchName']:
-                repo['status'] = "error: not ready for remote process, remote has a branch with the primary branch name already"
-                reposWithErrors.append(repo)
-            elif not repo['hasMasterBranch'] and not repo['hasPrimaryBranchName']:
-                repo['status'] = "error: not ready for remote process, remote doesn't have a master branch"
-                reposWithErrors.append(repo)
-=======
                 print(repo)
             elif repo['hasPrimaryBranchName'] and not repo['hasMasterBranch'] and not repo['defaultBranch'] == repo['primaryBranchName']:
                 repo['status'] = "error: not ready for local process, default branch of remote isn't the primary branch name"
@@ -556,7 +545,6 @@ def check(repo):
                 repo['status'] = "error: not ready for remote process, remote doesn't have a master branch"
                 reposWithErrors.append(repo)
                 print(repo)
->>>>>>> main
             elif repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
                 repo['status'] = "ready for remote process"
                 reposReadyForRemote.append(repo)
@@ -566,37 +554,20 @@ def check(repo):
             else:
                 repo['status'] = "error: unknown error"
                 reposWithErrors.append(repo)
-<<<<<<< HEAD
-=======
                 print(repo)
->>>>>>> main
         else:
             if (not repo['localHasMaster'] and not repo['localHasPrimaryBranchName']) or (repo['localHasMaster'] and repo['localHasPrimaryBranchName']):
                 repo['status'] = "error: local repository branching not ready"
                 reposWithErrors.append(repo)
-<<<<<<< HEAD
-            else:
-                repo['status'] = "error: unknown error"
-                reposWithErrors.append(repo)
-=======
                 print(repo)
             else:
                 repo['status'] = "error: unknown error"
                 reposWithErrors.append(repo)
                 print(repo)
->>>>>>> main
     else:
         if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and not repo['defaultBranch'] == "master":
             repo['status'] = "error: not ready for remote process, default branch of remote isn't master"
             reposWithErrors.append(repo)
-<<<<<<< HEAD
-        elif repo['hasMasterBranch'] and repo['hasPrimaryBranchName']:
-            repo['status'] = "error: not ready for remote process, remote has a branch with the primary branch name already"
-            reposWithErrors.append(repo)
-        elif not repo['hasMasterBranch'] and not repo['hasPrimaryBranchName']:
-            repo['status'] = "error: not ready for remote process, remote doesn't have a master branch"
-            reposWithErrors.append(repo)
-=======
             print(repo)
         elif repo['hasMasterBranch'] and repo['hasPrimaryBranchName']:
             repo['status'] = "error: not ready for remote process, remote has a branch with the primary branch name already"
@@ -606,17 +577,13 @@ def check(repo):
             repo['status'] = "error: not ready for remote process, remote doesn't have a master branch"
             reposWithErrors.append(repo)
             print(repo)
->>>>>>> main
         elif repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
             repo['status'] = "ready for remote process"
             reposReadyForRemote.append(repo)
         else:
             repo['status'] = "error: unknown error"
             reposWithErrors.append(repo)
-<<<<<<< HEAD
-=======
             print(repo)
->>>>>>> main
 
 
 if localDirectories:
