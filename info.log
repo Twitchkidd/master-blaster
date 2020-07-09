@@ -1,8 +1,619 @@
-2020-07-09 09:00:43,397 Creating a log file!!
-2020-07-09 09:00:44,929 Username: f
-2020-07-09 09:00:47,700 Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, only public, not private.
-2020-07-09 09:00:47,700 Naming selection: All primary branches renamed to 'main'.
-2020-07-09 09:00:49,817 Local directory to search: /Users/gareth
-2020-07-09 09:00:49,817 Local directory to search: /Users/gareth/Code
-2020-07-09 09:00:52,130 Confirm remove local directories after: False
-2020-07-09 09:00:52,150 Add git alias `git new`: main
+2020-07-09 13:17:55,482 INFO Creating a log file!!
+2020-07-09 13:17:59,626 INFO Username: Twitchkidd
+2020-07-09 13:18:00,917 INFO Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
+2020-07-09 13:18:00,917 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-09 13:18:10,001 INFO Local directory to search: /Users/gareth/Code
+2020-07-09 13:18:10,737 INFO Confirm remove local directories after: True
+2020-07-09 13:18:10,756 INFO Add git alias `git new`: main
+2020-07-09 13:19:52,551 INFO Creating a log file!!
+2020-07-09 13:19:56,280 INFO Username: Twitchkidd
+2020-07-09 13:19:58,645 INFO Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
+2020-07-09 13:19:58,646 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-09 13:20:09,762 INFO Local directory to search: /Users/gareth/Code
+2020-07-09 13:20:11,818 INFO Confirm remove local directories after: True
+2020-07-09 13:20:11,838 INFO Add git alias `git new`: main
+2020-07-09 13:20:47,701 INFO cwd=/Users/gareth/Code/rename/accountNumber: git branch
+2020-07-09 13:20:47,818 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:47,825 INFO cwd=/Users/gareth/Code/rename/beginner-javascript: git branch
+2020-07-09 13:20:47,856 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:47,861 INFO cwd=/Users/gareth/Code/rename/bookBoxSort: git branch
+2020-07-09 13:20:47,968 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:47,973 INFO cwd=/Users/gareth/Code/rename/borg-david: git branch
+2020-07-09 13:20:48,109 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:48,115 INFO cwd=/Users/gareth/Code/rename/CheeryTomato: git branch
+2020-07-09 13:20:48,177 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:48,183 INFO cwd=/Users/gareth/Code/rename/code-etc: git branch
+2020-07-09 13:20:48,254 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:48,259 INFO cwd=/Users/gareth/Code/rename/dang-thats-delicious: git branch
+2020-07-09 13:20:48,288 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:48,294 INFO cwd=/Users/gareth/Code/rename/dep-gfcom: git branch
+2020-07-09 13:20:48,334 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:48,339 INFO cwd=/Users/gareth/Code/rename/dep-run-club-web: git branch
+2020-07-09 13:20:48,385 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:48,391 INFO cwd=/Users/gareth/Code/rename/dep-server: git branch
+2020-07-09 13:20:48,616 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:48,622 INFO cwd=/Users/gareth/Code/dots: git branch
+2020-07-09 13:20:48,733 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:20:48,739 INFO cwd=/Users/gareth/Code/rename/EggheadToDoApp: git branch
+2020-07-09 13:20:49,022 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:49,027 INFO cwd=/Users/gareth/Code/rename/Enzyme-React-Native-32: git branch
+2020-07-09 13:20:49,082 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:49,089 INFO cwd=/Users/gareth/Code/rename/fonts: git branch
+2020-07-09 13:20:49,245 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:49,250 INFO cwd=/Users/gareth/Code/rename/forms: git branch
+2020-07-09 13:20:49,282 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:49,287 INFO cwd=/Users/gareth/Code/rename/GarethDotCom: git branch
+2020-07-09 13:20:49,322 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:49,327 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
+2020-07-09 13:20:49,429 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:20:49,434 INFO cwd=/Users/gareth/Code/rename/gfcom-blog: git branch
+2020-07-09 13:20:49,620 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:49,626 INFO cwd=/Users/gareth/Code/rename/gfcom-public-html: git branch
+2020-07-09 13:20:49,662 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:49,668 INFO cwd=/Users/gareth/Code/rename/jetifier: git branch
+2020-07-09 13:20:49,811 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:49,816 INFO cwd=/Users/gareth/Code/rename/laa: git branch
+2020-07-09 13:20:49,903 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:49,909 INFO cwd=/Users/gareth/Code/rename/level-up-react-2: git branch
+2020-07-09 13:20:50,043 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,048 INFO cwd=/Users/gareth/Code/rename/Logoed: git branch
+2020-07-09 13:20:50,078 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,084 INFO cwd=/Users/gareth/Code/rename/logoed-server: git branch
+2020-07-09 13:20:50,131 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,136 INFO cwd=/Users/gareth/Code/rename/logoed-web-app: git branch
+2020-07-09 13:20:50,173 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,178 INFO cwd=/Users/gareth/Code/master-blaster: git branch
+2020-07-09 13:20:50,189 INFO localBranchInfoGitBranch.stdout.read():   dev
+* main
+
+2020-07-09 13:20:50,194 INFO cwd=/Users/gareth/Code/rename/moodbit: git branch
+2020-07-09 13:20:50,233 INFO localBranchInfoGitBranch.stdout.read(): * leExit
+
+2020-07-09 13:20:50,238 INFO cwd=/Users/gareth/Code/rename/Moving-Circle: git branch
+2020-07-09 13:20:50,279 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,285 INFO cwd=/Users/gareth/Code/rename/MultiBounce: git branch
+2020-07-09 13:20:50,316 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,322 INFO cwd=/Users/gareth/Code/rename/NaderDabitNavigatorExperimentalCodeAlong: git branch
+2020-07-09 13:20:50,343 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,349 INFO cwd=/Users/gareth/Code/rename/phpTest: git branch
+2020-07-09 13:20:50,392 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,397 INFO cwd=/Users/gareth/Code/projects/penny/polar-pairs: git branch
+2020-07-09 13:20:50,533 INFO localBranchInfoGitBranch.stdout.read():   level-two
+* main
+  responsive
+
+2020-07-09 13:20:50,539 INFO cwd=/Users/gareth/Code/rename/pom: git branch
+2020-07-09 13:20:50,574 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,579 INFO cwd=/Users/gareth/Code/rename/ReactNavigationReduxTest: git branch
+2020-07-09 13:20:50,617 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,623 INFO cwd=/Users/gareth/Code/rename/recurring: git branch
+2020-07-09 13:20:50,745 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,750 INFO cwd=/Users/gareth/Code/rename/RNWebviewMicPermission: git branch
+2020-07-09 13:20:50,780 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,785 INFO cwd=/Users/gareth/Code/rename/rocktober: git branch
+2020-07-09 13:20:50,814 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,821 INFO cwd=/Users/gareth/Code/rename/Roll-a-Ball: git branch
+2020-07-09 13:20:50,935 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:50,940 INFO cwd=/Users/gareth/Code/rename/RR-TodoList: git branch
+2020-07-09 13:20:51,068 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,073 INFO cwd=/Users/gareth/Code/rename/run-club-server: git branch
+2020-07-09 13:20:51,109 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,115 INFO cwd=/Users/gareth/Code/rename/run-club-web: git branch
+2020-07-09 13:20:51,146 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,151 INFO cwd=/Users/gareth/Code/rename/RunClub: git branch
+2020-07-09 13:20:51,190 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,196 INFO cwd=/Users/gareth/Code/rename/server: git branch
+2020-07-09 13:20:51,229 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,234 INFO cwd=/Users/gareth/Code/rename/shellScripts: git branch
+2020-07-09 13:20:51,286 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,292 INFO cwd=/Users/gareth/Code/rename/site-deets: git branch
+2020-07-09 13:20:51,329 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,335 INFO cwd=/Users/gareth/Code/rename/slider-app: git branch
+2020-07-09 13:20:51,365 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,370 INFO cwd=/Users/gareth/Code/rename/spukee-site-react: git branch
+2020-07-09 13:20:51,404 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,409 INFO cwd=/Users/gareth/Code/rename/sqrrlSite: git branch
+2020-07-09 13:20:51,430 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,436 INFO cwd=/Users/gareth/Code/rename/tc-net: git branch
+2020-07-09 13:20:51,592 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,598 INFO cwd=/Users/gareth/Code/rename/tech-test-react-wordcloud: git branch
+2020-07-09 13:20:51,630 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,637 INFO cwd=/Users/gareth/Code/rename/test-cra: git branch
+2020-07-09 13:20:51,773 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,778 INFO cwd=/Users/gareth/Code/rename/test-html: git branch
+2020-07-09 13:20:51,922 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,927 INFO cwd=/Users/gareth/Code/rename/TrailCity: git branch
+2020-07-09 13:20:51,981 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:51,987 INFO cwd=/Users/gareth/Code/rename/web-dev-reboot: git branch
+2020-07-09 13:20:52,066 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:52,072 INFO cwd=/Users/gareth/Code/rename/Who2Heal: git branch
+2020-07-09 13:20:52,138 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:52,144 INFO cwd=/Users/gareth/Code/rename/whole-code-folder: git branch
+2020-07-09 13:20:52,225 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:52,230 INFO cwd=/Users/gareth/Code/rename/whole-logoed-folder: git branch
+2020-07-09 13:20:52,273 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:52,278 INFO cwd=/Users/gareth/Code/rename/wild-rydes-react-native-no-mfa: git branch
+2020-07-09 13:20:52,420 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:20:52,426 INFO cwd=/Users/gareth/Code/rename/yusuff-faruq-context-demo: git branch
+2020-07-09 13:20:52,460 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:21:07,603 INFO cwd=/Users/gareth/Code: mkdir -pv /Users/gareth/Code/master-blaster-Twitchkidd/
+2020-07-09 13:21:07,610 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/LIGameDev/Who2Heal.git ./LIGameDev/Who2Heal
+2020-07-09 13:21:08,600 WARNING 
+2020-07-09 13:21:08,607 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/run-club-server.git ./TrailCity/run-club-server
+2020-07-09 13:21:14,094 WARNING 
+2020-07-09 13:21:14,154 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/RunClub.git ./TrailCity/RunClub
+2020-07-09 13:21:37,981 WARNING 
+2020-07-09 13:21:38,015 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/tcnet.git ./TrailCity/tcnet
+2020-07-09 13:21:39,400 WARNING 
+2020-07-09 13:21:39,408 INFO cwd=/Users/gareth/Code/rename/accountNumber: git branch -m master main
+2020-07-09 13:21:39,629 INFO cwd=/Users/gareth/Code/rename/accountNumber: git push -u origin main
+2020-07-09 13:21:43,198 INFO 
+2020-07-09 13:21:43,198 WARNING 
+2020-07-09 13:21:43,203 INFO cwd=/Users/gareth/Code/rename/beginner-javascript: git branch -m master main
+2020-07-09 13:21:43,405 INFO cwd=/Users/gareth/Code/rename/beginner-javascript: git push -u origin main
+2020-07-09 13:21:46,643 INFO 
+2020-07-09 13:21:46,643 WARNING 
+2020-07-09 13:21:46,648 INFO cwd=/Users/gareth/Code/rename/bookBoxSort: git branch -m master main
+2020-07-09 13:21:46,817 INFO cwd=/Users/gareth/Code/rename/bookBoxSort: git push -u origin main
+2020-07-09 13:21:50,537 INFO 
+2020-07-09 13:21:50,537 WARNING 
+2020-07-09 13:21:50,543 INFO cwd=/Users/gareth/Code/rename/borg-david: git branch -m master main
+2020-07-09 13:21:50,758 INFO cwd=/Users/gareth/Code/rename/borg-david: git push -u origin main
+2020-07-09 13:21:54,530 INFO 
+2020-07-09 13:21:54,530 WARNING 
+2020-07-09 13:21:54,535 INFO cwd=/Users/gareth/Code/rename/CheeryTomato: git branch -m master main
+2020-07-09 13:21:54,723 INFO cwd=/Users/gareth/Code/rename/CheeryTomato: git push -u origin main
+2020-07-09 13:21:58,216 INFO 
+2020-07-09 13:21:58,217 WARNING 
+2020-07-09 13:21:58,222 INFO cwd=/Users/gareth/Code/rename/code-etc: git branch -m master main
+2020-07-09 13:21:58,420 INFO cwd=/Users/gareth/Code/rename/code-etc: git push -u origin main
+2020-07-09 13:22:03,472 INFO 
+2020-07-09 13:22:03,472 WARNING 
+2020-07-09 13:22:03,477 INFO cwd=/Users/gareth/Code/rename/dang-thats-delicious: git branch -m master main
+2020-07-09 13:22:03,677 INFO cwd=/Users/gareth/Code/rename/dang-thats-delicious: git push -u origin main
+2020-07-09 13:22:07,150 INFO 
+2020-07-09 13:22:07,150 WARNING 
+2020-07-09 13:22:07,156 INFO cwd=/Users/gareth/Code/rename/dep-gfcom: git branch -m master main
+2020-07-09 13:22:07,460 INFO cwd=/Users/gareth/Code/rename/dep-gfcom: git push -u origin main
+2020-07-09 13:22:10,552 INFO 
+2020-07-09 13:22:10,552 WARNING 
+2020-07-09 13:22:10,558 INFO cwd=/Users/gareth/Code/rename/dep-run-club-web: git branch -m master main
+2020-07-09 13:22:10,749 INFO cwd=/Users/gareth/Code/rename/dep-run-club-web: git push -u origin main
+2020-07-09 13:22:13,972 INFO 
+2020-07-09 13:22:13,973 WARNING 
+2020-07-09 13:22:14,008 INFO cwd=/Users/gareth/Code/rename/EggheadToDoApp: git branch -m master main
+2020-07-09 13:22:14,193 INFO cwd=/Users/gareth/Code/rename/EggheadToDoApp: git push -u origin main
+2020-07-09 13:22:17,289 INFO 
+2020-07-09 13:22:17,289 WARNING 
+2020-07-09 13:22:17,294 INFO cwd=/Users/gareth/Code/rename/Enzyme-React-Native-32: git branch -m master main
+2020-07-09 13:22:17,448 INFO cwd=/Users/gareth/Code/rename/Enzyme-React-Native-32: git push -u origin main
+2020-07-09 13:22:20,751 INFO 
+2020-07-09 13:22:20,751 WARNING 
+2020-07-09 13:22:20,756 INFO cwd=/Users/gareth/Code/rename/fonts: git branch -m master main
+2020-07-09 13:22:20,938 INFO cwd=/Users/gareth/Code/rename/fonts: git push -u origin main
+2020-07-09 13:22:24,700 INFO 
+2020-07-09 13:22:24,701 WARNING 
+2020-07-09 13:22:24,706 INFO cwd=/Users/gareth/Code/rename/forms: git branch -m master main
+2020-07-09 13:22:24,900 INFO cwd=/Users/gareth/Code/rename/forms: git push -u origin main
+2020-07-09 13:22:28,321 INFO 
+2020-07-09 13:22:28,321 WARNING 
+2020-07-09 13:22:28,326 INFO cwd=/Users/gareth/Code/rename/GarethDotCom: git branch -m master main
+2020-07-09 13:22:28,494 INFO cwd=/Users/gareth/Code/rename/GarethDotCom: git push -u origin main
+2020-07-09 13:22:32,015 INFO 
+2020-07-09 13:22:32,015 WARNING 
+2020-07-09 13:22:32,020 INFO cwd=/Users/gareth/Code/rename/gfcom-blog: git branch -m master main
+2020-07-09 13:22:32,212 INFO cwd=/Users/gareth/Code/rename/gfcom-blog: git push -u origin main
+2020-07-09 13:22:35,692 INFO 
+2020-07-09 13:22:35,692 WARNING 
+2020-07-09 13:22:35,698 INFO cwd=/Users/gareth/Code/rename/gfcom-public-html: git branch -m master main
+2020-07-09 13:22:35,906 INFO cwd=/Users/gareth/Code/rename/gfcom-public-html: git push -u origin main
+2020-07-09 13:22:39,072 INFO 
+2020-07-09 13:22:39,072 WARNING 
+2020-07-09 13:22:39,078 INFO cwd=/Users/gareth/Code/rename/jetifier: git branch -m master main
+2020-07-09 13:22:39,333 INFO cwd=/Users/gareth/Code/rename/jetifier: git push -u origin main
+2020-07-09 13:22:42,798 INFO 
+2020-07-09 13:22:42,799 WARNING 
+2020-07-09 13:22:42,826 INFO cwd=/Users/gareth/Code/rename/laa: git branch -m master main
+2020-07-09 13:22:43,001 INFO cwd=/Users/gareth/Code/rename/laa: git push -u origin main
+2020-07-09 13:22:46,228 INFO 
+2020-07-09 13:22:46,228 WARNING 
+2020-07-09 13:22:46,234 INFO cwd=/Users/gareth/Code/rename/level-up-react-2: git branch -m master main
+2020-07-09 13:22:46,396 INFO cwd=/Users/gareth/Code/rename/level-up-react-2: git push -u origin main
+2020-07-09 13:22:49,865 INFO 
+2020-07-09 13:22:49,865 WARNING 
+2020-07-09 13:22:49,870 INFO cwd=/Users/gareth/Code/rename/Logoed: git branch -m master main
+2020-07-09 13:22:50,217 INFO cwd=/Users/gareth/Code/rename/Logoed: git push -u origin main
+2020-07-09 13:22:53,918 INFO 
+2020-07-09 13:22:53,918 WARNING 
+2020-07-09 13:22:53,924 INFO cwd=/Users/gareth/Code/rename/logoed-server: git branch -m master main
+2020-07-09 13:22:54,181 INFO cwd=/Users/gareth/Code/rename/logoed-server: git push -u origin main
+2020-07-09 13:22:57,571 INFO 
+2020-07-09 13:22:57,572 WARNING 
+2020-07-09 13:22:57,577 INFO cwd=/Users/gareth/Code/rename/logoed-web-app: git branch -m master main
+2020-07-09 13:22:57,774 INFO cwd=/Users/gareth/Code/rename/logoed-web-app: git push -u origin main
+2020-07-09 13:23:01,513 INFO 
+2020-07-09 13:23:01,513 WARNING 
+2020-07-09 13:23:01,519 INFO cwd=/Users/gareth/Code/rename/Moving-Circle: git branch -m master main
+2020-07-09 13:23:01,653 INFO cwd=/Users/gareth/Code/rename/Moving-Circle: git push -u origin main
+2020-07-09 13:23:05,239 INFO 
+2020-07-09 13:23:05,239 WARNING 
+2020-07-09 13:23:05,244 INFO cwd=/Users/gareth/Code/rename/MultiBounce: git branch -m master main
+2020-07-09 13:23:05,414 INFO cwd=/Users/gareth/Code/rename/MultiBounce: git push -u origin main
+2020-07-09 13:23:08,957 INFO 
+2020-07-09 13:23:08,957 WARNING 
+2020-07-09 13:23:08,962 INFO cwd=/Users/gareth/Code/rename/NaderDabitNavigatorExperimentalCodeAlong: git branch -m master main
+2020-07-09 13:23:09,118 INFO cwd=/Users/gareth/Code/rename/NaderDabitNavigatorExperimentalCodeAlong: git push -u origin main
+2020-07-09 13:23:12,558 INFO 
+2020-07-09 13:23:12,558 WARNING 
+2020-07-09 13:23:12,563 INFO cwd=/Users/gareth/Code/rename/phpTest: git branch -m master main
+2020-07-09 13:23:12,696 INFO cwd=/Users/gareth/Code/rename/phpTest: git push -u origin main
+2020-07-09 13:23:15,937 INFO 
+2020-07-09 13:23:15,938 WARNING 
+2020-07-09 13:23:15,943 INFO cwd=/Users/gareth/Code/rename/pom: git branch -m master main
+2020-07-09 13:23:16,119 INFO cwd=/Users/gareth/Code/rename/pom: git push -u origin main
+2020-07-09 13:23:19,317 INFO 
+2020-07-09 13:23:19,317 WARNING 
+2020-07-09 13:23:19,322 INFO cwd=/Users/gareth/Code/rename/ReactNavigationReduxTest: git branch -m master main
+2020-07-09 13:23:19,480 INFO cwd=/Users/gareth/Code/rename/ReactNavigationReduxTest: git push -u origin main
+2020-07-09 13:23:23,618 INFO 
+2020-07-09 13:23:23,618 WARNING 
+2020-07-09 13:23:23,623 INFO cwd=/Users/gareth/Code/rename/recurring: git branch -m master main
+2020-07-09 13:23:23,740 INFO cwd=/Users/gareth/Code/rename/recurring: git push -u origin main
+2020-07-09 13:23:27,008 INFO 
+2020-07-09 13:23:27,008 WARNING 
+2020-07-09 13:23:27,013 INFO cwd=/Users/gareth/Code/rename/RNWebviewMicPermission: git branch -m master main
+2020-07-09 13:23:27,162 INFO cwd=/Users/gareth/Code/rename/RNWebviewMicPermission: git push -u origin main
+2020-07-09 13:23:31,299 INFO 
+2020-07-09 13:23:31,299 WARNING 
+2020-07-09 13:23:31,338 INFO cwd=/Users/gareth/Code/rename/rocktober: git branch -m master main
+2020-07-09 13:23:31,562 INFO cwd=/Users/gareth/Code/rename/rocktober: git push -u origin main
+2020-07-09 13:23:35,312 INFO 
+2020-07-09 13:23:35,313 WARNING 
+2020-07-09 13:23:35,318 INFO cwd=/Users/gareth/Code/rename/Roll-a-Ball: git branch -m master main
+2020-07-09 13:23:35,485 INFO cwd=/Users/gareth/Code/rename/Roll-a-Ball: git push -u origin main
+2020-07-09 13:23:38,696 INFO 
+2020-07-09 13:23:38,696 WARNING 
+2020-07-09 13:23:38,701 INFO cwd=/Users/gareth/Code/rename/RR-TodoList: git branch -m master main
+2020-07-09 13:23:38,845 INFO cwd=/Users/gareth/Code/rename/RR-TodoList: git push -u origin main
+2020-07-09 13:23:42,507 INFO 
+2020-07-09 13:23:42,507 WARNING 
+2020-07-09 13:23:42,513 INFO cwd=/Users/gareth/Code/rename/run-club-server: git branch -m master main
+2020-07-09 13:23:42,651 INFO cwd=/Users/gareth/Code/rename/run-club-server: git push -u origin main
+2020-07-09 13:23:45,784 INFO 
+2020-07-09 13:23:45,784 WARNING 
+2020-07-09 13:23:45,789 INFO cwd=/Users/gareth/Code/rename/run-club-web: git branch -m master main
+2020-07-09 13:23:46,085 INFO cwd=/Users/gareth/Code/rename/run-club-web: git push -u origin main
+2020-07-09 13:23:49,425 INFO 
+2020-07-09 13:23:49,425 WARNING 
+2020-07-09 13:23:49,430 INFO cwd=/Users/gareth/Code/rename/RunClub: git branch -m master main
+2020-07-09 13:23:49,599 INFO cwd=/Users/gareth/Code/rename/RunClub: git push -u origin main
+2020-07-09 13:23:54,072 INFO 
+2020-07-09 13:23:54,072 WARNING 
+2020-07-09 13:23:54,077 INFO cwd=/Users/gareth/Code/rename/server: git branch -m master main
+2020-07-09 13:23:54,234 INFO cwd=/Users/gareth/Code/rename/server: git push -u origin main
+2020-07-09 13:23:57,410 INFO 
+2020-07-09 13:23:57,410 WARNING 
+2020-07-09 13:23:57,415 INFO cwd=/Users/gareth/Code/rename/shellScripts: git branch -m master main
+2020-07-09 13:23:57,565 INFO cwd=/Users/gareth/Code/rename/shellScripts: git push -u origin main
+2020-07-09 13:24:01,104 INFO 
+2020-07-09 13:24:01,104 WARNING 
+2020-07-09 13:24:01,108 INFO cwd=/Users/gareth/Code/rename/site-deets: git branch -m master main
+2020-07-09 13:24:01,234 INFO cwd=/Users/gareth/Code/rename/site-deets: git push -u origin main
+2020-07-09 13:24:04,476 INFO 
+2020-07-09 13:24:04,476 WARNING 
+2020-07-09 13:24:04,482 INFO cwd=/Users/gareth/Code/rename/slider-app: git branch -m master main
+2020-07-09 13:24:04,638 INFO cwd=/Users/gareth/Code/rename/slider-app: git push -u origin main
+2020-07-09 13:24:07,897 INFO 
+2020-07-09 13:24:07,897 WARNING 
+2020-07-09 13:24:07,903 INFO cwd=/Users/gareth/Code/rename/spukee-site-react: git branch -m master main
+2020-07-09 13:24:08,053 INFO cwd=/Users/gareth/Code/rename/spukee-site-react: git push -u origin main
+2020-07-09 13:24:11,239 INFO 
+2020-07-09 13:24:11,240 WARNING 
+2020-07-09 13:24:11,245 INFO cwd=/Users/gareth/Code/rename/sqrrlSite: git branch -m master main
+2020-07-09 13:24:11,401 INFO cwd=/Users/gareth/Code/rename/sqrrlSite: git push -u origin main
+2020-07-09 13:24:14,665 INFO 
+2020-07-09 13:24:14,665 WARNING 
+2020-07-09 13:24:14,670 INFO cwd=/Users/gareth/Code/rename/tc-net: git branch -m master main
+2020-07-09 13:24:14,854 INFO cwd=/Users/gareth/Code/rename/tc-net: git push -u origin main
+2020-07-09 13:24:18,933 INFO 
+2020-07-09 13:24:18,933 WARNING 
+2020-07-09 13:24:18,979 INFO cwd=/Users/gareth/Code/rename/tech-test-react-wordcloud: git branch -m master main
+2020-07-09 13:24:19,127 INFO cwd=/Users/gareth/Code/rename/tech-test-react-wordcloud: git push -u origin main
+2020-07-09 13:24:22,354 INFO 
+2020-07-09 13:24:22,355 WARNING 
+2020-07-09 13:24:22,362 INFO cwd=/Users/gareth/Code/rename/test-cra: git branch -m master main
+2020-07-09 13:24:22,663 INFO cwd=/Users/gareth/Code/rename/test-cra: git push -u origin main
+2020-07-09 13:24:26,110 INFO 
+2020-07-09 13:24:26,110 WARNING 
+2020-07-09 13:24:26,115 INFO cwd=/Users/gareth/Code/rename/test-html: git branch -m master main
+2020-07-09 13:24:26,279 INFO cwd=/Users/gareth/Code/rename/test-html: git push -u origin main
+2020-07-09 13:24:29,756 INFO 
+2020-07-09 13:24:29,756 WARNING 
+2020-07-09 13:24:29,761 INFO cwd=/Users/gareth/Code/rename/TrailCity: git branch -m master main
+2020-07-09 13:24:29,901 INFO cwd=/Users/gareth/Code/rename/TrailCity: git push -u origin main
+2020-07-09 13:24:33,210 INFO 
+2020-07-09 13:24:33,210 WARNING 
+2020-07-09 13:24:33,215 INFO cwd=/Users/gareth/Code/rename/web-dev-reboot: git branch -m master main
+2020-07-09 13:24:33,416 INFO cwd=/Users/gareth/Code/rename/web-dev-reboot: git push -u origin main
+2020-07-09 13:24:36,465 INFO 
+2020-07-09 13:24:36,465 WARNING 
+2020-07-09 13:24:36,471 INFO cwd=/Users/gareth/Code/rename/Who2Heal: git branch -m master main
+2020-07-09 13:24:36,638 INFO cwd=/Users/gareth/Code/rename/Who2Heal: git push -u origin main
+2020-07-09 13:24:40,431 INFO 
+2020-07-09 13:24:40,431 WARNING 
+2020-07-09 13:24:40,436 INFO cwd=/Users/gareth/Code/rename/whole-code-folder: git branch -m master main
+2020-07-09 13:24:40,649 INFO cwd=/Users/gareth/Code/rename/whole-code-folder: git push -u origin main
+2020-07-09 13:24:44,409 INFO 
+2020-07-09 13:24:44,409 WARNING 
+2020-07-09 13:24:44,414 INFO cwd=/Users/gareth/Code/rename/whole-logoed-folder: git branch -m master main
+2020-07-09 13:24:44,689 INFO cwd=/Users/gareth/Code/rename/whole-logoed-folder: git push -u origin main
+2020-07-09 13:24:49,635 INFO 
+2020-07-09 13:24:49,636 WARNING 
+2020-07-09 13:24:49,641 INFO cwd=/Users/gareth/Code/rename/wild-rydes-react-native-no-mfa: git branch -m master main
+2020-07-09 13:24:49,828 INFO cwd=/Users/gareth/Code/rename/wild-rydes-react-native-no-mfa: git push -u origin main
+2020-07-09 13:24:53,325 INFO 
+2020-07-09 13:24:53,325 WARNING 
+2020-07-09 13:24:53,330 INFO cwd=/Users/gareth/Code/rename/yusuff-faruq-context-demo: git branch -m master main
+2020-07-09 13:24:53,485 INFO cwd=/Users/gareth/Code/rename/yusuff-faruq-context-demo: git push -u origin main
+2020-07-09 13:24:57,018 INFO 
+2020-07-09 13:24:57,019 WARNING 
+2020-07-09 13:24:57,053 INFO cwd=/Users/gareth/Code: rm -dfRv ./master-blaster-Twitchkidd
+2020-07-09 13:25:01,015 INFO 
+2020-07-09 13:25:01,020 INFO git config --global alias.new !git init
+2020-07-09 13:25:01,059 INFO git symbolic-ref HEAD refs/heads/main
+2020-07-09 13:27:19,565 INFO Creating a log file!!
+2020-07-09 13:27:25,874 INFO Username: Twitchkidd
+2020-07-09 13:27:27,461 INFO Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
+2020-07-09 13:27:27,461 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-09 13:27:36,763 INFO Local directory to search: /Users/gareth/Code
+2020-07-09 13:27:39,049 INFO Confirm remove local directories after: True
+2020-07-09 13:27:39,068 INFO Add git alias `git new`: main
+2020-07-09 13:28:25,831 INFO cwd=/Users/gareth/Code/rename/accountNumber: git branch
+2020-07-09 13:28:25,892 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:25,898 INFO cwd=/Users/gareth/Code/rename/beginner-javascript: git branch
+2020-07-09 13:28:25,908 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:25,912 INFO cwd=/Users/gareth/Code/rename/bookBoxSort: git branch
+2020-07-09 13:28:25,922 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:25,927 INFO cwd=/Users/gareth/Code/rename/borg-david: git branch
+2020-07-09 13:28:25,938 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:25,942 INFO cwd=/Users/gareth/Code/rename/CheeryTomato: git branch
+2020-07-09 13:28:25,953 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:25,958 INFO cwd=/Users/gareth/Code/rename/code-etc: git branch
+2020-07-09 13:28:25,969 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:25,973 INFO cwd=/Users/gareth/Code/rename/dang-thats-delicious: git branch
+2020-07-09 13:28:25,984 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:25,988 INFO cwd=/Users/gareth/Code/rename/dep-gfcom: git branch
+2020-07-09 13:28:25,998 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,003 INFO cwd=/Users/gareth/Code/rename/dep-run-club-web: git branch
+2020-07-09 13:28:26,013 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,017 INFO cwd=/Users/gareth/Code/rename/dep-server: git branch
+2020-07-09 13:28:26,053 INFO localBranchInfoGitBranch.stdout.read(): * master
+
+2020-07-09 13:28:26,058 INFO cwd=/Users/gareth/Code/dots: git branch
+2020-07-09 13:28:26,120 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,126 INFO cwd=/Users/gareth/Code/rename/EggheadToDoApp: git branch
+2020-07-09 13:28:26,137 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,142 INFO cwd=/Users/gareth/Code/rename/Enzyme-React-Native-32: git branch
+2020-07-09 13:28:26,152 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,157 INFO cwd=/Users/gareth/Code/rename/fonts: git branch
+2020-07-09 13:28:26,168 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,173 INFO cwd=/Users/gareth/Code/rename/forms: git branch
+2020-07-09 13:28:26,183 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,187 INFO cwd=/Users/gareth/Code/rename/GarethDotCom: git branch
+2020-07-09 13:28:26,197 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,202 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
+2020-07-09 13:28:26,283 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,288 INFO cwd=/Users/gareth/Code/rename/gfcom-blog: git branch
+2020-07-09 13:28:26,300 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,304 INFO cwd=/Users/gareth/Code/rename/gfcom-public-html: git branch
+2020-07-09 13:28:26,315 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,319 INFO cwd=/Users/gareth/Code/rename/jetifier: git branch
+2020-07-09 13:28:26,329 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,333 INFO cwd=/Users/gareth/Code/rename/laa: git branch
+2020-07-09 13:28:26,344 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,348 INFO cwd=/Users/gareth/Code/rename/level-up-react-2: git branch
+2020-07-09 13:28:26,359 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,363 INFO cwd=/Users/gareth/Code/rename/Logoed: git branch
+2020-07-09 13:28:26,373 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,377 INFO cwd=/Users/gareth/Code/rename/logoed-server: git branch
+2020-07-09 13:28:26,388 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,392 INFO cwd=/Users/gareth/Code/rename/logoed-web-app: git branch
+2020-07-09 13:28:26,402 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,406 INFO cwd=/Users/gareth/Code/master-blaster: git branch
+2020-07-09 13:28:26,416 INFO localBranchInfoGitBranch.stdout.read():   dev
+* main
+
+2020-07-09 13:28:26,421 INFO cwd=/Users/gareth/Code/rename/moodbit: git branch
+2020-07-09 13:28:26,464 INFO localBranchInfoGitBranch.stdout.read(): * leExit
+
+2020-07-09 13:28:26,469 INFO cwd=/Users/gareth/Code/rename/Moving-Circle: git branch
+2020-07-09 13:28:26,480 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,485 INFO cwd=/Users/gareth/Code/rename/MultiBounce: git branch
+2020-07-09 13:28:26,495 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,499 INFO cwd=/Users/gareth/Code/rename/NaderDabitNavigatorExperimentalCodeAlong: git branch
+2020-07-09 13:28:26,509 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,514 INFO cwd=/Users/gareth/Code/rename/phpTest: git branch
+2020-07-09 13:28:26,524 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,528 INFO cwd=/Users/gareth/Code/projects/penny/polar-pairs: git branch
+2020-07-09 13:28:26,597 INFO localBranchInfoGitBranch.stdout.read():   level-two
+* main
+  responsive
+
+2020-07-09 13:28:26,602 INFO cwd=/Users/gareth/Code/rename/pom: git branch
+2020-07-09 13:28:26,614 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,618 INFO cwd=/Users/gareth/Code/rename/ReactNavigationReduxTest: git branch
+2020-07-09 13:28:26,628 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,633 INFO cwd=/Users/gareth/Code/rename/recurring: git branch
+2020-07-09 13:28:26,643 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,648 INFO cwd=/Users/gareth/Code/rename/RNWebviewMicPermission: git branch
+2020-07-09 13:28:26,658 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,662 INFO cwd=/Users/gareth/Code/rename/rocktober: git branch
+2020-07-09 13:28:26,672 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,676 INFO cwd=/Users/gareth/Code/rename/Roll-a-Ball: git branch
+2020-07-09 13:28:26,686 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,691 INFO cwd=/Users/gareth/Code/rename/RR-TodoList: git branch
+2020-07-09 13:28:26,701 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,706 INFO cwd=/Users/gareth/Code/rename/run-club-server: git branch
+2020-07-09 13:28:26,716 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,720 INFO cwd=/Users/gareth/Code/rename/run-club-web: git branch
+2020-07-09 13:28:26,730 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,734 INFO cwd=/Users/gareth/Code/rename/RunClub: git branch
+2020-07-09 13:28:26,744 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,749 INFO cwd=/Users/gareth/Code/rename/server: git branch
+2020-07-09 13:28:26,759 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,763 INFO cwd=/Users/gareth/Code/rename/shellScripts: git branch
+2020-07-09 13:28:26,773 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,778 INFO cwd=/Users/gareth/Code/rename/site-deets: git branch
+2020-07-09 13:28:26,788 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,792 INFO cwd=/Users/gareth/Code/rename/slider-app: git branch
+2020-07-09 13:28:26,802 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,807 INFO cwd=/Users/gareth/Code/rename/spukee-site-react: git branch
+2020-07-09 13:28:26,819 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,824 INFO cwd=/Users/gareth/Code/rename/sqrrlSite: git branch
+2020-07-09 13:28:26,834 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,839 INFO cwd=/Users/gareth/Code/rename/tc-net: git branch
+2020-07-09 13:28:26,849 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,853 INFO cwd=/Users/gareth/Code/rename/tech-test-react-wordcloud: git branch
+2020-07-09 13:28:26,863 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,868 INFO cwd=/Users/gareth/Code/rename/test-cra: git branch
+2020-07-09 13:28:26,878 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,882 INFO cwd=/Users/gareth/Code/rename/test-html: git branch
+2020-07-09 13:28:26,892 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,897 INFO cwd=/Users/gareth/Code/rename/TrailCity: git branch
+2020-07-09 13:28:26,907 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,911 INFO cwd=/Users/gareth/Code/rename/web-dev-reboot: git branch
+2020-07-09 13:28:26,922 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,926 INFO cwd=/Users/gareth/Code/rename/Who2Heal: git branch
+2020-07-09 13:28:26,936 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,941 INFO cwd=/Users/gareth/Code/rename/whole-code-folder: git branch
+2020-07-09 13:28:26,951 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,955 INFO cwd=/Users/gareth/Code/rename/whole-logoed-folder: git branch
+2020-07-09 13:28:26,965 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,970 INFO cwd=/Users/gareth/Code/rename/wild-rydes-react-native-no-mfa: git branch
+2020-07-09 13:28:26,980 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:26,984 INFO cwd=/Users/gareth/Code/rename/yusuff-faruq-context-demo: git branch
+2020-07-09 13:28:26,995 INFO localBranchInfoGitBranch.stdout.read(): * main
+
+2020-07-09 13:28:34,977 INFO cwd=/Users/gareth/Code: mkdir -pv /Users/gareth/Code/master-blaster-Twitchkidd/
+2020-07-09 13:28:34,983 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/LIGameDev/Who2Heal.git ./LIGameDev/Who2Heal
+2020-07-09 13:28:35,794 WARNING 
+2020-07-09 13:28:35,799 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/run-club-server.git ./TrailCity/run-club-server
+2020-07-09 13:28:43,999 WARNING 
+2020-07-09 13:28:44,062 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/RunClub.git ./TrailCity/RunClub
+2020-07-09 13:29:12,150 WARNING 
+2020-07-09 13:29:12,369 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/tcnet.git ./TrailCity/tcnet
+2020-07-09 13:29:14,395 WARNING 
+2020-07-09 13:29:14,400 INFO cwd=/Users/gareth/Code: rm -dfRv ./master-blaster-Twitchkidd
+2020-07-09 13:29:15,695 INFO 
+2020-07-09 13:29:15,700 INFO git config --global alias.new !git init
+2020-07-09 13:29:15,768 INFO git symbolic-ref HEAD refs/heads/main
