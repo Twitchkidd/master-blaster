@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import subprocess
+import logging
 # import requests
 # import json
 
@@ -11,6 +12,16 @@ import subprocess
 # # ! Testing! #
 # with open("./repo.txt", 'r') as repoF:
 #     tokenRepoScope = repoF.read(40)
+
+# * ``` Write to a new or existing log file! ``` * #
+# ! Testing! #
+# filemode='w' will not append to the file, it'll write over
+logging.basicConfig(filename='testInfo.log', filemode='w',
+                    level=logging.INFO, format='%(asctime)s %(message)s')
+print("""
+    Log file found at ./info.log!
+""")
+logging.info("Creating a log file!!")
 
 
 def main():
@@ -30,16 +41,16 @@ def main():
     # response = requests.patch("https://api.github.com/repos/Twitchkidd/master-blaster",
     #                           data=params, headers=headers)
     # print(response.status_code)
-    processOne = subprocess.Popen(
-        ["mkdir", "-pv", "/Users/gareth/Code/master-blaster-Twitchkidd/"], cwd="/Users/gareth/Code", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdoutOne, stderrOne = processOne.communicate()
-    print(f"stdoutOne: {stdoutOne}")
-    print(f"stderrOne: {stderrOne}")
-    processTwo = subprocess.Popen(
-        ["git", "clone", "https://github.com/Twitchkidd/dep-server.git", "./dep-server/"], cwd="/Users/gareth/Code/master-blaster-Twitchkidd/", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdoutTwo, stderrTwo = processTwo.communicate()
-    print(f"stdoutTwo: {stdoutTwo}")
-    print(f"stderrTwo: {stderrTwo}")
+    # processOne = subprocess.Popen(
+    #     ["mkdir", "-pv", "/Users/gareth/Code/master-blaster-Twitchkidd/"], cwd="/Users/gareth/Code", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # stdoutOne, stderrOne = processOne.communicate()
+    # print(f"stdoutOne: {stdoutOne}")
+    # print(f"stderrOne: {stderrOne}")
+    # processTwo = subprocess.Popen(
+    #     ["git", "clone", "https://github.com/Twitchkidd/dep-server.git", "./dep-server/"], cwd="/Users/gareth/Code/master-blaster-Twitchkidd/", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # stdoutTwo, stderrTwo = processTwo.communicate()
+    # print(f"stdoutTwo: {stdoutTwo}")
+    # print(f"stderrTwo: {stderrTwo}")
     # processThree = subprocess.Popen(
     #     ["git", "branch", "-m", "master", "main"], cwd="/Users/gareth/Code/master-blaster-Twitchkidd/dep-server/", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # stdoutThree, stderrThree = processThree.communicate()
@@ -69,16 +80,62 @@ def main():
     #         f"Default branch for dep-server updated to main!")
     # logging.info(
     #     f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
-    processSix = subprocess.Popen(
-        ["git", "push", "origin", "--delete", "master"], cwd="/Users/gareth/Code/master-blaster-Twitchkidd/dep-server/", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdoutSix, stderrSix = processSix.communicate()
-    print(f"stdoutSix: {stdoutSix}")
-    print(f"stderrSix: {stderrSix}")
-    processFive = subprocess.Popen(
-        ["rm", "-dfRv", "/Users/gareth/Code/master-blaster-Twitchkidd/master-blaster-Twitchkidd/"], cwd="/Users/gareth/Code/", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdoutFive, stderrFive = processFive.communicate()
-    print(f"stdoutFive: {stdoutFive}")
-    print(f"stderrFive: {stderrFive}")
+    # processSix = subprocess.Popen(
+    #     ["git", "push", "origin", "--delete", "master"], cwd="/Users/gareth/Code/master-blaster-Twitchkidd/dep-server/", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # stdoutSix, stderrSix = processSix.communicate()
+    # print(f"stdoutSix: {stdoutSix}")
+    # print(f"stderrSix: {stderrSix}")
+    # processFive = subprocess.Popen(
+    #     ["rm", "-dfRv", "/Users/gareth/Code/master-blaster-Twitchkidd/master-blaster-Twitchkidd/"], cwd="/Users/gareth/Code/", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # stdoutFive, stderrFive = processFive.communicate()
+    # print(f"stdoutFive: {stdoutFive}")
+    # print(f"stderrFive: {stderrFive}")
+    # repo = {'primaryBranchName': 'main'}
+    # localRepo = {'path': '/Users/gareth/Code/localCloned'}
+    # localProcessGcm = subprocess.Popen(["git", "checkout", "master"], cwd=f"{localRepo['path']}", universal_newlines=True,
+    #                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # logging.info(localProcessGcm.stdout)
+    # logging.info(f"cwd={localRepo['path']}: git checkout master")
+    # if localProcessGcm.stderr:
+    #     logging.warning(localProcessGcm.stderr)
+    # localProcessGbm = subprocess.Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=f"{localRepo['path']}", universal_newlines=True,
+    #                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # logging.info(
+    #     f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}")
+    # logging.info(localProcessGbm.stdout)
+    # if localProcessGbm.stderr:
+    #     logging.warning(localProcessGbm.stderr)
+    # localProcessGf = subprocess.Popen(["git", "fetch"], cwd=f"{localRepo['path']}", universal_newlines=True,
+    #                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # logging.info(localProcessGf.stdout)
+    # logging.info(f"cwd={localRepo['path']}: git fetch")
+    # if localProcessGf.stderr:
+    #     logging.warning(localProcessGf.stderr)
+    # localProcessGbuu = subprocess.Popen(["git", "branch", "--unset-upstream"], cwd=f"{localRepo['path']}", universal_newlines=True,
+    #                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # logging.info(localProcessGbuu.stdout)
+    # logging.info(
+    #     f"cwd={localRepo['path']}: git branch --unset-upstream")
+    # if localProcessGbuu.stderr:
+    #     logging.warning(localProcessGbuu.stderr)
+    # localProcessGbuo = subprocess.Popen(["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"], cwd=f"{localRepo['path']}",
+    #                                     universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # logging.info(localProcessGbuo.stdout)
+    # logging.info(
+    #     f"cwd={localRepo['path']}: git branch -u origin/{repo['primaryBranchName']}")
+    # if localProcessGbuo.stderr:
+    #     logging.warning(localProcessGbuo.stderr)
+    # localProcessGsro = subprocess.Popen(["git", "symbolic-ref", "refs/remotes/origin/HEAD",
+    #                                      f"refs/remotes/origin/{repo['primaryBranchName']}"], cwd=f"{localRepo['path']}", universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # logging.info(localProcessGsro.stdout)
+    # logging.info(
+    #     f"cwd={localRepo['path']}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['primaryBranchName']}")
+    # if localProcessGsro.stderr:
+    #     logging.warning(localProcessGsro.stderr)
+    localPath = "/Users/gareth/Code"
+    testProcess = subprocess.Popen(
+        ["echo", "|", "pwd"], cwd=localPath, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    print(testProcess.stdout.read())
 
 
 if __name__ == "__main__":
