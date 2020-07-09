@@ -971,6 +971,7 @@ def runGitNew():
 if gitNew:
     runGitNew()
 
+# * ``` Reporting! ``` * #
 
 if localIsAGo:
     errors = 0
@@ -1034,6 +1035,8 @@ if remoteIsAGo:
         print(f"""
     {len(reposReadyForRemote)} repos completed the remote process!
         """)
+
+# * ``` Denoument! ``` * #
 
 print("Check the log file at ./info.log for details!\n")
 print("Thank you for using master-blaster!")
