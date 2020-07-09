@@ -360,14 +360,18 @@ else:
 
 def tokenPrompt(tokenTypeArg):
     return f"""
-    Last step! Since password-based token generation is being deprecated, please
-    get a personal access token with the correct scope(s) in order to run this
-    program. To get this token, go to https://github.com, sign in, then go to
-    'Settings', then 'Developer Settings', then 'Personal access tokens', then
-    'Generate new token', confirm your password, name the token in the 'Note'
-    input field, and select the {tokenTypeArg} scope, then 'Generate Token', then
-    copy it to your clipboard and either paste it back here into the prompt, or
-    save it first in case there's an error and you need to retry. (Recommended)
+    -- Get a token! --
+    Since password-based token generation is being deprecated, please get
+    a personal access token with the correct scope(s) in order to run this
+    program. To get this token, go to https://github.com, sign in,
+    then go to 'Settings', 
+    then 'Developer Settings',
+    then 'Personal access tokens',
+    then 'Generate new token',
+    confirm your password, name the token in the 'Note' input field, and select
+    the {tokenTypeArg} scope, then 'Generate Token',
+    then copy it to your clipboard and either paste it back here into the prompt,
+    or save it first in case there's an error and you need to retry! (Recommended)
     """
 
 
