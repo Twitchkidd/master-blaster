@@ -17,7 +17,7 @@ import logging
 # ! Testing! #
 # filemode='w' will not append to the file, it'll write over
 logging.basicConfig(filename='testInfo.log', filemode='w',
-                    level=logging.INFO, format='%(asctime)s %(message)s')
+                    level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 print("""
     Log file found at ./info.log!
 """)
@@ -133,9 +133,14 @@ def main():
     # if localProcessGsro.stderr:
     #     logging.warning(localProcessGsro.stderr)
     localPath = "/Users/gareth/Code"
+    testRepo = "test-blm"
     testProcess = subprocess.Popen(
-        ["echo", "|", "pwd"], cwd=localPath, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        ["git", "clone", f"https://github.com/Twitchkidd/{testRepo}.git"], cwd=localPath, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    print(f"process stdout read length: {len(testProcess.stdout.read())}")
     print(testProcess.stdout.read())
+    testStderr = testProcess.stderr.read()
+    print(f"process stderr read length: {len(testStderr)}")
+    print(testStderr)
 
 
 if __name__ == "__main__":
