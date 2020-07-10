@@ -620,13 +620,15 @@ if localDirectories:
             localBranchInfoGitBranch = subprocess.Popen(["git", "branch"], cwd=localPath, universal_newlines=True,
                                                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(f"cwd={localPath}: git branch")
+            localBranchInfoGitBranchStdout = localBranchInfoGitBranch.stdout.read()
             logging.info(
-                f"localBranchInfoGitBranch.stdout.read(): {localBranchInfoGitBranch.stdout.read()}")
-            if localBranchInfoGitBranch.stderr.read():
+                f"localBranchInfoGitBranchStdout: {localBranchInfoGitBranchStdout}")
+            localBranchInfoGitBranchStderr = localBranchInfoGitBranch.stderr.read()
+            if len(localBranchInfoGitBranchStderr) > 0:
                 logging.warning(
-                    f"localBranchInfoGitBranch.stderr.read(): {localBranchInfoGitBranch.stderr.read()}")
-            repo['localHasMaster'] = "master" in localBranchInfoGitBranch.stdout.read()
-            repo['localHasPrimaryBranchName'] = repo['primaryBranchName'] in localBranchInfoGitBranch.stdout.read()
+                    f"localBranchInfoGitBranchStderr: {localBranchInfoGitBranchStderr}")
+            repo['localHasMaster'] = "master" in localBranchInfoGitBranchStdout
+            repo['localHasPrimaryBranchName'] = repo['primaryBranchName'] in localBranchInfoGitBranchStdout
             check(repo)
         else:
             check(repo)
@@ -648,16 +650,19 @@ def localProcess(repo):
             localProcessGcm = subprocess.Popen(["git", "checkout", "master"], cwd=localRepo['path'], universal_newlines=True,
                                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(f"cwd={localRepo['path']}: git checkout master")
-            if len(localProcessGcm.stdout.read()) > 0:
-                logging.info(localProcessGcm.stdout.read())
-            if len(localProcessGcm.stderr.read()) > 0:
-                logging.warning(localProcessGcm.stderr.read())
+            localProcessGcmStdout = localProcessGcm.stdout.read()
+            if len(localProcessGcmStdout) > 0:
+                logging.info(localProcessGcmStdout)
+            localProcessGcmStderr = localProcessGcm.stderr.read()
+            if len(localProcessGcmStderr) > 0:
+                logging.warning(localProcessGcmStderr)
                 repo['error'] = True
                 return
             localProcessGbm = subprocess.Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'], universal_newlines=True,
                                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(
                 f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}")
+            localProcessGbm
             if len(localProcessGbm.stdout.read()) > 0:
                 logging.info(localProcessGbm.stdout.read())
             if len(localProcessGbm.stderr.read()) > 0:
