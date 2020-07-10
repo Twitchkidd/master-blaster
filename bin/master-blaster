@@ -662,50 +662,59 @@ def localProcess(repo):
                                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(
                 f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}")
-            localProcessGbm
-            if len(localProcessGbm.stdout.read()) > 0:
-                logging.info(localProcessGbm.stdout.read())
-            if len(localProcessGbm.stderr.read()) > 0:
-                logging.warning(localProcessGbm.stderr.read())
+            localProcessGbmStdout = localProcessGbm.stdout.read()
+            if len(localProcessGbmStdout) > 0:
+                logging.info(localProcessGbmStdout)
+            localProcessGbmStderr = localProcessGbm.stderr.read()
+            if len(localProcessGbmStderr) > 0:
+                logging.warning(localProcessGbmStderr)
                 repo['error'] = True
                 return
             localProcessGf = subprocess.Popen(["git", "fetch"], cwd=localRepo['path'], universal_newlines=True,
                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(f"cwd={localRepo['path']}: git fetch")
-            if len(localProcessGf.stdout.read()) > 0:
-                logging.info(localProcessGf.stdout.read())
-            if len(localProcessGf.stderr.read()) > 0:
-                logging.warning(localProcessGf.stderr.read())
+            localProcessGfStdout = localProcessGf.stdout.read()
+            if len(localProcessGfStdout) > 0:
+                logging.info(localProcessGfStdout)
+            localProcessGfStderr = localProcessGf.stderr.read()
+            if len(localProcessGfStderr) > 0:
+                logging.warning(localProcessGfStderr)
                 repo['error'] = True
                 return
             localProcessGbuu = subprocess.Popen(["git", "branch", "--unset-upstream"], cwd=localRepo['path'], universal_newlines=True,
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(
                 f"cwd={localRepo['path']}: git branch --unset-upstream")
-            if len(localProcessGbuu.stdout.read()) > 0:
-                logging.info(localProcessGbuu.stdout.read())
-            if len(localProcessGbuu.stderr.read()) > 0:
-                logging.warning(localProcessGbuu.stderr.read())
+            localProcessGbuuStdout = localProcessGbuu.stdout.read()
+            if len(localProcessGbuuStdout) > 0:
+                logging.info(localProcessGbuuStdout)
+            localProcessGbuuStderr = localProcessGbuu.stderr.read()
+            if len(localProcessGbuuStderr) > 0:
+                logging.warning(localProcessGbuuStderr)
                 repo['error'] = True
                 return
             localProcessGbuo = subprocess.Popen(["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"], cwd=localRepo['path'],
                                                 universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(
                 f"cwd={localRepo['path']}: git branch -u origin/{repo['primaryBranchName']}")
-            if len(localProcessGbuo.stdout.read()) > 0:
-                logging.info(localProcessGbuo.stdout.read())
-            if len(localProcessGbuo.stderr.read()) > 0:
-                logging.warning(localProcessGbuo.stderr.read())
+            localProcessGbuoStdout = localProcessGbuo.stdout.read()
+            if len(localProcessGbuoStdout) > 0:
+                logging.info(localProcessGbuoStdout)
+            localProcessGbuoStderr = localProcessGbuo.stderr.read()
+            if len(localProcessGbuoStderr) > 0:
+                logging.warning(localProcessGbuoStderr)
                 repo['error'] = True
                 return
             localProcessGsro = subprocess.Popen(["git", "symbolic-ref", "refs/remotes/origin/HEAD",
                                                  f"refs/remotes/origin/{repo['primaryBranchName']}"], cwd=localRepo['path'], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(
                 f"cwd={localRepo['path']}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['primaryBranchName']}")
-            if len(localProcessGsro.stdout.read()) > 0:
-                logging.info(localProcessGsro.stdout.read())
-            if len(localProcessGsro.stderr.read()) > 0:
-                logging.warning(localProcessGsro.stderr.read())
+            localProcessGsroStdout = localProcessGsro.stdout.read()
+            if len(localProcessGsroStdout) > 0:
+                logging.info(localProcessGsroStdout)
+            localProcessGsroStderr = localProcessGsro.stderr.read()
+            if len(localProcessGsroStderr) > 0:
+                logging.warning(localProcessGsroStderr)
                 repo['error'] = True
                 return
 
@@ -716,10 +725,12 @@ def localMasterDeleteProcess(repo):
             localMasterDeleteProcessBranchD = subprocess.Popen(
                 ["git", "branch", "-d", "master"], cwd=localRepo['path'], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(f"cwd={localRepo['path']}: git branch -d master")
-            if len(localMasterDeleteProcessBranchD.stdout.read()) > 0:
-                logging.info(localMasterDeleteProcessBranchD.stdout.read())
-            if len(localMasterDeleteProcessBranchD.stderr.read()) > 0:
-                logging.warning(localMasterDeleteProcessBranchD.stderr.read())
+            localMasterDeleteProcessBranchDStdout = localMasterDeleteProcessBranchD.stdout.read()
+            if len(localMasterDeleteProcessBranchDStdout) > 0:
+                logging.info(localMasterDeleteProcessBranchDStdout)
+            localMasterDeleteProcessBranchDStderr = localMasterDeleteProcessBranchD.stderr.read()
+            if len(localMasterDeleteProcessBranchDStderr) > 0:
+                logging.warning(localMasterDeleteProcessBranchDStderr)
                 repo['error'] = True
                 return
 
@@ -741,22 +752,24 @@ def remoteProcess(repo):
                                                                  universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     logging.info(
                         f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}")
-                    if len(remoteProcessLocalRepoGbm.stdout.read()) > 0:
-                        logging.info(remoteProcessLocalRepoGbm.stdout.read())
-                    if len(remoteProcessLocalRepoGbm.stderr.read()) > 0:
-                        logging.warning(
-                            remoteProcessLocalRepoGbm.stderr.read())
+                    remoteProcessLocalRepoGbmStdout = remoteProcessLocalRepoGbm.stdout.read()
+                    if len(remoteProcessLocalRepoGbmStdout) > 0:
+                        logging.info(remoteProcessLocalRepoGbmStdout)
+                    remoteProcessLocalRepoGbmStderr = remoteProcessLocalRepoGbm.stderr.read()
+                    if len(remoteProcessLocalRepoGbmStderr) > 0:
+                        logging.warning(remoteProcessLocalRepoGbmStderr)
                         repo['error'] = True
                         return
                     remoteProcessLocalRepoGpuo = subprocess.Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=localRepo['path'],
                                                                   universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     logging.info(
                         f"cwd={localRepo['path']}: git push -u origin {repo['primaryBranchName']}")
-                    if len(remoteProcessLocalRepoGpuo.stdout.read()) > 0:
-                        logging.info(remoteProcessLocalRepoGpuo.stdout.read())
-                    if len(remoteProcessLocalRepoGpuo.stderr.read()) > 0:
-                        logging.warning(
-                            remoteProcessLocalRepoGpuo.stderr.read())
+                    remoteProcessLocalRepoGpuoStdout = remoteProcessLocalRepoGpuo.stdout.read()
+                    if len(remoteProcessLocalRepoGpuoStdout) > 0:
+                        logging.info(remoteProcessLocalRepoGpuoStdout)
+                    remoteProcessLocalRepoGpuoStderr = remoteProcessLocalRepoGpuo.stderr.read()
+                    if len(remoteProcessLocalRepoGpuoStderr) > 0:
+                        logging.warning(remoteProcessLocalRepoGpuoStderr)
                         repo['error'] = True
                         return
         else:
@@ -765,41 +778,48 @@ def remoteProcess(repo):
                     ["mkdir", "-pv", f"{localDirectory}/master-blaster-{username}/"], cwd=localDirectory, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 logging.info(
                     f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/")
-                if len(remoteProcessRemoteRepoMkdir.stdout.read()) > 0:
-                    logging.info(remoteProcessRemoteRepoMkdir.stdout.read())
-                if len(remoteProcessRemoteRepoMkdir.stderr.read()) > 0:
-                    print(len(remoteProcessRemoteRepoMkdir.stderr.read()))
-                    logging.warning(remoteProcessRemoteRepoMkdir.stderr.read())
+                remoteProcessRemoteRepoMkdirStdout = remoteProcessRemoteRepoMkdir.stdout.read()
+                if len(remoteProcessRemoteRepoMkdirStdout) > 0:
+                    logging.info(remoteProcessRemoteRepoMkdirStdout)
+                remoteProcessRemoteRepoMkdirStderr = remoteProcessRemoteRepoMkdir.stderr.read()
+                if len(remoteProcessRemoteRepoMkdirStderr) > 0:
+                    logging.warning(remoteProcessRemoteRepoMkdirStderr)
                     failedToMakeTempDir = True
                     return
             remoteProcessRemoteRepoGcl = subprocess.Popen(["git", "clone", f"{repo['htmlUrl']}.git", f"./{repo['owner-login']}/{repo['name']}"], cwd=f"{localDirectory}/master-blaster-{username}/",
                                                           universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(
                 f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}")
-            if len(remoteProcessRemoteRepoGcl.stdout.read()) > 0:
-                logging.info(remoteProcessRemoteRepoGcl.stdout.read())
-            if len(remoteProcessRemoteRepoGcl.stderr.read()) > 0:
-                logging.warning(remoteProcessRemoteRepoGcl.stderr.read())
+            remoteProcessRemoteRepoGclStdout = remoteProcessRemoteRepoGcl.stdout.read()
+            if len(remoteProcessRemoteRepoGclStdout) > 0:
+                logging.info(remoteProcessRemoteRepoGclStdout)
+            remoteProcessRemoteRepoGclStderr = remoteProcessRemoteRepoGcl.stderr.read()
+            if len(remoteProcessRemoteRepoGclStderr) > 0:
+                logging.warning(remoteProcessRemoteRepoGclStderr)
                 repo['error'] = True
                 return
             remoteProcessRemoteRepoGbm = subprocess.Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
                                                           universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(
                 f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}: git branch -m master {repo['primaryBranchName']}")
-            if len(remoteProcessRemoteRepoGbm.stdout.read()) > 0:
-                logging.info(remoteProcessRemoteRepoGbm.stdout.read())
-            if len(remoteProcessRemoteRepoGbm.stderr.read()) > 0:
-                logging.warning(remoteProcessRemoteRepoGbm.stderr.read())
+            remoteProcessRemoteRepoGbmStdout = remoteProcessRemoteRepoGbm.stdout.read()
+            if len(remoteProcessRemoteRepoGbmStdout) > 0:
+                logging.info(remoteProcessRemoteRepoGbmStdout)
+            remoteProcessRemoteRepoGbmStderr = remoteProcessRemoteRepoGbm.stderr.read()
+            if len(remoteProcessRemoteRepoGbmStderr) > 0:
+                logging.warning(remoteProcessRemoteRepoGbmStderr)
                 repo['error'] = True
                 return
             remoteProcessRemoteRepoGpuo = subprocess.Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
                                                            universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(
                 f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}: git push -u origin {repo['primaryBranchName']}")
-            if len(remoteProcessRemoteRepoGpuo.stdout.read()) > 0:
-                logging.info(remoteProcessRemoteRepoGpuo.stdout.read())
-            if len(remoteProcessRemoteRepoGpuo.stderr.read()) > 0:
-                logging.warning(remoteProcessRemoteRepoGpuo.stderr.read())
+            remoteProcessRemoteRepoGpuoStdout = remoteProcessRemoteRepoGpuo.stdout.read()
+            if len(remoteProcessRemoteRepoGpuoStdout) > 0:
+                logging.info(remoteProcessRemoteRepoGpuoStdout)
+            remoteProcessRemoteRepoGpuoStderr = remoteProcessRemoteRepoGpuo.stderr.read()
+            if len(remoteProcessRemoteRepoGpuoStderr) > 0:
+                logging.warning(remoteProcessRemoteRepoGpuoStderr)
                 repo['error'] = True
                 return
     else:
@@ -808,30 +828,36 @@ def remoteProcess(repo):
                 ["mkdir", "-pv", f"{localDirectory}/master-blaster-{username}/"], cwd=localDirectory, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(
                 f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/")
-            if len(remoteProcessRemoteRepoMkdir.stdout.read()) > 0:
-                logging.info(remoteProcessRemoteRepoMkdir.stdout.read())
-            if len(remoteProcessRemoteRepoMkdir.stderr.read()) > 0:
-                logging.warning(remoteProcessRemoteRepoMkdir.stderr.read())
+            remoteProcessRemoteRepoMkdirStdout = remoteProcessRemoteRepoMkdir.stdout.read()
+            if len(remoteProcessRemoteRepoMkdirStdout) > 0:
+                logging.info(remoteProcessRemoteRepoMkdirStdout)
+            remoteProcessRemoteRepoMkdirStderr = remoteProcessRemoteRepoMkdir.stderr.read()
+            if len(remoteProcessRemoteRepoMkdirStderr) > 0:
+                logging.warning(remoteProcessRemoteRepoMkdirStderr)
                 repo['error'] = True
                 return
         remoteProcessRemoteRepoGcl = subprocess.Popen(["git", "clone", f"{repo['htmlUrl']}.git", f"./{repo['owner-login']}/{repo['name']}"], cwd=f"{localDirectory}/master-blaster-{username}",
                                                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         logging.info(
             f"cwd={localDirectory}/master-blaster-{username}: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}")
-        if len(remoteProcessRemoteRepoGcl.stdout.read()) > 0:
-            logging.info(remoteProcessRemoteRepoGcl.stdout.read())
-        if len(remoteProcessRemoteRepoGcl.stderr.read()) > 0:
-            logging.warning(remoteProcessRemoteRepoGcl.stderr.read())
+        remoteProcessRemoteRepoGclStdout = remoteProcessRemoteRepoGcl.stdout.read()
+        if len(remoteProcessRemoteRepoGclStdout) > 0:
+            logging.info(remoteProcessRemoteRepoGclStdout)
+        remoteProcessRemoteRepoGclStderr = remoteProcessRemoteRepoGcl.stderr.read()
+        if len(remoteProcessRemoteRepoGclStderr) > 0:
+            logging.warning(remoteProcessRemoteRepoGclStderr)
             repo['error'] = True
             return
         remoteProcessRemoteRepoGbm = subprocess.Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
                                                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         logging.info(
             f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -m master {repo['primaryBranchName']}")
-        if len(remoteProcessRemoteRepoGbm.stdout.read()) > 0:
-            logging.info(remoteProcessRemoteRepoGbm.stdout.read())
-        if len(remoteProcessRemoteRepoGbm.stderr.read()) > 0:
-            logging.warning(remoteProcessRemoteRepoGbm.stderr.read())
+        remoteProcessRemoteRepoGbmStdout = remoteProcessRemoteRepoGbm.stdout.read()
+        if len(remoteProcessRemoteRepoGbmStdout) > 0:
+            logging.info(remoteProcessRemoteRepoGbmStdout)
+        remoteProcessRemoteRepoGbmStderr = remoteProcessRemoteRepoGbm.stderr.read()
+        if len(remoteProcessRemoteRepoGbmStderr) > 0:
+            logging.warning(remoteProcessRemoteRepoGbmStderr)
             repo['error'] = True
             return
         remoteProcessRemoteRepoGpuo = subprocess.Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
