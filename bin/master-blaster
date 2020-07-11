@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Master Blaster - Batch Rename Primary Branches Of Code Repositories
 # Copyright (C) 2020 Gareth Field - field.gareth @ gmail.com
 
@@ -864,10 +862,12 @@ def remoteProcess(repo):
                                                        universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         logging.info(
             f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -u origin {repo['primaryBranchName']}")
-        if len(remoteProcessRemoteRepoGpuo.stdout.read()) > 0:
-            logging.info(remoteProcessRemoteRepoGpuo.stdout.read())
-        if len(remoteProcessRemoteRepoGpuo.stderr.read()) > 0:
-            logging.warning(remoteProcessRemoteRepoGpuo.stderr.read())
+        remoteProcessRemoteRepoGpuoStdout = remoteProcessRemoteRepoGpuo.stdout.read()
+        if len(remoteProcessRemoteRepoGpuoStdout) > 0:
+            logging.info(remoteProcessRemoteRepoGpuoStdout)
+        remoteProcessRemoteRepoGpuoStderr = remoteProcessRemoteRepoGpuo.stderr.read()
+        if len(remoteProcessRemoteRepoGpuoStderr) > 0:
+            logging.warning(remoteProcessRemoteRepoGpuoStderr)
             repo['error'] = True
             return
     url = constructPatchDefaultUrl(repo)
@@ -974,32 +974,38 @@ if confirmRemoveLocalDirectoriesAfter:
     removeLocalDirectoriesProcess = subprocess.Popen(
         ["rm", "-dfRv", f"./master-blaster-{username}"], cwd=localDirectory, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     logging.info(f"cwd={localDirectory}: rm -dfRv ./master-blaster-{username}")
-    if len(removeLocalDirectoriesProcess.stdout.read()) > 0:
-        logging.info(removeLocalDirectoriesProcess.stdout.read())
-    if len(removeLocalDirectoriesProcess.stderr.read()) > 0:
-        logging.warning(removeLocalDirectoriesProcess.stderr.read())
+    removeLocalDirectoriesProcessStdout = removeLocalDirectoriesProcess.stdout.read()
+    if len(removeLocalDirectoriesProcess) > 0:
+        logging.info(removeLocalDirectoriesProcess)
+    removeLocalDirectoriesProcessStderr = removeLocalDirectoriesProcess.stderr.read()
+    if len(removeLocalDirectoriesProcessStderr) > 0:
+        logging.warning(removeLocalDirectoriesProcessStderr)
         print("Error: Failed to rm temp dir!")
 
 
 # * Add the `git new` alias! * #
 def runGitNew():
-    gitNewGcg = subprocess.Popen(["git", "config", "--global", "alias.new", "'!git", "init"], universal_newlines=True,
-                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    gitNewGcg = subprocess.Popen(["git", "config", "--global", "alias.new", "'!git", "init"],
+                                 universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     logging.info(f"git config --global alias.new !git init")
-    if len(gitNewGcg.stdout.read()) > 0:
-        logging.info(gitNewGcg.stdout.read())
-    if len(gitNewGcg.stderr.read()) > 0:
-        logging.warning(gitNewGcg.stderr.read())
-        print(f"Error creating git alias! {gitNewGcg.stderr.read()}")
+    gitNewGcgStdout = gitNewGcg.stdout.read()
+    if len(gitNewGcgStdout) > 0:
+        logging.info(gitNewGcgStdout)
+    gitNewGcgStderr = gitNewGcg.stderr.read()
+    if len(gitNewGcgStderr) > 0:
+        logging.warning(gitNewGcgStderr)
+        print(f"Error creating git ! {gitNewGcgStderr}")
         return
     gitNewGsh = subprocess.Popen(["git", "symbolic-ref", "HEAD", f"refs/heads/{name}"], universal_newlines=True,
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     logging.info(f"git symbolic-ref HEAD refs/heads/{name}")
-    if len(gitNewGsh.stdout.read()) > 0:
-        logging.info(gitNewGsh.stdout.read())
-    if len(gitNewGsh.stderr.read()) > 0:
-        logging.warning(gitNewGsh.stderr.read())
-        print(f"Error creating git alias! {gitNewGsh.stderr.read()}")
+    gitNewGshStdout = gitNewGsh.stdout.read()
+    if len(gitNewGshStdout) > 0:
+        logging.info(gitNewGshStdout)
+    gitNewGshStderr = gitNewGsh.stderr.read()
+    if len(gitNewGshStderr) > 0:
+        logging.warning(gitNewGshStderr)
+        print(f"Error creating git alias! {gitNewGshStderr}")
         return
 
 
