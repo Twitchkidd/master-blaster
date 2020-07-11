@@ -23,24 +23,24 @@ import requests
 from subprocess import Popen, PIPE
 import sys
 
-# ! Testing! #
-# * ``` From u/merfi on SO! ``` * #
+# // ! Testing! #
+# // * ``` From u/merfi on SO! ``` * #
 
 
-def get_active_branch_name():
+# def get_active_branch_name():
 
-    head_dir = Path(".") / ".git" / "HEAD"
-    with head_dir.open("r") as f:
-        content = f.read().splitlines()
+#     head_dir = Path(".") / ".git" / "HEAD"
+#     with head_dir.open("r") as f:
+#         content = f.read().splitlines()
 
-    for line in content:
-        if line[0:4] == "ref:":
-            return line.partition("refs/heads/")[2]
+#     for line in content:
+#         if line[0:4] == "ref:":
+#             return line.partition("refs/heads/")[2]
 
 
-currentBranch = ""
-if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
-    currentBranch = get_active_branch_name()
+# currentBranch = ""
+# if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
+#     currentBranch = get_active_branch_name()
 
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
@@ -87,12 +87,12 @@ tokenExplanation = """
 print(tokenExplanation)
 
 # * ``` Write to a new or existing log file! ``` * #
-# # ! Testing! #
+# // ! Testing! #
 # # filemode='w' will not append to the file, it'll write over
-logging.basicConfig(filename='info.log', filemode='w',
-                    level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
-# logging.basicConfig(filename='info.log',
+# logging.basicConfig(filename='info.log', filemode='w',
 #                     level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(filename='info.log',
+                    level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 print("""
     Log file to be found at ./info.log!
 """)
@@ -130,15 +130,15 @@ while not usernameConfirmed:
             continue
         if usernameConfirmationResponse:
             username = usernameResponse
-            # ! Testing! #
-            # logging.info(f"Username: {username}")
+            # // ! Testing! #
+            logging.info(f"Username: {username}")
             usernameConfirmed = True
             continue
 
 
-# ! Testing ! #
-username = "Twitchkidd"
-logging.info(f"Username: {username}")
+# // ! Testing ! #
+# username = "Twitchkidd"
+# logging.info(f"Username: {username}")
 
 # * ~~~ Set of questionary dictionary questions! ~~~ * #
 
@@ -311,8 +311,8 @@ if localDirectories:
             if confirmResetToHomeResponse:
                 localDirectory = Path.home()
                 localDirectoryConfirmed = True
-                # ! Testing! #
-                # logging.info(f"Local directory to search: {localDirectory}")
+                # // ! Testing! #
+                logging.info(f"Local directory to search: {localDirectory}")
             else:
                 continue
         else:
@@ -322,18 +322,18 @@ if localDirectories:
                 if confirmCustomLocalDirectoryResponse:
                     localDirectory = customLocalDirectoryResponse
                     localDirectoryConfirmed = True
-                    # # ! Testing! #
-                    # logging.info(
-                    #     f"Local directory to search: {localDirectory}")
+                    # // ! Testing! #
+                    logging.info(
+                        f"Local directory to search: {localDirectory}")
                     pass
             else:
                 print(
                     f"Error! Directory not showing as valid: {customLocalDirectoryResponse}")
                 continue
 
-# ! Testing! #
-localDirectory = f"{Path.home()}/Code"
-logging.info(f"Local directory to search: {localDirectory}")
+# // ! Testing! #
+# localDirectory = f"{Path.home()}/Code"
+# logging.info(f"Local directory to search: {localDirectory}")
 
 # * ``` Ask to delete cloned repos! ``` * #
 confirmRemoveLocalDirectoriesAfterPrompt = """
@@ -343,14 +343,14 @@ confirmRemoveLocalDirectoriesAfterPrompt = """
 if localDirectories:
     confirmRemoveLocalDirectoriesAfter = questionary.confirm(
         confirmRemoveLocalDirectoriesAfterPrompt).ask()
-    # # ! Testing! #
-    # logging.info(
-    #     f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
+    # // ! Testing! #
+    logging.info(
+        f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
 
-# # ! Testing! #
-confirmRemoveLocalDirectoriesAfter = True
-logging.info(
-    f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
+# // ! Testing! #
+# confirmRemoveLocalDirectoriesAfter = True
+# logging.info(
+#     f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
 
 # * ~~~ New Git Alias! ~~~ * #
 
@@ -375,18 +375,18 @@ if not interactive:
 # * ``` Placeholder variables for the token! ``` * #
 token = ""
 
-# ! ``` Placeholder variables for the testing tokens! ``` ! #
-# ! Testing! #
-tokenRepoScope = ""
-tokenPublicRepoScope = ""
+# // ! ``` Placeholder variables for the testing tokens! ``` ! #
+# // ! Testing! #
+# tokenRepoScope = ""
+# tokenPublicRepoScope = ""
 
-# ! Testing! #
-with open("./repo.txt", 'r') as repoF:
-    tokenRepoScope = repoF.read(40)
+# // ! Testing! #
+# with open("./repo.txt", 'r') as repoF:
+#     tokenRepoScope = repoF.read(40)
 
-# ! Testing! #
-with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
-    tokenPublicRepoScope = repoPublicRepoF.read(40)
+# // ! Testing! #
+# with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
+#     tokenPublicRepoScope = repoPublicRepoF.read(40)
 
 if repoTypes in [repoTypesAll, repoTypesOwner, repoTypesCollaborator, repoTypesOrganization]:
     tokenType = "repo"
@@ -422,8 +422,8 @@ def getToken():
             token = customTokenResponse
             tokenConfirmed = True
             continue
-    # # ! Testing! #
-    token = tokenRepoScope
+    # // ! Testing! #
+    # # token = tokenRepoScope
     # # token = "fermf"
     return token
 
@@ -1159,9 +1159,9 @@ if gitNew:
 print("Check the log file at ./info.log for details!\n")
 print("Thank you for using master-blaster!")
 
-# ! Testing! #
-if(len(currentBranch) > 0):
-    Popen(["git", "checkout", f"{currentBranch}"],
-          stdout=PIPE, stderr=PIPE)
+# // ! Testing! #
+# if(len(currentBranch) > 0):
+#     Popen(["git", "checkout", f"{currentBranch}"],
+#           stdout=PIPE, stderr=PIPE)
 
 sys.exit()
