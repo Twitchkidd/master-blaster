@@ -893,6 +893,18 @@ def remoteProcess(repo):
     else:
         logging.info(
             f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+    # ! BUG! OF COURSE NO FILE OR DIRECTORY, FROM WHENCE WE GIT PUSH DEL IS BASED ON HOW WE GOT HERE!
+    remoteProcessGpdm = Popen(
+        ["git", "push", "--delete", "origin", "master"], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}", stdout=PIPE, stderr=PIPE)
+    logging.info(
+        f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git push --delete origin master")
+    remoteProcessGpdmStdout, remoteProcessGpdmStderr = remoteProcessGpdm.communicate()
+    if len(remoteProcessGpdmStdout) > 0:
+        logging.info(remoteProcessGpdmStdout)
+    if len(remoteProcessGpdmStderr) > 0:
+        logging.warning(remoteProcessGpdmStderr)
+        repo['error'] = True
+        return
 
 
 if len(reposAlreadyBlasted) > 0:

@@ -1,23 +1,22 @@
-2020-07-11 11:10:22,345 INFO Creating a log file!!
-2020-07-11 11:10:29,297 INFO Username: Twitchkidd
-2020-07-11 11:10:29,884 INFO Repository types chosen: All repositories I'm the owner of, public and private.
-2020-07-11 11:10:29,884 INFO Naming selection: All primary branches renamed to 'main'.
-2020-07-11 11:10:30,970 INFO Local directory to search: /Users/gareth/Code
-2020-07-11 11:10:31,390 INFO Confirm remove local directories after: False
-2020-07-11 11:10:31,405 INFO Add git alias `git new`: main
-2020-07-11 11:11:05,898 INFO cwd=/Users/gareth/Code/dots: git branch
-2020-07-11 11:11:05,905 INFO localBranchInfoGitBranchStdout: b'* main\n'
-2020-07-11 11:11:05,908 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
-2020-07-11 11:11:05,915 INFO localBranchInfoGitBranchStdout: b'* main\n'
-2020-07-11 11:11:05,917 INFO cwd=/Users/gareth/Code/master-blaster: git branch
-2020-07-11 11:11:05,924 INFO localBranchInfoGitBranchStdout: b'* dev\n  main\n'
-2020-07-11 11:11:05,927 INFO cwd=/Users/gareth/Code/site-deets: git branch
-2020-07-11 11:11:05,934 INFO localBranchInfoGitBranchStdout: b'* master\n'
-2020-07-11 11:11:05,936 INFO cwd=/Users/gareth/Code/test: git branch
-2020-07-11 11:11:05,944 INFO localBranchInfoGitBranchStdout: b'* master\n'
-2020-07-11 11:11:10,388 INFO cwd=/Users/gareth/Code/test: git branch -m master main
-2020-07-11 11:11:10,403 INFO cwd=/Users/gareth/Code/test: git push -u origin main
-2020-07-11 11:11:13,469 INFO b"Branch 'main' set up to track remote branch 'main' from 'origin'.\n"
-2020-07-11 11:11:13,469 WARNING b"remote: \nremote: Create a pull request for 'main' on GitHub by visiting:        \nremote:      https://github.com/Twitchkidd/test/pull/new/main        \nremote: \nTo https://github.com/Twitchkidd/test.git\n * [new branch]      main -> main\n"
-2020-07-11 11:11:13,474 INFO git config --global alias.new !git init
-2020-07-11 11:11:13,486 INFO git symbolic-ref HEAD refs/heads/main
+2020-07-11 11:28:17,453 INFO Creating a log file!!
+2020-07-11 11:28:18,522 INFO Username: Twitchkidd
+2020-07-11 11:28:18,875 INFO Repository types chosen: All repositories I'm the owner of, public and private.
+2020-07-11 11:28:18,875 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-11 11:28:19,748 INFO Local directory to search: /Users/gareth/Code
+2020-07-11 11:28:20,191 INFO Confirm remove local directories after: False
+2020-07-11 11:28:20,206 INFO Add git alias `git new`: main
+2020-07-11 11:28:51,706 INFO cwd=/Users/gareth/Code/dots: git branch
+2020-07-11 11:28:51,714 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-11 11:28:51,717 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
+2020-07-11 11:28:51,724 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-11 11:28:51,727 INFO cwd=/Users/gareth/Code/master-blaster: git branch
+2020-07-11 11:28:51,734 INFO localBranchInfoGitBranchStdout: b'* dev\n  main\n'
+2020-07-11 11:28:51,737 INFO cwd=/Users/gareth/Code/site-deets: git branch
+2020-07-11 11:28:51,744 INFO localBranchInfoGitBranchStdout: b'* master\n'
+2020-07-11 11:28:51,747 INFO cwd=/Users/gareth/Code/test: git branch
+2020-07-11 11:28:51,754 INFO localBranchInfoGitBranchStdout: b'* master\n'
+2020-07-11 11:28:57,438 INFO cwd=/Users/gareth/Code/test: git branch -m master main
+2020-07-11 11:28:57,455 INFO cwd=/Users/gareth/Code/test: git push -u origin main
+2020-07-11 11:29:00,559 INFO b"Branch 'main' set up to track remote branch 'main' from 'origin'.\n"
+2020-07-11 11:29:00,559 WARNING b"remote: \nremote: Create a pull request for 'main' on GitHub by visiting:        \nremote:      https://github.com/Twitchkidd/test/pull/new/main        \nremote: \nTo https://github.com/Twitchkidd/test.git\n * [new branch]      main -> main\n"
+2020-07-11 11:29:01,797 INFO Default branch for https://github.com/Twitchkidd/test updated to main.
