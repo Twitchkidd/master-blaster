@@ -55,6 +55,8 @@ And if there was a repo that was cloned locally, and then had it's name, reflog,
 - And there's a local copy with just master,
 - And no branch of that name.
 
+It also optionally adds a git alias `git new` that starts up repos with 'main' or a custon name already!
+
 ## Instructions!
 
 To run `master-blaster`, have Python 3.7 or up installed, and pipenv. Then ... let's see ...
