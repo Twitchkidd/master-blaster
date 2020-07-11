@@ -336,7 +336,7 @@ if localDirectories:
     #     f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
 
 # # ! Testing! #
-confirmRemoveLocalDirectoriesAfter = False
+confirmRemoveLocalDirectoriesAfter = True
 logging.info(
     f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
 
@@ -590,43 +590,44 @@ def check(repo):
     if repo['hasMasterBranch'] and repo['hasPrimaryBranchName']:
         repo['status'] = "error: remote has both master branch and new primary branch name"
         reposWithErrors.append(repo)
-        return
+        return None
     if not repo['hasMasterBranch'] and not repo['hasPrimaryBranchName']:
         repo['status'] = "error: remote has neither master nor new primary branch name"
         reposWithErrors.append(repo)
-        return
-    if repo.get('localHasPrimaryBranchName'):
+        return None
+    if repo.get('localHasPrimaryBranchName') != None:
         if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName'] and not repo['localHasMaster'] and repo['localHasPrimaryBranchName']:
             repo['status'] = "already blasted"
             reposAlreadyBlasted.append(repo)
-            return
+            return None
         if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName'] and repo['localHasMaster'] and repo['localHasPrimaryBranchName']:
             repo['status'] = "candidate to delete local master"
             reposReadyForLocalMasterDelete.append(repo)
-            return
+            return None
         if repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
             if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName']:
                 repo['status'] = "candidate for local process"
                 reposReadyForLocal.append(repo)
-                return
+                return None
             if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
                 repo['status'] = "candidate for remote process"
                 reposReadyForRemote.append(repo)
-                return
+                return None
         repo['status'] = f"error: {repo}"
         reposWithErrors.append(repo)
-        return
-    if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName']:
-        repo['status'] = "already blasted"
-        reposAlreadyBlasted.append(repo)
-        return
-    if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
-        repo['status'] = "candidate for remote process"
-        reposReadyForRemote.append(repo)
-        return
+        return None
+    else:
+        if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName']:
+            repo['status'] = "already blasted"
+            reposAlreadyBlasted.append(repo)
+            return None
+        if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
+            repo['status'] = "candidate for remote process"
+            reposReadyForRemote.append(repo)
+            return None
     repo['status'] = f"error: {repo}"
     reposWithErrors.append(repo)
-    return
+    return None
 
 
 # * ``` Check all the repos! (And prepare any locals for the check!) ``` * #
@@ -658,8 +659,6 @@ else:
     for repo in repos:
         check(repo)
 
-print(repos)
-
 # * ``` Placeholder variable for local and remote processes being a go! ``` * #
 localIsAGo = False
 localMasterDeleteIsANoGo = True
@@ -678,8 +677,7 @@ def localProcess(repo):
                 logging.info(localProcessGcmStdout)
             if len(localProcessGcmStderr) > 0:
                 logging.warning(localProcessGcmStderr)
-                repo['error'] = True
-                return
+                logging.info("You may be able to ignore the above warning.")
             localProcessGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'],
                                     stdout=PIPE, stderr=PIPE)
             logging.info(
@@ -699,8 +697,7 @@ def localProcess(repo):
                 logging.info(localProcessGfStdout)
             if len(localProcessGfStderr) > 0:
                 logging.warning(localProcessGfStderr)
-                repo['error'] = True
-                return
+                logging.info("You may be able to ignore the above warning.")
             localProcessGbuu = Popen(["git", "branch", "--unset-upstream"], cwd=localRepo['path'],
                                      stdout=PIPE, stderr=PIPE)
             logging.info(
@@ -784,6 +781,8 @@ def remoteProcess(repo):
                         logging.info(remoteProcessLocalRepoGpuoStdout)
                     if len(remoteProcessLocalRepoGpuoStderr) > 0:
                         logging.warning(remoteProcessLocalRepoGpuoStderr)
+                        logging.info(
+                            "You may be able to ignore the above warning.")
                     url = constructPatchDefaultUrl(repo)
                     data = json.dumps(
                         {"default_branch": f"{repo['primaryBranchName']}"})
@@ -807,6 +806,8 @@ def remoteProcess(repo):
                             logging.info(remoteProcessLocalRepoGpdmStdout)
                         if len(remoteProcessLocalRepoGpdmStderr) > 0:
                             logging.warning(remoteProcessLocalRepoGpdmStderr)
+                            logging.info(
+                                "You may be able to ignore the above warning.")
         else:
             if not os.path.isdir(f"{localDirectory}/master-blaster-{username}/"):
                 remoteProcessRemoteRepoMkdir = Popen(
@@ -827,7 +828,6 @@ def remoteProcess(repo):
             remoteProcessRemoteRepoGclStdout, remoteProcessRemoteRepoGclStderr = remoteProcessRemoteRepoGcl.communicate()
             if len(remoteProcessRemoteRepoGclStdout) > 0:
                 logging.info(remoteProcessRemoteRepoGclStdout)
-            remoteProcessRemoteRepoGclStderr = remoteProcessRemoteRepoGcl.stderr.read()
             if len(remoteProcessRemoteRepoGclStderr) > 0:
                 logging.warning(remoteProcessRemoteRepoGclStderr)
                 repo['error'] = True
@@ -839,7 +839,6 @@ def remoteProcess(repo):
             remoteProcessRemoteRepoGbmStdout, remoteProcessRemoteRepoGbmStderr = remoteProcessRemoteRepoGbm.communicate()
             if len(remoteProcessRemoteRepoGbmStdout) > 0:
                 logging.info(remoteProcessRemoteRepoGbmStdout)
-            remoteProcessRemoteRepoGbmStderr = remoteProcessRemoteRepoGbm.stderr.read()
             if len(remoteProcessRemoteRepoGbmStderr) > 0:
                 logging.warning(remoteProcessRemoteRepoGbmStderr)
                 repo['error'] = True
@@ -851,9 +850,9 @@ def remoteProcess(repo):
             remoteProcessRemoteRepoGpuoStdout, remoteProcessRemoteRepoGpuoStderr = remoteProcessRemoteRepoGpuo.communicate()
             if len(remoteProcessRemoteRepoGpuoStdout) > 0:
                 logging.info(remoteProcessRemoteRepoGpuoStdout)
-            remoteProcessRemoteRepoGpuoStderr = remoteProcessRemoteRepoGpuo.stderr.read()
             if len(remoteProcessRemoteRepoGpuoStderr) > 0:
                 logging.warning(remoteProcessRemoteRepoGpuoStderr)
+                logging.info("You may be able to ignore the above warning.")
             url = constructPatchDefaultUrl(repo)
             data = json.dumps(
                 {"default_branch": f"{repo['primaryBranchName']}"})
@@ -877,6 +876,8 @@ def remoteProcess(repo):
                     logging.info(remoteProcessGpdmStdout)
                 if len(remoteProcessGpdmStderr) > 0:
                     logging.warning(remoteProcessGpdmStderr)
+                    logging.info(
+                        "You may be able to ignore the above warning.")
     else:
         if not os.path.isdir(f"{localDirectory}/master-blaster-{username}/"):
             remoteProcessRemoteRepoMkdir = Popen(
@@ -899,8 +900,7 @@ def remoteProcess(repo):
             logging.info(remoteProcessRemoteRepoGclStdout)
         if len(remoteProcessRemoteRepoGclStderr) > 0:
             logging.warning(remoteProcessRemoteRepoGclStderr)
-            repo['error'] = True
-            return
+            logging.info("You may be able to ignore the above warning.")
         remoteProcessRemoteRepoGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
                                            stdout=PIPE, stderr=PIPE)
         logging.info(
@@ -921,6 +921,7 @@ def remoteProcess(repo):
             logging.info(remoteProcessRemoteRepoGpuoStdout)
         if len(remoteProcessRemoteRepoGpuoStderr) > 0:
             logging.warning(remoteProcessRemoteRepoGpuoStderr)
+            logging.info("You may be able to ignore the above warning.")
         url = constructPatchDefaultUrl(repo)
         data = json.dumps({"default_branch": f"{repo['primaryBranchName']}"})
         headers = constructHeaders(token)
@@ -942,6 +943,7 @@ def remoteProcess(repo):
                 logging.info(remoteProcessGpdmStdout)
             if len(remoteProcessGpdmStderr) > 0:
                 logging.warning(remoteProcessGpdmStderr)
+                logging.info("You may be able to ignore the above warning.")
 
 
 if len(reposAlreadyBlasted) > 0:
