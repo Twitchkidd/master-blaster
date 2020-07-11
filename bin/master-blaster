@@ -23,6 +23,11 @@ from pathlib import Path
 import questionary
 import requests
 import subprocess
+# ! Testing! #
+import pprint
+
+# ! Testing! #
+pp = pprint.PrettyPrinter(indent=4)
 
 # ! Testing! #
 # * ``` From u/merfi on SO! ``` * #
@@ -744,6 +749,7 @@ failedToMakeTempDir = False
 
 
 def remoteProcess(repo):
+    pp.pprint(repo)
     if localDirectories:
         if repo['htmlUrl'] in localRepoUrls:
             for localRepo in localRepos:
@@ -782,6 +788,7 @@ def remoteProcess(repo):
                     logging.warning(remoteProcessRemoteRepoMkdir.stderr.read())
                     failedToMakeTempDir = True
                     return
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             remoteProcessRemoteRepoGcl = subprocess.Popen(["git", "clone", f"{repo['htmlUrl']}.git", f"./{repo['owner-login']}/{repo['name']}"], cwd=f"{localDirectory}/master-blaster-{username}/",
                                                           universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             logging.info(
@@ -824,6 +831,7 @@ def remoteProcess(repo):
                 logging.warning(remoteProcessRemoteRepoMkdir.stderr.read())
                 repo['error'] = True
                 return
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         remoteProcessRemoteRepoGcl = subprocess.Popen(["git", "clone", f"{repo['htmlUrl']}.git", f"./{repo['owner-login']}/{repo['name']}"], cwd=f"{localDirectory}/master-blaster-{username}",
                                                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         logging.info(

@@ -1,20 +1,75 @@
-2020-07-11 05:18:22,947 INFO Creating a log file!!
-2020-07-11 05:18:25,257 INFO Username: f
-2020-07-11 05:18:25,960 INFO Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
-2020-07-11 05:18:25,960 INFO Naming selection: All primary branches renamed to 'main'.
-2020-07-11 05:18:27,522 INFO Local directory to search: /Users/gareth
-2020-07-11 05:18:27,522 INFO Local directory to search: /Users/gareth/Code
-2020-07-11 05:18:28,097 INFO Confirm remove local directories after: False
-2020-07-11 05:18:28,112 INFO Add git alias `git new`: main
-2020-07-11 05:19:09,158 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/LIGameDev/Who2Heal.git ./LIGameDev/Who2Heal
-2020-07-11 05:19:09,168 WARNING 
-2020-07-11 05:19:09,171 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/run-club-server.git ./TrailCity/run-club-server
-2020-07-11 05:19:09,179 WARNING 
-2020-07-11 05:19:09,182 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/RunClub.git ./TrailCity/RunClub
-2020-07-11 05:19:09,189 WARNING 
-2020-07-11 05:19:09,192 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/tcnet.git ./TrailCity/tcnet
-2020-07-11 05:19:09,200 WARNING 
-2020-07-11 05:19:09,202 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/Twitchkidd/master-blaster.git ./Twitchkidd/master-blaster
-2020-07-11 05:19:09,209 WARNING 
-2020-07-11 05:19:09,211 INFO git config --global alias.new !git init
-2020-07-11 05:19:09,221 INFO git symbolic-ref HEAD refs/heads/main
+2020-07-11 05:24:40,200 INFO Creating a log file!!
+2020-07-11 05:24:42,411 INFO Username: f
+2020-07-11 05:24:43,649 INFO Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
+2020-07-11 05:24:43,650 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-11 05:24:45,258 INFO Local directory to search: /Users/gareth
+2020-07-11 05:24:45,258 INFO Local directory to search: /Users/gareth/Code
+2020-07-11 05:24:45,698 INFO Confirm remove local directories after: False
+2020-07-11 05:24:45,713 INFO Add git alias `git new`: main
+2020-07-11 05:25:26,850 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/LIGameDev/Who2Heal.git ./LIGameDev/Who2Heal
+2020-07-11 05:25:26,860 WARNING 
+2020-07-11 05:25:26,864 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/run-club-server.git ./TrailCity/run-club-server
+2020-07-11 05:25:26,872 WARNING 
+2020-07-11 05:25:26,875 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/RunClub.git ./TrailCity/RunClub
+2020-07-11 05:25:26,883 WARNING 
+2020-07-11 05:25:26,886 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/tcnet.git ./TrailCity/tcnet
+2020-07-11 05:25:26,892 WARNING 
+2020-07-11 05:25:26,895 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/Twitchkidd/master-blaster.git ./Twitchkidd/master-blaster
+2020-07-11 05:25:26,902 WARNING 
+2020-07-11 05:25:26,905 INFO git config --global alias.new !git init
+2020-07-11 05:25:26,914 INFO git symbolic-ref HEAD refs/heads/main
+
+{   'defaultBranch': 'master',
+    'hasMasterBranch': True,
+    'hasPrimaryBranchName': False,
+    'htmlUrl': 'https://github.com/LIGameDev/Who2Heal',
+    'name': 'Who2Heal',
+    'owner-login': 'LIGameDev',
+    'primaryBranchName': 'main',
+    'status': 'candidate for remote process'}
+Error with https://github.com/LIGameDev/Who2Heal!
+{   'defaultBranch': 'master',
+    'hasMasterBranch': True,
+    'hasPrimaryBranchName': False,
+    'htmlUrl': 'https://github.com/TrailCity/run-club-server',
+    'name': 'run-club-server',
+    'owner-login': 'TrailCity',
+    'primaryBranchName': 'main',
+    'status': 'candidate for remote process'}
+Error with https://github.com/TrailCity/run-club-server!
+{   'defaultBranch': 'master',
+    'hasMasterBranch': True,
+    'hasPrimaryBranchName': False,
+    'htmlUrl': 'https://github.com/TrailCity/RunClub',
+    'name': 'RunClub',
+    'owner-login': 'TrailCity',
+    'primaryBranchName': 'main',
+    'status': 'candidate for remote process'}
+Error with https://github.com/TrailCity/RunClub!
+{   'defaultBranch': 'master',
+    'hasMasterBranch': True,
+    'hasPrimaryBranchName': False,
+    'htmlUrl': 'https://github.com/TrailCity/tcnet',
+    'name': 'tcnet',
+    'owner-login': 'TrailCity',
+    'primaryBranchName': 'main',
+    'status': 'candidate for remote process'}
+Error with https://github.com/TrailCity/tcnet!
+{   'defaultBranch': 'master',
+    'hasMasterBranch': True,
+    'hasPrimaryBranchName': False,
+    'htmlUrl': 'https://github.com/Twitchkidd/master-blaster',
+    'name': 'master-blaster',
+    'owner-login': 'Twitchkidd',
+    'primaryBranchName': 'main',
+    'status': 'candidate for remote process'}
+Error with https://github.com/Twitchkidd/master-blaster!
+
+    All repos ready for remote process had errors!
+        
+Check the log file at ./info.log for details!
+
+Thank you for using master-blaster!
+M	bin/master-blaster
+M	info.log
+Switched to branch 'dev'
