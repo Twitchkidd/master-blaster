@@ -18,6 +18,8 @@ Only for repos you're the owner of, rather than collaborating on or are a member
 
 The connection going down is not accounted for right now! If it's halfway through cloning repos it could leave the temporary directory on your hard drive, and potentially not work if it's not removed before the next try!
 
+If you need to clone a lot of data over, that's a lot of data!
+
 ## However!
 
 It's designed at least to not go ahead unless it considers conditions ideal! Asks first, too!
