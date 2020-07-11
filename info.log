@@ -1,8 +1,20 @@
-2020-07-09 09:00:43,397 Creating a log file!!
-2020-07-09 09:00:44,929 Username: f
-2020-07-09 09:00:47,700 Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, only public, not private.
-2020-07-09 09:00:47,700 Naming selection: All primary branches renamed to 'main'.
-2020-07-09 09:00:49,817 Local directory to search: /Users/gareth
-2020-07-09 09:00:49,817 Local directory to search: /Users/gareth/Code
-2020-07-09 09:00:52,130 Confirm remove local directories after: False
-2020-07-09 09:00:52,150 Add git alias `git new`: main
+2020-07-11 05:18:22,947 INFO Creating a log file!!
+2020-07-11 05:18:25,257 INFO Username: f
+2020-07-11 05:18:25,960 INFO Repository types chosen: All repositories I'm the owner, collaborator, and/or organization member, public and private.
+2020-07-11 05:18:25,960 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-11 05:18:27,522 INFO Local directory to search: /Users/gareth
+2020-07-11 05:18:27,522 INFO Local directory to search: /Users/gareth/Code
+2020-07-11 05:18:28,097 INFO Confirm remove local directories after: False
+2020-07-11 05:18:28,112 INFO Add git alias `git new`: main
+2020-07-11 05:19:09,158 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/LIGameDev/Who2Heal.git ./LIGameDev/Who2Heal
+2020-07-11 05:19:09,168 WARNING 
+2020-07-11 05:19:09,171 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/run-club-server.git ./TrailCity/run-club-server
+2020-07-11 05:19:09,179 WARNING 
+2020-07-11 05:19:09,182 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/RunClub.git ./TrailCity/RunClub
+2020-07-11 05:19:09,189 WARNING 
+2020-07-11 05:19:09,192 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/TrailCity/tcnet.git ./TrailCity/tcnet
+2020-07-11 05:19:09,200 WARNING 
+2020-07-11 05:19:09,202 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/: git clone https://github.com/Twitchkidd/master-blaster.git ./Twitchkidd/master-blaster
+2020-07-11 05:19:09,209 WARNING 
+2020-07-11 05:19:09,211 INFO git config --global alias.new !git init
+2020-07-11 05:19:09,221 INFO git symbolic-ref HEAD refs/heads/main

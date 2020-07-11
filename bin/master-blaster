@@ -24,6 +24,25 @@ import questionary
 import requests
 import subprocess
 
+# ! Testing! #
+# * ``` From u/merfi on SO! ``` * #
+
+
+def get_active_branch_name():
+
+    head_dir = Path(".") / ".git" / "HEAD"
+    with head_dir.open("r") as f:
+        content = f.read().splitlines()
+
+    for line in content:
+        if line[0:4] == "ref:":
+            return line.partition("refs/heads/")[2]
+
+
+currentBranch = ""
+if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
+    currentBranch = get_active_branch_name()
+
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
 
@@ -1040,3 +1059,7 @@ if remoteIsAGo:
 
 print("Check the log file at ./info.log for details!\n")
 print("Thank you for using master-blaster!")
+
+# ! Testing! #
+if(len(currentBranch) > 0):
+    subprocess.Popen(["git", "checkout", f"{currentBranch}"])
