@@ -45,6 +45,22 @@ if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
 
+# * ``` License text! ``` * #
+licenseText = """
+    master-blaster  Copyright (C) 2020  Gareth Field
+    This program comes with ABSOLUTELY NO WARRANTY;
+    This is free software, and you are welcome to redistribute it
+    under certain conditions;
+"""
+# licenseText = """
+#     master-blaster  Copyright (C) 2020  Gareth Field
+#     This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
+#     This is free software, and you are welcome to redistribute it
+#     under certain conditions; type `show c' for details.
+# """
+print(licenseText)
+# print("Working on `show w' and `show c', actually! It's GNU public 3+! No closed versions!")
+
 # * ``` Intro text! ``` * #
 intro = """
     Welcome to master-blaster! This program batch renames primary branches for GitHub users!
@@ -52,27 +68,22 @@ intro = """
 """
 print(intro)
 
-# * ``` License text! ``` * #
-licenseText = """
-    master-blaster  Copyright (C) 2020  Gareth Field
-    This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-    This is free software, and you are welcome to redistribute it
-    under certain conditions; type `show c' for details.
-"""
-print(licenseText)
-print("Working on `show w' and `show c', actually! It's GNU public 3+! No closed versions!")
-
 # * ``` Explanation of token thing! ``` * #
 tokenExplanation = """
     GitHub is deprecating password-based token generation! This is great for
     security, it just means you're going to have to go to GitHub.com and
-    come back with an access token to make this program work, is the thing.
-
-    The next question will determine whether the program needs a token with the more
-    general `repo` scope or the more limited `public_repo` scope, and there will
-    be instructions for what to do at GitHub.com when we're ready to go here. This
-    program can be run again for further and any future repos.
+    come back with an access token to make this program work.
 """
+# tokenExplanation = """
+#     GitHub is deprecating password-based token generation! This is great for
+#     security, it just means you're going to have to go to GitHub.com and
+#     come back with an access token to make this program work.
+
+#     The next question will determine whether the program needs a token with the more
+#     general `repo` scope or the more limited `public_repo` scope, and there will
+#     be instructions for what to do at GitHub.com when we're ready to go here. This
+#     program can be run again for further and any future repos.
+# """
 print(tokenExplanation)
 
 # * ``` Write to a new or existing log file! ``` * #
@@ -194,7 +205,6 @@ questions = [
 # * ``` Extract the data from the set of prompts from dictionary! ``` * #
 answers = questionary.prompt(questions)
 repoTypes = answers['repoTypes']
-repoTypes = repoTypesOwner
 logging.info(f"Repository types chosen: {repoTypes}")
 logging.info(f"Naming selection: {answers['namesSelection']}")
 
@@ -325,6 +335,7 @@ if localDirectories:
 localDirectory = f"{Path.home()}/Code"
 logging.info(f"Local directory to search: {localDirectory}")
 
+# * ``` Ask to delete cloned repos! ``` * #
 confirmRemoveLocalDirectoriesAfterPrompt = """
     Remove newly cloned repositories after process complete? Defaults to yes.
 """
@@ -734,6 +745,8 @@ def localProcess(repo):
                 return
 
 
+# * ``` Delete stray master branch! ``` * #
+
 def localMasterDeleteProcess(repo):
     for localRepo in localRepos:
         if f"{repo['htmlUrl']}.git" == localRepo['url']:
@@ -748,6 +761,8 @@ def localMasterDeleteProcess(repo):
                 repo['error'] = True
                 return
 
+
+# * ``` Update remote repo that still has master! ``` * #
 
 def constructPatchDefaultUrl(repo):
     return f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}"
