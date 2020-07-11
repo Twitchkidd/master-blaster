@@ -1,192 +1,36 @@
-2020-07-11 06:18:39,425 INFO Creating a log file!!
-2020-07-11 06:18:41,001 INFO Username: Twitchkidd
-2020-07-11 06:18:43,339 INFO Repository types chosen: All repositories I'm the owner of, public and private.
-2020-07-11 06:18:43,339 INFO Naming selection: All primary branches renamed to 'main'.
-2020-07-11 06:18:45,296 INFO Local directory to search: /Users/gareth/Code
-2020-07-11 06:18:45,922 INFO Confirm remove local directories after: False
-2020-07-11 06:18:45,944 INFO Add git alias `git new`: main
-2020-07-11 06:19:18,672 INFO cwd=/Users/gareth/Code/rename/accountNumber: git branch
-2020-07-11 06:19:18,716 INFO localBranchInfoGitBranchStdout: * main
+2020-07-11 08:25:47,594 INFO Creating a log file!!
+2020-07-11 08:25:49,611 INFO Username: Twitchkidd
+2020-07-11 08:25:51,527 INFO Repository types chosen: All repositories I'm the owner of, public and private.
+2020-07-11 08:25:51,527 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-11 08:25:54,099 INFO Local directory to search: /Users/gareth/Code
+2020-07-11 08:25:54,596 INFO Confirm remove local directories after: False
+2020-07-11 08:25:54,610 INFO Add git alias `git new`: main
+2020-07-11 08:26:26,456 INFO cwd=/Users/gareth/Code/dots: git branch
+2020-07-11 08:26:26,463 INFO localBranchInfoGitBranchStdout: * main
 
-2020-07-11 06:19:18,721 INFO cwd=/Users/gareth/Code/rename/beginner-javascript: git branch
-2020-07-11 06:19:18,745 INFO localBranchInfoGitBranchStdout: * main
+2020-07-11 08:26:26,466 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
+2020-07-11 08:26:26,474 INFO localBranchInfoGitBranchStdout: * main
 
-2020-07-11 06:19:18,751 INFO cwd=/Users/gareth/Code/rename/bookBoxSort: git branch
-2020-07-11 06:19:18,774 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:18,779 INFO cwd=/Users/gareth/Code/rename/borg-david: git branch
-2020-07-11 06:19:18,832 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:18,838 INFO cwd=/Users/gareth/Code/rename/CheeryTomato: git branch
-2020-07-11 06:19:18,859 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:18,864 INFO cwd=/Users/gareth/Code/rename/code-etc: git branch
-2020-07-11 06:19:18,893 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:18,899 INFO cwd=/Users/gareth/Code/rename/dang-thats-delicious: git branch
-2020-07-11 06:19:18,928 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:18,933 INFO cwd=/Users/gareth/Code/rename/dep-gfcom: git branch
-2020-07-11 06:19:18,965 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:18,970 INFO cwd=/Users/gareth/Code/rename/dep-run-club-web: git branch
-2020-07-11 06:19:19,000 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,005 INFO cwd=/Users/gareth/Code/rename/dep-server: git branch
-2020-07-11 06:19:19,039 INFO localBranchInfoGitBranchStdout: * master
-
-2020-07-11 06:19:19,045 INFO cwd=/Users/gareth/Code/dots: git branch
-2020-07-11 06:19:19,107 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,112 INFO cwd=/Users/gareth/Code/rename/EggheadToDoApp: git branch
-2020-07-11 06:19:19,137 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,143 INFO cwd=/Users/gareth/Code/rename/Enzyme-React-Native-32: git branch
-2020-07-11 06:19:19,165 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,170 INFO cwd=/Users/gareth/Code/rename/fonts: git branch
-2020-07-11 06:19:19,194 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,200 INFO cwd=/Users/gareth/Code/rename/forms: git branch
-2020-07-11 06:19:19,231 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,236 INFO cwd=/Users/gareth/Code/rename/GarethDotCom: git branch
-2020-07-11 06:19:19,288 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,293 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
-2020-07-11 06:19:19,353 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,359 INFO cwd=/Users/gareth/Code/rename/gfcom-blog: git branch
-2020-07-11 06:19:19,412 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,417 INFO cwd=/Users/gareth/Code/rename/gfcom-public-html: git branch
-2020-07-11 06:19:19,445 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,450 INFO cwd=/Users/gareth/Code/rename/jetifier: git branch
-2020-07-11 06:19:19,510 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,516 INFO cwd=/Users/gareth/Code/rename/laa: git branch
-2020-07-11 06:19:19,544 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,550 INFO cwd=/Users/gareth/Code/rename/level-up-react-2: git branch
-2020-07-11 06:19:19,593 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,598 INFO cwd=/Users/gareth/Code/rename/Logoed: git branch
-2020-07-11 06:19:19,645 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,650 INFO cwd=/Users/gareth/Code/rename/logoed-server: git branch
-2020-07-11 06:19:19,689 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,694 INFO cwd=/Users/gareth/Code/rename/logoed-web-app: git branch
-2020-07-11 06:19:19,723 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,728 INFO cwd=/Users/gareth/Code/master-blaster: git branch
-2020-07-11 06:19:19,740 INFO localBranchInfoGitBranchStdout: * dev
+2020-07-11 08:26:26,476 INFO cwd=/Users/gareth/Code/master-blaster: git branch
+2020-07-11 08:26:26,483 INFO localBranchInfoGitBranchStdout: * dev
   main
 
-2020-07-11 06:19:19,745 INFO cwd=/Users/gareth/Code/rename/moodbit: git branch
-2020-07-11 06:19:19,775 INFO localBranchInfoGitBranchStdout: * leExit
+2020-07-11 08:26:26,486 INFO cwd=/Users/gareth/Code/site-deets: git branch
+2020-07-11 08:26:26,493 INFO localBranchInfoGitBranchStdout: * master
 
-2020-07-11 06:19:19,780 INFO cwd=/Users/gareth/Code/rename/Moving-Circle: git branch
-2020-07-11 06:19:19,829 INFO localBranchInfoGitBranchStdout: * main
+2020-07-11 08:26:26,496 INFO cwd=/Users/gareth/Code/test: git branch
+2020-07-11 08:26:26,503 INFO localBranchInfoGitBranchStdout: * master
 
-2020-07-11 06:19:19,834 INFO cwd=/Users/gareth/Code/rename/MultiBounce: git branch
-2020-07-11 06:19:19,883 INFO localBranchInfoGitBranchStdout: * main
+2020-07-11 08:29:06,208 INFO cwd=/Users/gareth/Code/test: git branch -m master main
+2020-07-11 08:29:06,226 INFO cwd=/Users/gareth/Code/test: git push -u origin main
+2020-07-11 08:29:09,368 INFO Branch 'main' set up to track remote branch 'main' from 'origin'.
 
-2020-07-11 06:19:19,888 INFO cwd=/Users/gareth/Code/rename/NaderDabitNavigatorExperimentalCodeAlong: git branch
-2020-07-11 06:19:19,907 INFO localBranchInfoGitBranchStdout: * main
+2020-07-11 08:29:09,369 WARNING remote: 
+remote: Create a pull request for 'main' on GitHub by visiting:        
+remote:      https://github.com/Twitchkidd/test/pull/new/main        
+remote: 
+To https://github.com/Twitchkidd/test.git
+ * [new branch]      main -> main
 
-2020-07-11 06:19:19,913 INFO cwd=/Users/gareth/Code/rename/phpTest: git branch
-2020-07-11 06:19:19,959 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:19,964 INFO cwd=/Users/gareth/Code/projects/penny/polar-pairs: git branch
-2020-07-11 06:19:20,033 INFO localBranchInfoGitBranchStdout:   level-two
-* main
-  responsive
-
-2020-07-11 06:19:20,039 INFO cwd=/Users/gareth/Code/rename/pom: git branch
-2020-07-11 06:19:20,075 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,080 INFO cwd=/Users/gareth/Code/rename/ReactNavigationReduxTest: git branch
-2020-07-11 06:19:20,126 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,131 INFO cwd=/Users/gareth/Code/rename/recurring: git branch
-2020-07-11 06:19:20,161 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,167 INFO cwd=/Users/gareth/Code/rename/RNWebviewMicPermission: git branch
-2020-07-11 06:19:20,222 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,227 INFO cwd=/Users/gareth/Code/rename/rocktober: git branch
-2020-07-11 06:19:20,247 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,253 INFO cwd=/Users/gareth/Code/rename/Roll-a-Ball: git branch
-2020-07-11 06:19:20,302 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,307 INFO cwd=/Users/gareth/Code/rename/RR-TodoList: git branch
-2020-07-11 06:19:20,335 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,340 INFO cwd=/Users/gareth/Code/rename/run-club-server: git branch
-2020-07-11 06:19:20,385 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,390 INFO cwd=/Users/gareth/Code/rename/run-club-web: git branch
-2020-07-11 06:19:20,446 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,451 INFO cwd=/Users/gareth/Code/rename/RunClub: git branch
-2020-07-11 06:19:20,499 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,504 INFO cwd=/Users/gareth/Code/rename/server: git branch
-2020-07-11 06:19:20,554 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,559 INFO cwd=/Users/gareth/Code/rename/shellScripts: git branch
-2020-07-11 06:19:20,612 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,617 INFO cwd=/Users/gareth/Code/rename/site-deets: git branch
-2020-07-11 06:19:20,663 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,668 INFO cwd=/Users/gareth/Code/rename/slider-app: git branch
-2020-07-11 06:19:20,690 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,695 INFO cwd=/Users/gareth/Code/rename/spukee-site-react: git branch
-2020-07-11 06:19:20,737 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,743 INFO cwd=/Users/gareth/Code/rename/sqrrlSite: git branch
-2020-07-11 06:19:20,762 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,768 INFO cwd=/Users/gareth/Code/rename/tc-net: git branch
-2020-07-11 06:19:20,792 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,798 INFO cwd=/Users/gareth/Code/rename/tech-test-react-wordcloud: git branch
-2020-07-11 06:19:20,847 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,853 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/Twitchkidd/test: git branch
-2020-07-11 06:19:20,907 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,912 INFO cwd=/Users/gareth/Code/rename/test-cra: git branch
-2020-07-11 06:19:20,965 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:20,970 INFO cwd=/Users/gareth/Code/rename/test-html: git branch
-2020-07-11 06:19:21,014 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:21,019 INFO cwd=/Users/gareth/Code/rename/TrailCity: git branch
-2020-07-11 06:19:21,065 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:21,071 INFO cwd=/Users/gareth/Code/rename/web-dev-reboot: git branch
-2020-07-11 06:19:21,117 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:21,122 INFO cwd=/Users/gareth/Code/rename/Who2Heal: git branch
-2020-07-11 06:19:21,172 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:21,177 INFO cwd=/Users/gareth/Code/rename/whole-code-folder: git branch
-2020-07-11 06:19:21,217 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:21,223 INFO cwd=/Users/gareth/Code/rename/whole-logoed-folder: git branch
-2020-07-11 06:19:21,257 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:21,262 INFO cwd=/Users/gareth/Code/rename/wild-rydes-react-native-no-mfa: git branch
-2020-07-11 06:19:21,313 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:21,318 INFO cwd=/Users/gareth/Code/rename/yusuff-faruq-context-demo: git branch
-2020-07-11 06:19:21,369 INFO localBranchInfoGitBranchStdout: * main
-
-2020-07-11 06:19:21,375 INFO git config --global alias.new !git init
-2020-07-11 06:19:21,391 INFO git symbolic-ref HEAD refs/heads/main
+2020-07-11 08:29:09,373 INFO git config --global alias.new !git init
+2020-07-11 08:29:09,386 INFO git symbolic-ref HEAD refs/heads/main

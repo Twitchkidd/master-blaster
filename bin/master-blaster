@@ -390,17 +390,17 @@ else:
 def tokenPrompt(tokenTypeArg):
     return f"""
     -- Get a token! --
-    Since password-based token generation is being deprecated, please get
-    a personal access token with the correct scope(s) in order to run this
-    program. To get this token, go to https://github.com, sign in,
-    then go to 'Settings', 
-    then 'Developer Settings',
-    then 'Personal access tokens',
-    then 'Generate new token',
-    confirm your password, name the token in the 'Note' input field, and select
-    the {tokenTypeArg} scope, then 'Generate Token',
-    then copy it to your clipboard and either paste it back here into the prompt,
-    or save it first in case there's an error and you need to retry! (Recommended)
+    Since password-based token generation is being deprecated,
+    please get a personal access token with the correct scope(s)
+    in order to run this program.
+    To get this token, go to https://github.com, sign in,
+    then go to 'Settings', then 'Developer Settings',
+    then 'Personal access tokens', then 'Generate new token',
+    confirm your password, name the token in the 'Note' input field,
+    and select the {tokenTypeArg} scope, then 'Generate Token',
+    then copy it to your clipboard,
+    please save it first in case there's an error,
+    then paste it back here into the prompt,
     """
 
 
@@ -644,11 +644,11 @@ if localDirectories:
                 if localRepo['url'] == f"{repo['htmlUrl']}.git":
                     localPath = localRepo['path']
             localBranchInfoGitBranch = subprocess.Popen(["git", "branch"], cwd=localPath, universal_newlines=True,
-                                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(f"cwd={localPath}: git branch")
             localBranchInfoGitBranchStdout = localBranchInfoGitBranch.stdout.read()
             logging.info(
-                f"localBranchInfoGitBranchStdout: {localBranchInfoGitBranchStdout}")
+                f"localBranchInfoGitBranchStdout: {localBranchInfoGitBranchStdout[:2]}")
             localBranchInfoGitBranchStderr = localBranchInfoGitBranch.stderr.read()
             if len(localBranchInfoGitBranchStderr) > 0:
                 logging.warning(
@@ -674,7 +674,7 @@ def localProcess(repo):
     for localRepo in localRepos:
         if f"{repo['htmlUrl']}.git" == localRepo['url']:
             localProcessGcm = subprocess.Popen(["git", "checkout", "master"], cwd=localRepo['path'], universal_newlines=True,
-                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(f"cwd={localRepo['path']}: git checkout master")
             localProcessGcmStdout = localProcessGcm.stdout.read()
             if len(localProcessGcmStdout) > 0:
@@ -685,7 +685,7 @@ def localProcess(repo):
                 repo['error'] = True
                 return
             localProcessGbm = subprocess.Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'], universal_newlines=True,
-                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(
                 f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}")
             localProcessGbmStdout = localProcessGbm.stdout.read()
@@ -697,7 +697,7 @@ def localProcess(repo):
                 repo['error'] = True
                 return
             localProcessGf = subprocess.Popen(["git", "fetch"], cwd=localRepo['path'], universal_newlines=True,
-                                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                              stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(f"cwd={localRepo['path']}: git fetch")
             localProcessGfStdout = localProcessGf.stdout.read()
             if len(localProcessGfStdout) > 0:
@@ -708,7 +708,7 @@ def localProcess(repo):
                 repo['error'] = True
                 return
             localProcessGbuu = subprocess.Popen(["git", "branch", "--unset-upstream"], cwd=localRepo['path'], universal_newlines=True,
-                                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(
                 f"cwd={localRepo['path']}: git branch --unset-upstream")
             localProcessGbuuStdout = localProcessGbuu.stdout.read()
@@ -720,7 +720,7 @@ def localProcess(repo):
                 repo['error'] = True
                 return
             localProcessGbuo = subprocess.Popen(["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"], cwd=localRepo['path'],
-                                                universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(
                 f"cwd={localRepo['path']}: git branch -u origin/{repo['primaryBranchName']}")
             localProcessGbuoStdout = localProcessGbuo.stdout.read()
@@ -732,7 +732,7 @@ def localProcess(repo):
                 repo['error'] = True
                 return
             localProcessGsro = subprocess.Popen(["git", "symbolic-ref", "refs/remotes/origin/HEAD",
-                                                 f"refs/remotes/origin/{repo['primaryBranchName']}"], cwd=localRepo['path'], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                 f"refs/remotes/origin/{repo['primaryBranchName']}"], cwd=localRepo['path'], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(
                 f"cwd={localRepo['path']}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['primaryBranchName']}")
             localProcessGsroStdout = localProcessGsro.stdout.read()
@@ -749,7 +749,7 @@ def localMasterDeleteProcess(repo):
     for localRepo in localRepos:
         if f"{repo['htmlUrl']}.git" == localRepo['url']:
             localMasterDeleteProcessBranchD = subprocess.Popen(
-                ["git", "branch", "-d", "master"], cwd=localRepo['path'], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                ["git", "branch", "-d", "master"], cwd=localRepo['path'], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(f"cwd={localRepo['path']}: git branch -d master")
             localMasterDeleteProcessBranchDStdout = localMasterDeleteProcessBranchD.stdout.read()
             if len(localMasterDeleteProcessBranchDStdout) > 0:
@@ -776,7 +776,7 @@ def remoteProcess(repo):
             for localRepo in localRepos:
                 if f"{repo['htmlUrl']}.git" == localRepo['url']:
                     remoteProcessLocalRepoGbm = subprocess.Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'],
-                                                                 universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                                 universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                     logging.info(
                         f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}")
                     remoteProcessLocalRepoGbmStdout = remoteProcessLocalRepoGbm.stdout.read()
@@ -788,7 +788,7 @@ def remoteProcess(repo):
                         repo['error'] = True
                         return
                     remoteProcessLocalRepoGpuo = subprocess.Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=localRepo['path'],
-                                                                  universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                                  universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                     logging.info(
                         f"cwd={localRepo['path']}: git push -u origin {repo['primaryBranchName']}")
                     remoteProcessLocalRepoGpuoStdout = remoteProcessLocalRepoGpuo.stdout.read()
@@ -802,7 +802,7 @@ def remoteProcess(repo):
         else:
             if not os.path.isdir(f"{localDirectory}/master-blaster-{username}/"):
                 remoteProcessRemoteRepoMkdir = subprocess.Popen(
-                    ["mkdir", "-pv", f"{localDirectory}/master-blaster-{username}/"], cwd=localDirectory, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    ["mkdir", "-pv", f"{localDirectory}/master-blaster-{username}/"], cwd=localDirectory, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 logging.info(
                     f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/")
                 remoteProcessRemoteRepoMkdirStdout = remoteProcessRemoteRepoMkdir.stdout.read()
@@ -815,7 +815,7 @@ def remoteProcess(repo):
                     return
             # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             remoteProcessRemoteRepoGcl = subprocess.Popen(["git", "clone", f"{repo['htmlUrl']}.git", f"./{repo['owner-login']}/{repo['name']}"], cwd=f"{localDirectory}/master-blaster-{username}/",
-                                                          universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                          universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(
                 f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}")
             remoteProcessRemoteRepoGclStdout = remoteProcessRemoteRepoGcl.stdout.read()
@@ -827,7 +827,7 @@ def remoteProcess(repo):
                 repo['error'] = True
                 return
             remoteProcessRemoteRepoGbm = subprocess.Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
-                                                          universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                          universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(
                 f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}: git branch -m master {repo['primaryBranchName']}")
             remoteProcessRemoteRepoGbmStdout = remoteProcessRemoteRepoGbm.stdout.read()
@@ -839,7 +839,7 @@ def remoteProcess(repo):
                 repo['error'] = True
                 return
             remoteProcessRemoteRepoGpuo = subprocess.Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
-                                                           universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                           universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(
                 f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}: git push -u origin {repo['primaryBranchName']}")
             remoteProcessRemoteRepoGpuoStdout = remoteProcessRemoteRepoGpuo.stdout.read()
@@ -853,7 +853,7 @@ def remoteProcess(repo):
     else:
         if not os.path.isdir(f"{localDirectory}/master-blaster-{username}/"):
             remoteProcessRemoteRepoMkdir = subprocess.Popen(
-                ["mkdir", "-pv", f"{localDirectory}/master-blaster-{username}/"], cwd=localDirectory, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                ["mkdir", "-pv", f"{localDirectory}/master-blaster-{username}/"], cwd=localDirectory, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             logging.info(
                 f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/")
             remoteProcessRemoteRepoMkdirStdout = remoteProcessRemoteRepoMkdir.stdout.read()
@@ -866,7 +866,7 @@ def remoteProcess(repo):
                 return
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         remoteProcessRemoteRepoGcl = subprocess.Popen(["git", "clone", f"{repo['htmlUrl']}.git", f"./{repo['owner-login']}/{repo['name']}"], cwd=f"{localDirectory}/master-blaster-{username}",
-                                                      universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                      universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
         logging.info(
             f"cwd={localDirectory}/master-blaster-{username}: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}")
         remoteProcessRemoteRepoGclStdout = remoteProcessRemoteRepoGcl.stdout.read()
@@ -878,7 +878,7 @@ def remoteProcess(repo):
             repo['error'] = True
             return
         remoteProcessRemoteRepoGbm = subprocess.Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
-                                                      universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                      universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
         logging.info(
             f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -m master {repo['primaryBranchName']}")
         remoteProcessRemoteRepoGbmStdout = remoteProcessRemoteRepoGbm.stdout.read()
@@ -890,7 +890,7 @@ def remoteProcess(repo):
             repo['error'] = True
             return
         remoteProcessRemoteRepoGpuo = subprocess.Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
-                                                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                                       universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
         logging.info(
             f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -u origin {repo['primaryBranchName']}")
         remoteProcessRemoteRepoGpuoStdout = remoteProcessRemoteRepoGpuo.stdout.read()
@@ -1003,7 +1003,7 @@ if remoteIsAGo:
 
 if confirmRemoveLocalDirectoriesAfter:
     removeLocalDirectoriesProcess = subprocess.Popen(
-        ["rm", "-dfRv", f"./master-blaster-{username}"], cwd=localDirectory, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        ["rm", "-dfRv", f"./master-blaster-{username}"], cwd=localDirectory, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
     logging.info(f"cwd={localDirectory}: rm -dfRv ./master-blaster-{username}")
     removeLocalDirectoriesProcessStdout = removeLocalDirectoriesProcess.stdout.read()
     if len(removeLocalDirectoriesProcess) > 0:
@@ -1017,7 +1017,7 @@ if confirmRemoveLocalDirectoriesAfter:
 # * Add the `git new` alias! * #
 def runGitNew():
     gitNewGcg = subprocess.Popen(["git", "config", "--global", "alias.new", "'!git", "init"],
-                                 universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                 universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
     logging.info(f"git config --global alias.new !git init")
     gitNewGcgStdout = gitNewGcg.stdout.read()
     if len(gitNewGcgStdout) > 0:
@@ -1028,7 +1028,7 @@ def runGitNew():
         print(f"Error creating git ! {gitNewGcgStderr}")
         return
     gitNewGsh = subprocess.Popen(["git", "symbolic-ref", "HEAD", f"refs/heads/{name}"], universal_newlines=True,
-                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
     logging.info(f"git symbolic-ref HEAD refs/heads/{name}")
     gitNewGshStdout = gitNewGsh.stdout.read()
     if len(gitNewGshStdout) > 0:
@@ -1115,6 +1115,6 @@ print("Thank you for using master-blaster!")
 
 # ! Testing! #
 if(len(currentBranch) > 0):
-    subprocess.Popen(["git", "checkout", f"{currentBranch}"])
+    subprocess.Popen(["git", "checkout", f"{currentBranch}"]).wait()
 
 sys.exit()
