@@ -10,6 +10,8 @@ Woohoo! Ready to launch this thing! It's not perfect, but it does the thing, at 
 
 This is NOT guaranteed to work!
 
+GITHUB users!
+
 OPERATING SYSTEM! Only tested on macOS Catalina 10.15.5
 
 Only for repos you're the owner of, rather than collaborating on or are a member of the organization, for the moment.
