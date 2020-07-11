@@ -61,4 +61,12 @@ It also optionally adds a git alias `git new` that starts up repos with 'main' o
 
 ## Instructions!
 
-To run `master-blaster`, have Python 3.7 or up installed, and pipenv. Then ... let's see ...
+To run `master-blaster`, have Python 3.7 or up installed, and pipenv. Then:
+
+`git clone https://github.com/Twitchkidd/master-blaster.git`
+`cd master-blaster`
+`pipenv install`
+`pipenv shell`
+`master-blaster`
+
+## Thank you!
