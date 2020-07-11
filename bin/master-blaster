@@ -142,7 +142,7 @@ repoTypesPrompt = """
 """
 
 # * ``` Choices ``` * #
-repoTypesOwner = "All repositories I'm the owner of, public and private."
+repoTypesOwner = "All repositories I'm the owner of, public and private. (Collaborator/Organization repo types in development!)"
 repoTypesOwnerPublic = "All repositories I'm the owner of, only public, not private."
 repoTypesAll = "All repositories I'm the owner, collaborator, and/or organization member, public and private."
 repoTypesAllPublic = "All repositories I'm the owner, collaborator, and/or organization member, only public, not private."
@@ -170,13 +170,13 @@ questions = [
         "message": repoTypesPrompt,
         "choices": [
             repoTypesOwner,
-            repoTypesOwnerPublic,
-            repoTypesAll,
-            repoTypesAllPublic,
-            repoTypesCollaborator,
-            repoTypesCollaboratorPublic,
-            repoTypesOrganization,
-            repoTypesOrganizationPublic
+            # repoTypesOwnerPublic,
+            # repoTypesAll,
+            # repoTypesAllPublic,
+            # repoTypesCollaborator,
+            # repoTypesCollaboratorPublic,
+            # repoTypesOrganization,
+            # repoTypesOrganizationPublic
         ]
     },
     {
@@ -194,6 +194,7 @@ questions = [
 # * ``` Extract the data from the set of prompts from dictionary! ``` * #
 answers = questionary.prompt(questions)
 repoTypes = answers['repoTypes']
+repoTypes = repoTypesOwner
 logging.info(f"Repository types chosen: {repoTypes}")
 logging.info(f"Naming selection: {answers['namesSelection']}")
 
@@ -435,7 +436,7 @@ def constructHeaders(token):
 def constructReposParams():
     params = {}
     if repoTypes == repoTypesAll:
-        params = {"per_page": "1000"}
+        params = {"per_page": "1000", }
     if repoTypes == repoTypesAllPublic:
         params = {"per_page": "1000", "visibility": "public"}
     if repoTypes == repoTypesOwner:
@@ -830,8 +831,7 @@ def remoteProcess(repo):
                 logging.info(remoteProcessRemoteRepoGclStdout)
             if len(remoteProcessRemoteRepoGclStderr) > 0:
                 logging.warning(remoteProcessRemoteRepoGclStderr)
-                repo['error'] = True
-                return
+                logging.info("You may be able to ignore the above warning.")
             remoteProcessRemoteRepoGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
                                                stdout=PIPE, stderr=PIPE)
             logging.info(
@@ -1037,39 +1037,13 @@ if confirmRemoveLocalDirectoriesAfter:
         ["rm", "-dfRv", f"./master-blaster-{username}"], cwd=localDirectory,  stdout=PIPE, stderr=PIPE)
     logging.info(f"cwd={localDirectory}: rm -dfRv ./master-blaster-{username}")
     removeLocalDirectoriesProcessStdout, removeLocalDirectoriesProcessStderr = removeLocalDirectoriesProcess.communicate()
-    if len(removeLocalDirectoriesProcess) > 0:
-        logging.info(removeLocalDirectoriesProcess)
+    # if len(removeLocalDirectoriesProcessStdout) > 0:
+    # logging.info(removeLocalDirectoriesProcessStdout)
+    # Overflow error
     if len(removeLocalDirectoriesProcessStderr) > 0:
         logging.warning(removeLocalDirectoriesProcessStderr)
         print("Error: Failed to rm temp dir!")
 
-
-# * Add the `git new` alias! * #
-def runGitNew():
-    gitNewGcg = Popen(["git", "config", "--global", "alias.new", "'!git", "init"],
-                      stdout=PIPE, stderr=PIPE)
-    logging.info(f"git config --global alias.new !git init")
-    gitNewGcgStdout, gitNewGcgStderr = gitNewGcg.communicate()
-    if len(gitNewGcgStdout) > 0:
-        logging.info(gitNewGcgStdout)
-    if len(gitNewGcgStderr) > 0:
-        logging.warning(gitNewGcgStderr)
-        print(f"Error creating git ! {gitNewGcgStderr}")
-        return
-    gitNewGsh = Popen(["git", "symbolic-ref", "HEAD", f"refs/heads/{name}"],
-                      stdout=PIPE, stderr=PIPE)
-    logging.info(f"git symbolic-ref HEAD refs/heads/{name}")
-    gitNewGshStdout, gitNewGshStderr = gitNewGsh.communicate()
-    if len(gitNewGshStdout) > 0:
-        logging.info(gitNewGshStdout)
-    if len(gitNewGshStderr) > 0:
-        logging.warning(gitNewGshStderr)
-        print(f"Error creating git alias! {gitNewGshStderr}")
-        return
-
-
-if gitNew:
-    runGitNew()
 
 # * ``` Reporting! ``` * #
 
@@ -1136,6 +1110,35 @@ if remoteIsAGo:
     {len(reposReadyForRemote)} repos completed the remote process!
         """)
 
+# * Add the `git new` alias! * #
+
+
+def runGitNew():
+    gitNewGcg = Popen(["git", "config", "--global", "alias.new", "'!git", "init"],
+                      stdout=PIPE, stderr=PIPE)
+    logging.info(f"git config --global alias.new !git init")
+    gitNewGcgStdout, gitNewGcgStderr = gitNewGcg.communicate()
+    if len(gitNewGcgStdout) > 0:
+        logging.info(gitNewGcgStdout)
+    if len(gitNewGcgStderr) > 0:
+        logging.warning(gitNewGcgStderr)
+        print(f"Error creating git ! {gitNewGcgStderr}")
+        return
+    gitNewGsh = Popen(["git", "symbolic-ref", "HEAD", f"refs/heads/{name}"],
+                      stdout=PIPE, stderr=PIPE)
+    logging.info(f"git symbolic-ref HEAD refs/heads/{name}")
+    gitNewGshStdout, gitNewGshStderr = gitNewGsh.communicate()
+    if len(gitNewGshStdout) > 0:
+        logging.info(gitNewGshStdout)
+    if len(gitNewGshStderr) > 0:
+        logging.warning(gitNewGshStderr)
+        print(f"Error creating git alias! {gitNewGshStderr}")
+        return
+
+
+if gitNew:
+    runGitNew()
+
 # * ``` Denoument! ``` * #
 
 print("Check the log file at ./info.log for details!\n")
@@ -1143,6 +1146,7 @@ print("Thank you for using master-blaster!")
 
 # ! Testing! #
 if(len(currentBranch) > 0):
-    Popen(["git", "checkout", f"{currentBranch}"], stdout=PIPE, stderr=PIPE)
+    Popen(["git", "checkout", f"{currentBranch}"],
+          stdout=PIPE, stderr=PIPE)
 
 sys.exit()

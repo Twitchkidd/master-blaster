@@ -1,28 +1,17 @@
-2020-07-11 13:03:34,517 INFO Creating a log file!!
-2020-07-11 13:03:35,343 INFO Username: Twitchkidd
-2020-07-11 13:03:35,679 INFO Repository types chosen: All repositories I'm the owner of, public and private.
-2020-07-11 13:03:35,679 INFO Naming selection: All primary branches renamed to 'main'.
-2020-07-11 13:03:36,284 INFO Local directory to search: /Users/gareth/Code
-2020-07-11 13:03:36,713 INFO Confirm remove local directories after: False
-2020-07-11 13:03:36,728 INFO Add git alias `git new`: main
-2020-07-11 13:04:08,005 INFO cwd=/Users/gareth/Code/dots: git branch
-2020-07-11 13:04:08,013 INFO localBranchInfoGitBranchStdout: b'* main\n'
-2020-07-11 13:04:08,015 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
-2020-07-11 13:04:08,022 INFO localBranchInfoGitBranchStdout: b'* main\n'
-2020-07-11 13:04:08,025 INFO cwd=/Users/gareth/Code/master-blaster: git branch
-2020-07-11 13:04:08,033 INFO localBranchInfoGitBranchStdout: b'* dev\n  main\n'
-2020-07-11 13:04:08,035 INFO cwd=/Users/gareth/Code/site-deets: git branch
-2020-07-11 13:04:08,043 INFO localBranchInfoGitBranchStdout: b'* master\n'
-2020-07-11 13:04:08,045 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/Twitchkidd/test: git branch
-2020-07-11 13:04:08,053 INFO localBranchInfoGitBranchStdout: b'* master\n'
-2020-07-11 13:04:31,350 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/Twitchkidd/test: git branch -m master main
-2020-07-11 13:04:31,367 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/Twitchkidd/test: git push -u origin main
-2020-07-11 13:04:34,379 INFO b"Branch 'main' set up to track remote branch 'main' from 'origin'.\n"
-2020-07-11 13:04:34,379 WARNING b"remote: \nremote: Create a pull request for 'main' on GitHub by visiting:        \nremote:      https://github.com/Twitchkidd/test/pull/new/main        \nremote: \nTo https://github.com/Twitchkidd/test.git\n * [new branch]      main -> main\n"
-2020-07-11 13:04:34,379 INFO You may be able to ignore the above warning.
-2020-07-11 13:04:35,497 INFO Default branch for https://github.com/Twitchkidd/test updated to main.
-2020-07-11 13:04:35,501 INFO cwd=/Users/gareth/Code/master-blaster-Twitchkidd/Twitchkidd/test: git push --delete origin master
-2020-07-11 13:04:38,536 WARNING b'To https://github.com/Twitchkidd/test.git\n - [deleted]         master\n'
-2020-07-11 13:04:38,536 INFO You may be able to ignore the above warning.
-2020-07-11 13:04:38,541 INFO git config --global alias.new !git init
-2020-07-11 13:04:38,554 INFO git symbolic-ref HEAD refs/heads/main
+2020-07-11 14:00:04,351 INFO Creating a log file!!
+2020-07-11 14:00:08,357 INFO Username: Twitchkidd
+2020-07-11 14:00:08,772 INFO Repository types chosen: All repositories I'm the owner of, public and private. (Collaborator/Organization repo types in development!)
+2020-07-11 14:00:08,773 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-11 14:00:09,957 INFO Local directory to search: /Users/gareth/Code
+2020-07-11 14:00:10,295 INFO Confirm remove local directories after: True
+2020-07-11 14:00:10,308 INFO Add git alias `git new`: main
+2020-07-11 14:00:45,204 INFO cwd=/Users/gareth/Code/dots: git branch
+2020-07-11 14:00:45,212 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-11 14:00:45,215 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
+2020-07-11 14:00:45,223 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-11 14:00:45,225 INFO cwd=/Users/gareth/Code/master-blaster: git branch
+2020-07-11 14:00:45,233 INFO localBranchInfoGitBranchStdout: b'* dev\n  main\n'
+2020-07-11 14:00:45,236 INFO cwd=/Users/gareth/Code/site-deets: git branch
+2020-07-11 14:00:45,243 INFO localBranchInfoGitBranchStdout: b'* master\n'
+2020-07-11 14:00:45,252 INFO cwd=/Users/gareth/Code: rm -dfRv ./master-blaster-Twitchkidd
+2020-07-11 14:00:45,254 INFO cwd=/Users/gareth/Code: mkdir -pv /Users/gareth/Code/master-blaster-Twitchkidd/
