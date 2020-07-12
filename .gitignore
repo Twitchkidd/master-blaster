@@ -1,7 +1,8 @@
 .DS_Store
 build/
 dist/
-master_blaster.egg-info/
 repoPublicRepo.txt
 repo.txt
 .vscode/
+# Should this be here? (Below)
+master_blaster.egg-info/
