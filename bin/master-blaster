@@ -743,19 +743,6 @@ def localProcess(repo):
                 logging.warning(localProcessGsroStderr)
                 repo['error'] = True
                 return
-            # ! This is not what you want! It returns it to ... well it does git branch master, and switches to a new branch, lol
-            # ! You want this in remoteprocess if repourl in localwhatever
-            localProcessBranchReturn = Popen(
-                ["git", "checkout", f"{localRepo['branch']}"], cwd=localRepo['path'], stdout=PIPE, stderr=PIPE)
-            logging.info(
-                f"cwd={localRepo['path']}: git checkout {localRepo['branch']}")
-            localProcessBranchReturnStdout, localProcessBranchReturnStderr = localProcessBranchReturn.communicate()
-            if len(localProcessBranchReturnStdout) > 0:
-                logging.info(localProcessBranchReturnStdout)
-            if len(localProcessBranchReturnStderr) > 0:
-                logging.warning(localProcessBranchReturnStderr)
-                repo['error'] = True
-                return
 
 
 # * ``` Delete stray master branch! ``` * #
