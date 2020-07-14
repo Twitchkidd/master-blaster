@@ -27,9 +27,9 @@ import sys
 # * ``` From u/merfi on SO! ``` * #
 
 
-def get_active_branch_name():
+def get_active_branch_name(path):
 
-    head_dir = Path(".") / ".git" / "HEAD"
+    head_dir = Path(path) / ".git" / "HEAD"
     with head_dir.open("r") as f:
         content = f.read().splitlines()
 
@@ -40,7 +40,7 @@ def get_active_branch_name():
 
 currentBranch = ""
 if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
-    currentBranch = get_active_branch_name()
+    currentBranch = get_active_branch_name(f"{Path.cwd()}")
 
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
@@ -578,7 +578,7 @@ if localDirectories:
                 try:
                     with open(f"{root}/{subdir}/.git/config", "r") as configFile:
                         localRepos.append(
-                            {"url": getLocalRepoUrl(configFile), "path": f"{root}/{subdir}"})
+                            {"url": getLocalRepoUrl(configFile), "path": f"{root}/{subdir}", "branch": f"{get_active_branch_name(f'{root}/{subdir}')}"})
                 except Exception as err:
                     # print(f"Exception: {err}")
                     pass
@@ -741,6 +741,19 @@ def localProcess(repo):
                 logging.info(localProcessGsroStdout)
             if len(localProcessGsroStderr) > 0:
                 logging.warning(localProcessGsroStderr)
+                repo['error'] = True
+                return
+            # ! This is not what you want! It returns it to ... well it does git branch master, and switches to a new branch, lol
+            # ! You want this in remoteprocess if repourl in localwhatever
+            localProcessBranchReturn = Popen(
+                ["git", "checkout", f"{localRepo['branch']}"], cwd=localRepo['path'], stdout=PIPE, stderr=PIPE)
+            logging.info(
+                f"cwd={localRepo['path']}: git checkout {localRepo['branch']}")
+            localProcessBranchReturnStdout, localProcessBranchReturnStderr = localProcessBranchReturn.communicate()
+            if len(localProcessBranchReturnStdout) > 0:
+                logging.info(localProcessBranchReturnStdout)
+            if len(localProcessBranchReturnStderr) > 0:
+                logging.warning(localProcessBranchReturnStderr)
                 repo['error'] = True
                 return
 
