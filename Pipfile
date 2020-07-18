@@ -9,7 +9,7 @@ autopep8 = "*"
 [packages]
 requests = "*"
 questionary = "*"
-master-blaster = {editable = true, path = "."}
+master-blaster = {path = "."}
 
 [requires]
 python_version = "3.7"
