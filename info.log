@@ -1,50 +1,21 @@
-2020-07-14 10:42:52,407 INFO Creating a log file!!
-2020-07-14 10:44:18,744 INFO Username: Twitchkidd
-2020-07-14 10:44:25,299 INFO Repository types chosen: All repositories I'm the owner of, public and private. (Collaborator/Organization repo types in development!)
-2020-07-14 10:44:25,299 INFO Naming selection: All primary branches renamed to 'main'.
-2020-07-14 10:44:30,225 INFO Local directory to search: /Users/gareth/Code
-2020-07-14 10:44:33,392 INFO Confirm remove local directories after: True
-2020-07-14 10:44:33,407 INFO Add git alias `git new`: main
-2020-07-14 10:45:11,802 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git branch
-2020-07-14 10:45:11,811 INFO localBranchInfoGitBranchStdout: b'* master\n'
-2020-07-14 10:45:11,814 INFO cwd=/Users/gareth/Code/dots: git branch
-2020-07-14 10:45:11,821 INFO localBranchInfoGitBranchStdout: b'* main\n'
-2020-07-14 10:45:11,824 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
-2020-07-14 10:45:11,832 INFO localBranchInfoGitBranchStdout: b'* main\n'
-2020-07-14 10:45:11,834 INFO cwd=/Users/gareth/Code/master-blaster: git branch
-2020-07-14 10:45:11,842 INFO localBranchInfoGitBranchStdout: b'* branch-return\n  dev\n  main\n'
-2020-07-14 10:45:11,845 INFO cwd=/Users/gareth/Code/site-deets: git branch
-2020-07-14 10:45:11,853 INFO localBranchInfoGitBranchStdout: b'* master\n'
-2020-07-14 10:46:02,014 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git checkout master
-2020-07-14 10:46:02,027 INFO b"Your branch is up to date with 'origin/master'.\n"
-2020-07-14 10:46:02,027 WARNING b"Already on 'master'\n"
-2020-07-14 10:46:02,028 INFO You may be able to ignore the above warning.
-2020-07-14 10:46:02,030 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git branch -m master main
-2020-07-14 10:46:02,045 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git fetch
-2020-07-14 10:46:02,372 WARNING b'From https://github.com/Twitchkidd/cloneWithMasterReturnBranchTest\n * [new branch]      main       -> origin/main\n'
-2020-07-14 10:46:02,372 INFO You may be able to ignore the above warning.
-2020-07-14 10:46:02,375 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git branch --unset-upstream
-2020-07-14 10:46:02,387 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git branch -u origin/main
-2020-07-14 10:46:02,396 INFO b"Branch 'main' set up to track remote branch 'main' from 'origin'.\n"
-2020-07-14 10:46:02,398 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
-2020-07-14 10:46:02,408 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git checkout master
-2020-07-14 10:46:02,421 INFO b"Branch 'master' set up to track remote branch 'master' from 'origin'.\n"
-2020-07-14 10:46:02,421 WARNING b"Switched to a new branch 'master'\n"
-2020-07-14 10:46:02,423 INFO cwd=/Users/gareth/Code/site-deets: git checkout master
-2020-07-14 10:46:02,434 INFO b"Your branch is up to date with 'origin/master'.\n"
-2020-07-14 10:46:02,434 WARNING b"Already on 'master'\n"
-2020-07-14 10:46:02,435 INFO You may be able to ignore the above warning.
-2020-07-14 10:46:02,437 INFO cwd=/Users/gareth/Code/site-deets: git branch -m master main
-2020-07-14 10:46:02,450 INFO cwd=/Users/gareth/Code/site-deets: git fetch
-2020-07-14 10:46:03,600 WARNING b'From https://github.com/Twitchkidd/site-deets\n * [new branch]      main       -> origin/main\n'
-2020-07-14 10:46:03,600 INFO You may be able to ignore the above warning.
-2020-07-14 10:46:03,603 INFO cwd=/Users/gareth/Code/site-deets: git branch --unset-upstream
-2020-07-14 10:46:03,613 INFO cwd=/Users/gareth/Code/site-deets: git branch -u origin/main
-2020-07-14 10:46:03,622 INFO b"Branch 'main' set up to track remote branch 'main' from 'origin'.\n"
-2020-07-14 10:46:03,624 INFO cwd=/Users/gareth/Code/site-deets: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
-2020-07-14 10:46:03,634 INFO cwd=/Users/gareth/Code/site-deets: git checkout master
-2020-07-14 10:46:03,644 INFO b"Branch 'master' set up to track remote branch 'master' from 'origin'.\n"
-2020-07-14 10:46:03,645 WARNING b"Switched to a new branch 'master'\n"
-2020-07-14 10:46:03,647 INFO cwd=/Users/gareth/Code: rm -dfRv ./master-blaster-Twitchkidd
-2020-07-14 10:46:03,650 INFO git config --global alias.new !git init
-2020-07-14 10:46:03,662 INFO git symbolic-ref HEAD refs/heads/main
+2020-07-18 07:41:19,474 INFO Creating a log file!!
+2020-07-18 07:41:20,390 INFO Username: Twitchkidd
+2020-07-18 07:41:20,719 INFO Repository types chosen: All repositories I'm the owner of, public and private. (Collaborator/Organization repo types in development!)
+2020-07-18 07:41:20,720 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-18 07:41:21,254 INFO Local directory to search: /Users/gareth/Code
+2020-07-18 07:41:21,747 INFO Confirm remove local directories after: True
+2020-07-18 07:41:21,762 INFO Add git alias `git new`: main
+2020-07-18 07:41:55,101 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git branch
+2020-07-18 07:41:55,108 INFO localBranchInfoGitBranchStdout: b'  main\n* master\n'
+2020-07-18 07:41:55,111 INFO cwd=/Users/gareth/Code/dots: git branch
+2020-07-18 07:41:55,118 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-18 07:41:55,121 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
+2020-07-18 07:41:55,128 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-18 07:41:55,131 INFO cwd=/Users/gareth/Code/master-blaster: git branch
+2020-07-18 07:41:55,138 INFO localBranchInfoGitBranchStdout: b'* dev\n  main\n'
+2020-07-18 07:41:55,141 INFO cwd=/Users/gareth/Code/projects/penny/polar-pairs: git branch
+2020-07-18 07:41:55,149 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-18 07:41:55,151 INFO cwd=/Users/gareth/Code/site-deets: git branch
+2020-07-18 07:41:55,158 INFO localBranchInfoGitBranchStdout: b'  main\n* master\n'
+2020-07-18 07:41:59,942 INFO cwd=/Users/gareth/Code: rm -dfRv ./master-blaster-Twitchkidd
+2020-07-18 07:41:59,948 INFO git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'

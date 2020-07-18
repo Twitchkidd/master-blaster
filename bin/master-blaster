@@ -1127,22 +1127,9 @@ if remoteIsAGo:
 
 # * Add the `git new` alias! * #
 
-    head_dir = Path(path) / ".git" / "HEAD"
-    with head_dir.open("r") as f:
-        content = f.read().splitlines()
-
-    for line in content:
-        if line[0:4] == "ref:":
-            return line.partition("refs/heads/")[2]
-
 
 def runGitNew():
-    config = Path.home() / ".gitconfig"
-    with config.open("r") as f:
-        content = f.read().splitlines()
-        for line in content:
-            print(line)
-    gitNewGcg = Popen(["git", "config", "--global", "alias.new", "'!git init && git symbolic-ref HEAD refs/heads/main'"],
+    gitNewGcg = Popen(["git", "config", "--global", "alias.new", "!git init && git symbolic-ref HEAD refs/heads/main"],
                       stdout=PIPE, stderr=PIPE)
     logging.info(
         f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'")
@@ -1169,3 +1156,8 @@ if(len(currentBranch) > 0):
           stdout=PIPE, stderr=PIPE)
 
 sys.exit()
+
+# [alias]
+#         new = !git init && git symbolic-ref HEAD refs/heads/main
+# [alias]
+#         new = '!git init && git symbolic-ref HEAD refs/heads/main'
