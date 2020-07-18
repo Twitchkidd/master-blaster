@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import subprocess
-import logging
+from subprocess import Popen, PIPE
+from pathlib import Path
+# import logging
 # import requests
 # import json
 
@@ -13,15 +14,15 @@ import logging
 # with open("./repo.txt", 'r') as repoF:
 #     tokenRepoScope = repoF.read(40)
 
-# * ``` Write to a new or existing log file! ``` * #
-# ! Testing! #
-# filemode='w' will not append to the file, it'll write over
-logging.basicConfig(filename='testInfo.log', filemode='w',
-                    level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
-print("""
-    Log file found at ./info.log!
-""")
-logging.info("Creating a log file!!")
+# # * ``` Write to a new or existing log file! ``` * #
+# # ! Testing! #
+# # filemode='w' will not append to the file, it'll write over
+# logging.basicConfig(filename='testInfo.log', filemode='w',
+#                     level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+# print("""
+#     Log file found at ./testInfo.log!
+# """)
+# logging.info("Creating a log file!!")
 
 
 def main():
@@ -132,15 +133,30 @@ def main():
     #     f"cwd={localRepo['path']}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['primaryBranchName']}")
     # if localProcessGsro.stderr:
     #     logging.warning(localProcessGsro.stderr)
-    localPath = "/Users/gareth/Code"
-    testRepo = "test-blm"
-    testProcess = subprocess.Popen(
-        ["git", "clone", f"https://github.com/Twitchkidd/{testRepo}.git"], cwd=localPath, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-    print(f"process stdout read length: {len(testProcess.stdout.read())}")
-    print(testProcess.stdout.read())
-    testStderr = testProcess.stderr.read()
-    print(f"process stderr read length: {len(testStderr)}")
-    print(testStderr)
+    # localPath = "/Users/gareth/Code"
+    # testRepo = "test-blm"
+    # testProcess = subprocess.Popen(
+    #     ["git", "clone", f"https://github.com/Twitchkidd/{testRepo}.git"], cwd=localPath, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    # print(f"process stdout read length: {len(testProcess.stdout.read())}")
+    # print(testProcess.stdout.read())
+    # testStderr = testProcess.stderr.read()
+    # print(f"process stderr read length: {len(testStderr)}")
+    # print(testStderr)
+    # config = Path.home() / ".gitconfig"
+    # with config.open("r") as f:
+    #     content = f.read().splitlines()
+    #     for line in content:
+    #         print(line)
+    gitNewGcg = Popen(["git", "config", "--global", "alias.new", "'!git init && git symbolic-ref HEAD refs/heads/main'"],
+                      stdout=PIPE, stderr=PIPE)
+    print("git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'")
+    gitNewGcgStdout, gitNewGcgStderr = gitNewGcg.communicate()
+    if len(gitNewGcgStdout) > 0:
+        print(gitNewGcgStdout)
+    if len(gitNewGcgStderr) > 0:
+        print(gitNewGcgStderr)
+        print(f"Error creating git alias! {gitNewGcgStderr}")
+        return
 
 
 if __name__ == "__main__":
