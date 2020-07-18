@@ -1129,7 +1129,7 @@ if remoteIsAGo:
 
 
 def runGitNew():
-    gitNewGcg = Popen(["git", "config", "--global", "alias.new", "'!git init && git symbolic-ref HEAD refs/heads/main'"],
+    gitNewGcg = Popen(["git", "config", "--global", "alias.new", "!git init && git symbolic-ref HEAD refs/heads/main"],
                       stdout=PIPE, stderr=PIPE)
     logging.info(
         f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'")
