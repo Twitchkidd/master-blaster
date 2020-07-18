@@ -17,3 +17,31 @@
 2020-07-18 07:16:57,015 INFO localBranchInfoGitBranchStdout: b'* main\n'
 2020-07-18 07:16:57,018 INFO cwd=/Users/gareth/Code/site-deets: git branch
 2020-07-18 07:16:57,027 INFO localBranchInfoGitBranchStdout: b'  main\n* master\n'
+2020-07-18 07:48:29,592 INFO Creating a log file!!
+2020-07-18 07:48:35,131 INFO Username: Twitchkidd
+2020-07-18 07:48:37,173 INFO Repository types chosen: All repositories I'm the owner of, public and private. (Collaborator/Organization repo types in development!)
+2020-07-18 07:48:37,173 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-18 07:48:43,234 INFO Local directory to search: /Users/gareth
+2020-07-18 07:48:47,527 INFO Confirm remove local directories after: None
+2020-07-18 07:48:47,542 INFO Add git alias `git new`: main
+2020-07-18 07:48:50,929 INFO Creating a log file!!
+2020-07-18 07:48:54,077 INFO Username: Twitchkidd
+2020-07-18 07:48:55,405 INFO Repository types chosen: All repositories I'm the owner of, public and private. (Collaborator/Organization repo types in development!)
+2020-07-18 07:48:55,405 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-18 07:49:02,210 INFO Local directory to search: /Users/gareth/Code
+2020-07-18 07:49:06,172 INFO Confirm remove local directories after: True
+2020-07-18 07:49:06,187 INFO Add git alias `git new`: main
+2020-07-18 07:49:47,320 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git branch
+2020-07-18 07:49:47,328 INFO localBranchInfoGitBranchStdout: b'  main\n* master\n'
+2020-07-18 07:49:47,330 INFO cwd=/Users/gareth/Code/dots: git branch
+2020-07-18 07:49:47,337 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-18 07:49:47,340 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
+2020-07-18 07:49:47,347 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-18 07:49:47,349 INFO cwd=/Users/gareth/Code/master-blaster: git branch
+2020-07-18 07:49:47,357 INFO localBranchInfoGitBranchStdout: b'  dev\n* main\n'
+2020-07-18 07:49:47,359 INFO cwd=/Users/gareth/Code/projects/penny/polar-pairs: git branch
+2020-07-18 07:49:47,367 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-18 07:49:47,370 INFO cwd=/Users/gareth/Code/site-deets: git branch
+2020-07-18 07:49:47,377 INFO localBranchInfoGitBranchStdout: b'  main\n* master\n'
+2020-07-18 07:49:49,692 INFO cwd=/Users/gareth/Code: rm -dfRv ./master-blaster-Twitchkidd
+2020-07-18 07:49:49,697 INFO git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'

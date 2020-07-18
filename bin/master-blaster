@@ -1129,10 +1129,10 @@ if remoteIsAGo:
 
 
 def runGitNew():
-    gitNewGcg = Popen(["git", "config", "--global", "alias.new", "!git init && git symbolic-ref HEAD refs/heads/main"],
+    gitNewGcg = Popen(["git", "config", "--global", "alias.new", f"!git init && git symbolic-ref HEAD refs/heads/{name}"],
                       stdout=PIPE, stderr=PIPE)
     logging.info(
-        f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'")
+        f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{name}'")
     gitNewGcgStdout, gitNewGcgStderr = gitNewGcg.communicate()
     if len(gitNewGcgStdout) > 0:
         logging.info(gitNewGcgStdout)
@@ -1140,6 +1140,9 @@ def runGitNew():
         logging.warning(gitNewGcgStderr)
         print(f"Error creating git alias! {gitNewGcgStderr}")
         return
+    else:
+        print(
+            f"Git alias git new: initalize git repo with HEAD ref refs/heads/{name}")
 
 
 if gitNew:
