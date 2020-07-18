@@ -4,7 +4,7 @@ Rename primary branches of code repositories!
 
 ### v1.1!!!
 
-Good morning, Monday! Anyone coming in to contribute, I'm going to be working in the v1.1 project in the projects tab and on the 'dev' branch!
+Hello! Anyone coming in to contribute, I'm going to be working in the v1.1 project in the projects tab and on the 'dev' branch!
 
 ### v1!!!
 
