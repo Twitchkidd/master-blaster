@@ -998,7 +998,7 @@ if len(reposReadyForLocalMasterDelete) > 0:
         print(repo['htmlUrl'])
     localMasterDeleteIsANoGo = questionary.confirm(
         "Delete? Defaults to no.").ask()
-    if not localMasterDeleteIsANoGo:
+    if localMasterDeleteIsANoGo:
         print("""
     Okay! Local 'master' branches will be deleted!
         """)

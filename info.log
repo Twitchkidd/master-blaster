@@ -1,0 +1,19 @@
+2020-07-18 07:15:31,721 INFO Creating a log file!!
+2020-07-18 07:15:37,229 INFO Username: Twitchkidd
+2020-07-18 07:15:39,648 INFO Repository types chosen: All repositories I'm the owner of, public and private. (Collaborator/Organization repo types in development!)
+2020-07-18 07:15:39,648 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-18 07:15:50,069 INFO Local directory to search: /Users/gareth/Code
+2020-07-18 07:15:52,008 INFO Confirm remove local directories after: True
+2020-07-18 07:15:52,022 INFO Add git alias `git new`: main
+2020-07-18 07:16:56,948 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git branch
+2020-07-18 07:16:56,963 INFO localBranchInfoGitBranchStdout: b'  main\n* master\n'
+2020-07-18 07:16:56,966 INFO cwd=/Users/gareth/Code/dots: git branch
+2020-07-18 07:16:56,978 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-18 07:16:56,982 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
+2020-07-18 07:16:56,992 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-18 07:16:56,995 INFO cwd=/Users/gareth/Code/master-blaster: git branch
+2020-07-18 07:16:57,004 INFO localBranchInfoGitBranchStdout: b'  dev\n* main\n'
+2020-07-18 07:16:57,007 INFO cwd=/Users/gareth/Code/projects/penny/polar-pairs: git branch
+2020-07-18 07:16:57,015 INFO localBranchInfoGitBranchStdout: b'* main\n'
+2020-07-18 07:16:57,018 INFO cwd=/Users/gareth/Code/site-deets: git branch
+2020-07-18 07:16:57,027 INFO localBranchInfoGitBranchStdout: b'  main\n* master\n'
