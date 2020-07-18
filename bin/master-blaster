@@ -27,9 +27,9 @@ import sys
 # // * ``` From u/merfi on SO! ``` * #
 
 
-# def get_active_branch_name():
+# def get_active_branch_name(path):
 
-#     head_dir = Path(".") / ".git" / "HEAD"
+#     head_dir = Path(path) / ".git" / "HEAD"
 #     with head_dir.open("r") as f:
 #         content = f.read().splitlines()
 
@@ -40,7 +40,7 @@ import sys
 
 # currentBranch = ""
 # if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
-#     currentBranch = get_active_branch_name()
+#     currentBranch = get_active_branch_name(f"{Path.cwd()}")
 
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
@@ -1129,25 +1129,16 @@ if remoteIsAGo:
 
 
 def runGitNew():
-    gitNewGcg = Popen(["git", "config", "--global", "alias.new", "'!git", "init"],
+    gitNewGcg = Popen(["git", "config", "--global", "alias.new", "'!git init && git symbolic-ref HEAD refs/heads/main'"],
                       stdout=PIPE, stderr=PIPE)
-    logging.info(f"git config --global alias.new !git init")
+    logging.info(
+        f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'")
     gitNewGcgStdout, gitNewGcgStderr = gitNewGcg.communicate()
     if len(gitNewGcgStdout) > 0:
         logging.info(gitNewGcgStdout)
     if len(gitNewGcgStderr) > 0:
         logging.warning(gitNewGcgStderr)
-        print(f"Error creating git ! {gitNewGcgStderr}")
-        return
-    gitNewGsh = Popen(["git", "symbolic-ref", "HEAD", f"refs/heads/{name}"],
-                      stdout=PIPE, stderr=PIPE)
-    logging.info(f"git symbolic-ref HEAD refs/heads/{name}")
-    gitNewGshStdout, gitNewGshStderr = gitNewGsh.communicate()
-    if len(gitNewGshStdout) > 0:
-        logging.info(gitNewGshStdout)
-    if len(gitNewGshStderr) > 0:
-        logging.warning(gitNewGshStderr)
-        print(f"Error creating git alias! {gitNewGshStderr}")
+        print(f"Error creating git alias! {gitNewGcgStderr}")
         return
 
 
