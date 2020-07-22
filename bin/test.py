@@ -2,7 +2,7 @@
 
 from subprocess import Popen, PIPE
 from pathlib import Path
-# import logging
+import logging
 # import requests
 # import json
 
@@ -14,18 +14,38 @@ from pathlib import Path
 # with open("./repo.txt", 'r') as repoF:
 #     tokenRepoScope = repoF.read(40)
 
-# # * ``` Write to a new or existing log file! ``` * #
-# # ! Testing! #
-# # filemode='w' will not append to the file, it'll write over
-# logging.basicConfig(filename='testInfo.log', filemode='w',
-#                     level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
-# print("""
-#     Log file found at ./testInfo.log!
-# """)
-# logging.info("Creating a log file!!")
+# * ``` Write to a new or existing log file! ``` * #
+# ! Testing! #
+# filemode='w' will not append to the file, it'll write over
+logging.basicConfig(filename='testInfo.log', filemode='w',
+                    level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+print("""
+    Log file found at ./testInfo.log!
+""")
+logging.info("Creating a log file!!")
 
 
 def main():
+    def processLogger(string, prc, errCrashes=True, ignoreStr=""):
+        """Log what process is being run and stdout, return of 0 is good, 1 is error"""
+        logging.info(string)
+        stdout, stderr = prc.communicate()
+        if len(stdout) > 0:
+            logging.info(stdout)
+        if len(stderr) > 0:
+            if ignoreStr != "" and ignoreStr in stderr.decode():
+                return 0
+            if errCrashes == False:
+                logging.warning(stderr)
+                logging.info("You may be able to ignore the above warning.")
+                return 0
+            logging.warning(stderr)
+            return 1
+        return 0
+    process = Popen(["git", "checkout", "dev"], stdout=PIPE, stderr=PIPE)
+    print(processLogger("git checkout dev", process,
+                        errCrashes=False, ignoreStr="Already on"))
+
     # dicticle = {}
     # result = subprocess.run(["git", "branch"], universal_newlines=True,
     #                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -147,16 +167,16 @@ def main():
     #     content = f.read().splitlines()
     #     for line in content:
     #         print(line)
-    gitNewGcg = Popen(["git", "config", "--global", "alias.new", "'!git init && git symbolic-ref HEAD refs/heads/main'"],
-                      stdout=PIPE, stderr=PIPE)
-    print("git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'")
-    gitNewGcgStdout, gitNewGcgStderr = gitNewGcg.communicate()
-    if len(gitNewGcgStdout) > 0:
-        print(gitNewGcgStdout)
-    if len(gitNewGcgStderr) > 0:
-        print(gitNewGcgStderr)
-        print(f"Error creating git alias! {gitNewGcgStderr}")
-        return
+    # gitNewGcg = Popen(["git", "config", "--global", "alias.new", "'!git init && git symbolic-ref HEAD refs/heads/main'"],
+    #                   stdout=PIPE, stderr=PIPE)
+    # print("git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'")
+    # gitNewGcgStdout, gitNewGcgStderr = gitNewGcg.communicate()
+    # if len(gitNewGcgStdout) > 0:
+    #     print(gitNewGcgStdout)
+    # if len(gitNewGcgStderr) > 0:
+    #     print(gitNewGcgStderr)
+    #     print(f"Error creating git alias! {gitNewGcgStderr}")
+    #     return
 
 
 if __name__ == "__main__":
