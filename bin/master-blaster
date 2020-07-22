@@ -1159,8 +1159,3 @@ if(len(currentBranch) > 0):
           stdout=PIPE, stderr=PIPE)
 
 sys.exit()
-
-# [alias]
-#         new = !git init && git symbolic-ref HEAD refs/heads/main
-# [alias]
-#         new = '!git init && git symbolic-ref HEAD refs/heads/main'
