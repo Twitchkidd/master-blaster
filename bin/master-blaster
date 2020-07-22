@@ -653,9 +653,7 @@ def processLogger(string, prc, errCrashes=True, ignoreStr=""):
     if len(stderr) > 0:
         if ignoreStr != "" and ignoreStr in stderr.decode():
             logging.warning(stderr)
-            print(stderr)
             logging.info("You may be able to ignore the above warning.")
-            print("You may be able to ignore the above warning.")
             return (stdout, stderr, 0)
         if errCrashes == False:
             logging.warning(stderr)
@@ -678,15 +676,14 @@ if localDirectories:
                     localPath = localRepo['path']
             localBranchInfoGitBranch = Popen(
                 ["git", "branch"], cwd=localPath,  stdout=PIPE, stderr=PIPE)
-            stdout, stderr, exitCode = processLogger(f"cwd={localPath}: git branch",
-                                                     localBranchInfoGitBranch)
-            if exitCode == 0:
-                repo['localHasMaster'] = "master" in f"{stdout}"
+            localBranchInfoGitBranchStdout, localBranchInfoGitBranchStderr, localBranchInfoGitBranchExitCode = processLogger(
+                f"cwd={localPath}: git branch", localBranchInfoGitBranch)
+            if localBranchInfoGitBranchExitCode == 0:
+                repo['localHasMaster'] = "master" in f"{localBranchInfoGitBranchStdout}"
                 repo['localHasPrimaryBranchName'] = repo[
-                    'primaryBranchName'] in f"{stdout}"
+                    'primaryBranchName'] in f"{localBranchInfoGitBranchStdout}"
                 check(repo)
             else:
-                print(stderr)
                 continue
 else:
     print("Checking repos ...")
@@ -705,60 +702,41 @@ def localProcess(repo):
         if f"{repo['htmlUrl']}.git" == localRepo['url']:
             localProcessGcm = Popen(["git", "checkout", "master"], cwd=localRepo['path'],
                                     stdout=PIPE, stderr=PIPE)
-            localProcessGcmStdout, localProcessGcmStderr, localProcessGcmExitCode = processLogger(
-                f"cwd={localRepo['path']}: git checkout master", localProcessGcm, errCrashes=False, ignoreStr="Already on")
+            processLogger(f"cwd={localRepo['path']}: git checkout master",
+                          localProcessGcm, errCrashes=False, ignoreStr="Already on")
             localProcessGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'],
                                     stdout=PIPE, stderr=PIPE)
-            localProcessGbmStdout, localProcessGbmStderr, localProcessGbmExitCode = processLogger(
-                f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}", localProcessGbm)
+            localProcessGbmExitCode = processLogger(
+                f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}", localProcessGbm)[2]
             if localProcessGbmExitCode == 1:
                 repo['error'] = True
                 return
             localProcessGf = Popen(["git", "fetch"], cwd=localRepo['path'],
                                    stdout=PIPE, stderr=PIPE)
-            localProcessGfStdout, localProcessGfStderr, localProcessGfExitCode = processLogger(
-                f"cwd={localRepo['path']}: git fetch", localProcessGf)
+            localProcessGfExitCode = processLogger(
+                f"cwd={localRepo['path']}: git fetch", localProcessGf, ignoreStr="From")[2]
             if localProcessGfExitCode == 1:
                 repo['error'] = True
                 return
-            logging.info(f"cwd={localRepo['path']}: git fetch")
-            localProcessGfStdout, localProcessGfStderr = localProcessGf.communicate()
-            if len(localProcessGfStdout) > 0:
-                logging.info(localProcessGfStdout)
-            if len(localProcessGfStderr) > 0:
-                logging.warning(localProcessGfStderr)
-                logging.info("You may be able to ignore the above warning.")
             localProcessGbuu = Popen(["git", "branch", "--unset-upstream"], cwd=localRepo['path'],
                                      stdout=PIPE, stderr=PIPE)
-            logging.info(
-                f"cwd={localRepo['path']}: git branch --unset-upstream")
-            localProcessGbuuStdout, localProcessGbuuStderr = localProcessGbuu.communicate()
-            if len(localProcessGbuuStdout) > 0:
-                logging.info(localProcessGbuuStdout)
-            if len(localProcessGbuuStderr) > 0:
-                logging.warning(localProcessGbuuStderr)
+            localProcessGbuuExitCode = processLogger(
+                f"cwd={localRepo['path']}: git branch --unset-upstream", localProcessGbuu)[2]
+            if localProcessGbuuExitCode == 1:
                 repo['error'] = True
                 return
             localProcessGbuo = Popen(["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"], cwd=localRepo['path'],
                                      stdout=PIPE, stderr=PIPE)
-            logging.info(
-                f"cwd={localRepo['path']}: git branch -u origin/{repo['primaryBranchName']}")
-            localProcessGbuoStdout, localProcessGbuoStderr = localProcessGbuo.communicate()
-            if len(localProcessGbuoStdout) > 0:
-                logging.info(localProcessGbuoStdout)
-            if len(localProcessGbuoStderr) > 0:
-                logging.warning(localProcessGbuoStderr)
+            localProcessGbuoExitCode = processLogger(
+                f"cwd={localRepo['path']}: git branch -u origin/{repo['primaryBranchName']}", localProcessGbuo)[2]
+            if localProcessGbuoExitCode == 1:
                 repo['error'] = True
                 return
             localProcessGsro = Popen(["git", "symbolic-ref", "refs/remotes/origin/HEAD",
                                       f"refs/remotes/origin/{repo['primaryBranchName']}"], cwd=localRepo['path'],  stdout=PIPE, stderr=PIPE)
-            logging.info(
-                f"cwd={localRepo['path']}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['primaryBranchName']}")
-            localProcessGsroStdout, localProcessGsroStderr = localProcessGsro.communicate()
-            if len(localProcessGsroStdout) > 0:
-                logging.info(localProcessGsroStdout)
-            if len(localProcessGsroStderr) > 0:
-                logging.warning(localProcessGsroStderr)
+            localProcessGsroExitCode = processLogger(
+                f"cwd={localRepo['path']}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['primaryBranchName']}", localProcessGsro)[2]
+            if localProcessGsroExitCode == 1:
                 repo['error'] = True
                 return
 
@@ -797,17 +775,13 @@ def remoteProcess(repo):
                 if f"{repo['htmlUrl']}.git" == localRepo['url']:
                     remoteProcessLocalRepoGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'],
                                                       stdout=PIPE, stderr=PIPE)
-                    logging.info(
-                        f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}")
-                    remoteProcessLocalRepoGbmStdout, remoteProcessLocalRepoGbmStderr = remoteProcessLocalRepoGbm.communicate()
-                    if len(remoteProcessLocalRepoGbmStdout) > 0:
-                        logging.info(remoteProcessLocalRepoGbmStdout)
-                    if len(remoteProcessLocalRepoGbmStderr) > 0:
-                        logging.warning(remoteProcessLocalRepoGbmStderr)
-                        repo['error'] = True
+                    remoteProcessLocalRepoGbmExitCode = processLogger(f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}"), remoteProcessLocalRepoGbm)[2]
+                    if remoteProcessLocalRepoGbmExitCode == 1:
+                        repo['error']=True
                         return
-                    remoteProcessLocalRepoGpuo = Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=localRepo['path'],
-                                                       stdout=PIPE, stderr=PIPE)
+                    remoteProcessLocalRepoGpuo=Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd = localRepo['path'],
+                                                       stdout = PIPE, stderr = PIPE)
+
                     logging.info(
                         f"cwd={localRepo['path']}: git push -u origin {repo['primaryBranchName']}")
                     remoteProcessLocalRepoGpuoStdout, remoteProcessLocalRepoGpuoStderr = remoteProcessLocalRepoGpuo.communicate()

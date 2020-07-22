@@ -26,34 +26,33 @@ logging.info("Creating a log file!!")
 
 
 def main():
-    repo = {"name": "test"}
 
     def processLogger(string, prc, errCrashes=True, ignoreStr=""):
-        """Log what process is being run and stdout, return of 0 is good, 1 is error"""
-        logging.info(string)
-        print(string)
-        stdout, stderr = prc.communicate()
-        if len(stdout) > 0:
-            logging.info(stdout)
-            print(stdout)
-        if len(stderr) > 0:
-            if ignoreStr != "" and ignoreStr in stderr.decode():
-                logging.warning(stderr)
-                logging.info("You may be able to ignore the above warning.")
-                print("You may be able to ignore the above warning.")
-                return (stdout, stderr, 0)
-            if errCrashes == False:
-                logging.warning(stderr)
-                print(stderr)
-                return (stdout, stderr, 0)
+    """Log what process is being run and stdout, return of 0 is good, 1 is error"""
+    logging.info(string)
+    print(string)
+    stdout, stderr = prc.communicate()
+    if len(stdout) > 0:
+        logging.info(stdout)
+        print(stdout)
+    if len(stderr) > 0:
+        if ignoreStr != "" and ignoreStr in stderr.decode():
+            logging.warning(stderr)
+            logging.info("You may be able to ignore the above warning.")
+            return (stdout, stderr, 0)
+        if errCrashes == False:
             logging.warning(stderr)
             print(stderr)
-            return (stdout, stderr, 1)
-        return (stdout, stderr, 0)
+            return (stdout, stderr, 0)
+        logging.warning(stderr)
+        print(stderr)
+        return (stdout, stderr, 1)
+    return (stdout, stderr, 0)
 
-    process = Popen(["git", "fetch"], stdout=PIPE, stderr=PIPE)
+    process = Popen(["git", "push", "--unset-upstream"],
+                    stdout=PIPE, stderr=PIPE)
     stdout, stderr, exitCode = processLogger(
-        "git fetch", process, ignoreStr="From")
+        f"cwd={Path.cwd()}: git push --unset-upstream", process)
     print(stdout)
     print(stderr)
     print(exitCode)
