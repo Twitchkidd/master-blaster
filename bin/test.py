@@ -56,6 +56,7 @@ def main():
     print(stdout)
     print(stderr)
     print(exitCode)
+    print("Heyyy!")
     # dicticle = {}
     # result = subprocess.run(["git", "branch"], universal_newlines=True,
     #                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
