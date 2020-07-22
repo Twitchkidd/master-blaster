@@ -655,15 +655,15 @@ def processLogger(string, prc, errCrashes=True, ignoreStr=""):
             logging.warning(stderr)
             logging.info("You may be able to ignore the above warning.")
             print("You may be able to ignore the above warning.")
-            return 0
+            return (stdout, stderr, 0)
         if errCrashes == False:
             logging.warning(stderr)
             print(stderr)
-            return 0
+            return (stdout, stderr, 0)
         logging.warning(stderr)
         print(stderr)
-        return 1
-    return 0
+        return (stdout, stderr, 1)
+    return (stdout, stderr, 0)
 
 
 # * ``` Check all the repos! (And prepare any locals for the check!) ``` * #
@@ -677,24 +677,16 @@ if localDirectories:
                     localPath = localRepo['path']
             localBranchInfoGitBranch = Popen(
                 ["git", "branch"], cwd=localPath,  stdout=PIPE, stderr=PIPE)
-            processLogger(f"cwd={localPath}: git branch",
-                          localBranchInfoGitBranch, errCrashes=False)
-            # ! BUG! #
-            # !
-            # ! This bug is because lBIGBStdout no longer exists.
-            # ! I'm going to wait to fix it until doing some more,
-            # ! But the fix may end up being just to replace the
-            # ! Deconstruction back in. I wonder if it's like file
-            # ! reads though, and really might need to be created
-            # ! just once and passed through if needed again.
-            # TODO !!!!!
-            # !
-            repo['localHasMaster'] = "master" in f"{localBranchInfoGitBranchStdout}"
-            repo['localHasPrimaryBranchName'] = repo[
-                'primaryBranchName'] in f"{localBranchInfoGitBranchStdout}"
-            check(repo)
-        else:
-            check(repo)
+            stdout, stderr, exitCode = processLogger(f"cwd={localPath}: git branch",
+                                                     localBranchInfoGitBranch)
+            if exitCode == 0:
+                repo['localHasMaster'] = "master" in f"{stdout}"
+                repo['localHasPrimaryBranchName'] = repo[
+                    'primaryBranchName'] in f"{stdout}"
+                check(repo)
+            else:
+                print(stderr)
+                continue
 else:
     print("Checking repos ...")
     for repo in repos:
@@ -712,23 +704,25 @@ def localProcess(repo):
         if f"{repo['htmlUrl']}.git" == localRepo['url']:
             localProcessGcm = Popen(["git", "checkout", "master"], cwd=localRepo['path'],
                                     stdout=PIPE, stderr=PIPE)
-            logging.info(f"cwd={localRepo['path']}: git checkout master")
-            processLogger(f"cwd={localRepo['path']}: git checkout master", localProcessGcm,
-                          errCrashes=False, ignoreStr="Already on")
+            localProcessGcmStdout, localProcessGcmStderr, localProcessGcmExitCode = processLogger(
+                f"cwd={localRepo['path']}: git checkout master", localProcessGcm, errCrashes=False, ignoreStr="Already on")
             localProcessGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'],
                                     stdout=PIPE, stderr=PIPE)
-            processLogger(
+            localProcessGbmStdout, localProcessGbmStderr, localProcessGbmExitCode = processLogger(
                 f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}", localProcessGbm)
+            if localProcessGbmExitCode == 0:
 
-            logging.info(
-                f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}")
-            localProcessGbmStdout, localProcessGbmStderr = localProcessGbm.communicate()
-            if len(localProcessGbmStdout) > 0:
-                logging.info(localProcessGbmStdout)
-            if len(localProcessGbmStderr) > 0:
-                logging.warning(localProcessGbmStderr)
-                repo['error'] = True
-                return
+                # logging.info(
+                #     f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}")
+                # localProcessGbmStdout, localProcessGbmStderr = localProcessGbm.communicate()
+                # if len(localProcessGbmStdout) > 0:
+                #     logging.info(localProcessGbmStdout)
+                # if len(localProcessGbmStderr) > 0:
+                #     logging.warning(localProcessGbmStderr)
+                #     repo['error'] = True
+                #     return
+                # ! This is the other big case, I knew there was going to be another big side effect coming up!
+
             localProcessGf = Popen(["git", "fetch"], cwd=localRepo['path'],
                                    stdout=PIPE, stderr=PIPE)
             logging.info(f"cwd={localRepo['path']}: git fetch")

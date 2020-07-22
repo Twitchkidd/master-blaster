@@ -1,4 +1,2 @@
-2020-07-22 08:29:46,918 INFO Creating a log file!!
-2020-07-22 08:29:46,920 INFO git checkout dev
-2020-07-22 08:29:46,929 INFO b"M\tbin/test.py\nM\ttestInfo.log\nYour branch is up to date with 'origin/dev'.\n"
-2020-07-22 08:29:46,929 WARNING b"Already on 'dev'\n"
+2020-07-22 17:43:52,946 INFO Creating a log file!!
+2020-07-22 17:43:52,949 INFO git fetch

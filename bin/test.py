@@ -26,26 +26,37 @@ logging.info("Creating a log file!!")
 
 
 def main():
+    repo = {"name": "test"}
+
     def processLogger(string, prc, errCrashes=True, ignoreStr=""):
         """Log what process is being run and stdout, return of 0 is good, 1 is error"""
         logging.info(string)
+        print(string)
         stdout, stderr = prc.communicate()
         if len(stdout) > 0:
             logging.info(stdout)
+            print(stdout)
         if len(stderr) > 0:
             if ignoreStr != "" and ignoreStr in stderr.decode():
-                return 0
-            if errCrashes == False:
                 logging.warning(stderr)
                 logging.info("You may be able to ignore the above warning.")
-                return 0
+                print("You may be able to ignore the above warning.")
+                return (stdout, stderr, 0)
+            if errCrashes == False:
+                logging.warning(stderr)
+                print(stderr)
+                return (stdout, stderr, 0)
             logging.warning(stderr)
-            return 1
-        return 0
-    process = Popen(["git", "checkout", "dev"], stdout=PIPE, stderr=PIPE)
-    print(processLogger("git checkout dev", process,
-                        errCrashes=False, ignoreStr="Already on"))
+            print(stderr)
+            return (stdout, stderr, 1)
+        return (stdout, stderr, 0)
 
+    process = Popen(["git", "fetch"], stdout=PIPE, stderr=PIPE)
+    stdout, stderr, exitCode = processLogger(
+        "git fetch", process)
+    print(stdout)
+    print(stderr)
+    print(exitCode)
     # dicticle = {}
     # result = subprocess.run(["git", "branch"], universal_newlines=True,
     #                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
