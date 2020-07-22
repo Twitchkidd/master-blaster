@@ -53,11 +53,10 @@ def main():
 
     process = Popen(["git", "fetch"], stdout=PIPE, stderr=PIPE)
     stdout, stderr, exitCode = processLogger(
-        "git fetch", process)
+        "git fetch", process, ignoreStr="From")
     print(stdout)
     print(stderr)
     print(exitCode)
-    print("hey")
     # dicticle = {}
     # result = subprocess.run(["git", "branch"], universal_newlines=True,
     #                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)

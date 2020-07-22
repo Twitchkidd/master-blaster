@@ -653,6 +653,7 @@ def processLogger(string, prc, errCrashes=True, ignoreStr=""):
     if len(stderr) > 0:
         if ignoreStr != "" and ignoreStr in stderr.decode():
             logging.warning(stderr)
+            print(stderr)
             logging.info("You may be able to ignore the above warning.")
             print("You may be able to ignore the above warning.")
             return (stdout, stderr, 0)
