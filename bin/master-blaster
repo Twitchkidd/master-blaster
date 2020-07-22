@@ -710,21 +710,16 @@ def localProcess(repo):
                                     stdout=PIPE, stderr=PIPE)
             localProcessGbmStdout, localProcessGbmStderr, localProcessGbmExitCode = processLogger(
                 f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}", localProcessGbm)
-            if localProcessGbmExitCode == 0:
-
-                # logging.info(
-                #     f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}")
-                # localProcessGbmStdout, localProcessGbmStderr = localProcessGbm.communicate()
-                # if len(localProcessGbmStdout) > 0:
-                #     logging.info(localProcessGbmStdout)
-                # if len(localProcessGbmStderr) > 0:
-                #     logging.warning(localProcessGbmStderr)
-                #     repo['error'] = True
-                #     return
-                # ! This is the other big case, I knew there was going to be another big side effect coming up!
-
+            if localProcessGbmExitCode == 1:
+                repo['error'] = True
+                return
             localProcessGf = Popen(["git", "fetch"], cwd=localRepo['path'],
                                    stdout=PIPE, stderr=PIPE)
+            localProcessGfStdout, localProcessGfStderr, localProcessGfExitCode = processLogger(
+                f"cwd={localRepo['path']}: git fetch", localProcessGf)
+            if localProcessGfExitCode == 1:
+                repo['error'] = True
+                return
             logging.info(f"cwd={localRepo['path']}: git fetch")
             localProcessGfStdout, localProcessGfStderr = localProcessGf.communicate()
             if len(localProcessGfStdout) > 0:
