@@ -14,8 +14,9 @@ Woohoo! Ready to launch this thing! It's not perfect, but it does the thing, at 
 
 This is NOT guaranteed to work!
 
-GITHUB users!
+GitHub users specifically!
 
+HOLD THE PHONE ON THE LINE BELOW! Working on Windows 7!
 OPERATING SYSTEM! Only tested on macOS Catalina 10.15.5
 
 Only for repos you're the owner of, rather than collaborating on or are a member of the organization, for the moment.
@@ -65,12 +66,22 @@ It also optionally adds a git alias `git new` that starts up repos with 'main' o
 
 ## Instructions!
 
+### *nix!
+
 To run `master-blaster`, have Python 3.7 or up installed, and pipenv. Then:
 
 `git clone https://github.com/Twitchkidd/master-blaster.git`
+
 `cd master-blaster`
+
 `pipenv install`
+
 `pipenv shell`
+
 `master-blaster`
+
+### Windows!
+
+Just instead of `master-blaster`, run `winpty python ./bin/master-blaster`!
 
 ## Thank you!
