@@ -45,12 +45,12 @@ def main():
             return (stdout, stderr, 1)
         return (stdout, stderr, 0)
 
-    process = Popen(["git", "symbolic-ref", "refs/remotes/origin/HEAD", "refs/remotes/origin/main"],
+    process = Popen(["git", "clone", "https://github.com/Twitchkidd/master-blaster.git"],
                     stdout=PIPE, stderr=PIPE)
     stdout, stderr, exitCode = processLogger(
-        f"cwd={Path.cwd()}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main", process)
+        f"cwd={Path.cwd()}: git clone https://github.com/Twitchkidd/master-blaster.git", process)
     print(stdout)
-    print(len(stderr))
+    print(stderr)
     print(exitCode)
     print("Heyyy!")
     # dicticle = {}
