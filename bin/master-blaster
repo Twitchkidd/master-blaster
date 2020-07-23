@@ -672,15 +672,12 @@ if localDirectories:
                     localPath = localRepo['path']
             localBranchInfoGitBranch = Popen(
                 ["git", "branch"], cwd=localPath,  stdout=PIPE, stderr=PIPE)
-            localBranchInfoGitBranchStdout, localBranchInfoGitBranchStderr, localBranchInfoGitBranchExitCode = processLogger(
-                f"cwd={localPath}: git branch", localBranchInfoGitBranch)
-            if localBranchInfoGitBranchExitCode == 0:
-                repo['localHasMaster'] = "master" in f"{localBranchInfoGitBranchStdout}"
-                repo['localHasPrimaryBranchName'] = repo[
-                    'primaryBranchName'] in f"{localBranchInfoGitBranchStdout}"
-                check(repo)
-            else:
-                continue
+            localBranchInfoGitBranchStdout = processLogger(
+                f"cwd={localPath}: git branch", localBranchInfoGitBranch)[0]
+            repo['localHasMaster'] = "master" in f"{localBranchInfoGitBranchStdout}"
+            repo['localHasPrimaryBranchName'] = repo[
+                'primaryBranchName'] in f"{localBranchInfoGitBranchStdout}"
+            check(repo)
 else:
     print("Checking repos ...")
     for repo in repos:
@@ -702,11 +699,8 @@ def localProcess(repo):
                           localProcessGcm, ignoreStr="Already on")
             localProcessGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'],
                                     stdout=PIPE, stderr=PIPE)
-            localProcessGbmExitCode = processLogger(
-                f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}", localProcessGbm)[2]
-            if localProcessGbmExitCode == 1:
-                repo['error'] = True
-                return
+            processLogger(
+                f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}", localProcessGbm)
             localProcessGf = Popen(["git", "fetch"], cwd=localRepo['path'],
                                    stdout=PIPE, stderr=PIPE)
             localProcessGfExitCode = processLogger(
@@ -716,25 +710,19 @@ def localProcess(repo):
                 return
             localProcessGbuu = Popen(["git", "branch", "--unset-upstream"], cwd=localRepo['path'],
                                      stdout=PIPE, stderr=PIPE)
-            localProcessGbuuExitCode = processLogger(
-                f"cwd={localRepo['path']}: git branch --unset-upstream", localProcessGbuu)[2]
-            if localProcessGbuuExitCode == 1:
-                repo['error'] = True
-                return
+            processLogger(
+                f"cwd={localRepo['path']}: git branch --unset-upstream", localProcessGbuu)
             localProcessGbuo = Popen(["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"], cwd=localRepo['path'],
                                      stdout=PIPE, stderr=PIPE)
             localProcessGbuoExitCode = processLogger(
-                f"cwd={localRepo['path']}: git branch -u origin/{repo['primaryBranchName']}", localProcessGbuo)[2]
+                f"cwd={localRepo['path']}: git branch -u origin/{repo['primaryBranchName']}", localProcessGbuo, ignoreStr="To")[2]
             if localProcessGbuoExitCode == 1:
                 repo['error'] = True
                 return
             localProcessGsro = Popen(["git", "symbolic-ref", "refs/remotes/origin/HEAD",
                                       f"refs/remotes/origin/{repo['primaryBranchName']}"], cwd=localRepo['path'],  stdout=PIPE, stderr=PIPE)
-            localProcessGsroExitCode = processLogger(
-                f"cwd={localRepo['path']}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['primaryBranchName']}", localProcessGsro)[2]
-            if localProcessGsroExitCode == 1:
-                repo['error'] = True
-                return
+            processLogger(
+                f"cwd={localRepo['path']}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['primaryBranchName']}", localProcessGsro)
 
 
 # * ``` Delete stray master branch! ``` * #
@@ -744,24 +732,14 @@ def localMasterDeleteProcess(repo):
         if f"{repo['htmlUrl']}.git" == localRepo['url']:
             localMasterDeleteProcessBranchD = Popen(
                 ["git", "branch", "-d", "master"], cwd=localRepo['path'],  stdout=PIPE, stderr=PIPE)
-            logging.info(f"cwd={localRepo['path']}: git branch -d master")
-            localMasterDeleteProcessBranchDStdout, localMasterDeleteProcessBranchDStderr = localMasterDeleteProcessBranchD.communicate()
-            if len(localMasterDeleteProcessBranchDStdout) > 0:
-                logging.info(localMasterDeleteProcessBranchDStdout)
-            if len(localMasterDeleteProcessBranchDStderr) > 0:
-                logging.warning(localMasterDeleteProcessBranchDStderr)
-                repo['error'] = True
-                return
+            processLogger(
+                f"cwd={localRepo['path']}: git branch -d master", localMasterDeleteProcessBranchD)
 
 
 # * ``` Update remote repo that still has master! ``` * #
 
 def constructPatchDefaultUrl(repo):
     return f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}"
-
-
-# * ``` Placeholder variable for failing to make temp dir! ``` * #
-failedToMakeTempDir = False
 
 
 def remoteProcess(repo):
@@ -771,27 +749,15 @@ def remoteProcess(repo):
                 if f"{repo['htmlUrl']}.git" == localRepo['url']:
                     remoteProcessLocalRepoGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'],
                                                       stdout=PIPE, stderr=PIPE)
-                    remoteProcessLocalRepoGbmExitCode = processLogger(f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}"), remoteProcessLocalRepoGbm)[2]
-                    if remoteProcessLocalRepoGbmExitCode == 1:
-                        repo['error']=True
-                        return
-                    remoteProcessLocalRepoGpuo=Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd = localRepo['path'],
-                                                       stdout = PIPE, stderr = PIPE)
-
-                    remoteProcessLocalRepoGpuoExitCode=processLogger(
-                        f"cwd={localRepo['path']}: git push -u origin {repo['primaryBranchName']}", remoteProcessLocalRepoGpuo)
+                    processLogger(
+                        f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}", remoteProcessLocalRepoGbm)
+                    remoteProcessLocalRepoGpuo = Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=localRepo['path'],
+                                                       stdout=PIPE, stderr=PIPE)
+                    remoteProcessLocalRepoGpuoExitCode = processLogger(
+                        f"cwd={localRepo['path']}: git push -u origin {repo['primaryBranchName']}", remoteProcessLocalRepoGpuo, ignoreStr="To")[2]
                     if remoteProcessLocalRepoGpuoExitCode == 1:
-                        repo['error']=True
+                        repo['error'] = True
                         return
-                    logging.info(
-                        f"cwd={localRepo['path']}: git push -u origin {repo['primaryBranchName']}")
-                    remoteProcessLocalRepoGpuoStdout, remoteProcessLocalRepoGpuoStderr = remoteProcessLocalRepoGpuo.communicate()
-                    if len(remoteProcessLocalRepoGpuoStdout) > 0:
-                        logging.info(remoteProcessLocalRepoGpuoStdout)
-                    if len(remoteProcessLocalRepoGpuoStderr) > 0:
-                        logging.warning(remoteProcessLocalRepoGpuoStderr)
-                        logging.info(
-                            "You may be able to ignore the above warning.")
                     url = constructPatchDefaultUrl(repo)
                     data = json.dumps(
                         {"default_branch": f"{repo['primaryBranchName']}"})
@@ -828,7 +794,6 @@ def remoteProcess(repo):
                     logging.info(remoteProcessRemoteRepoMkdirStdout)
                 if len(remoteProcessRemoteRepoMkdirStderr) > 0:
                     logging.warning(remoteProcessRemoteRepoMkdirStderr)
-                    failedToMakeTempDir = True
                     return
             remoteProcessRemoteRepoGcl = Popen(["git", "clone", f"{repo['htmlUrl']}.git", f"./{repo['owner-login']}/{repo['name']}"], cwd=f"{localDirectory}/master-blaster-{username}/",
                                                stdout=PIPE, stderr=PIPE)
@@ -853,14 +818,11 @@ def remoteProcess(repo):
                 return
             remoteProcessRemoteRepoGpuo = Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
                                                 stdout=PIPE, stderr=PIPE)
-            logging.info(
-                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}: git push -u origin {repo['primaryBranchName']}")
-            remoteProcessRemoteRepoGpuoStdout, remoteProcessRemoteRepoGpuoStderr = remoteProcessRemoteRepoGpuo.communicate()
-            if len(remoteProcessRemoteRepoGpuoStdout) > 0:
-                logging.info(remoteProcessRemoteRepoGpuoStdout)
-            if len(remoteProcessRemoteRepoGpuoStderr) > 0:
-                logging.warning(remoteProcessRemoteRepoGpuoStderr)
-                logging.info("You may be able to ignore the above warning.")
+            remoteProcessRemoteRepoGpuoExitCode = processLogger(
+                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}: git push -u origin {repo['primaryBranchName']}", remoteProcessRemoteRepoGpuo, ignoreStr="To")[2]
+            if remoteProcessRemoteRepoGpuoExitCode == 1:
+                repo['error'] = True
+                return
             url = constructPatchDefaultUrl(repo)
             data = json.dumps(
                 {"default_branch": f"{repo['primaryBranchName']}"})
@@ -922,14 +884,11 @@ def remoteProcess(repo):
             return
         remoteProcessRemoteRepoGpuo = Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
                                             stdout=PIPE, stderr=PIPE)
-        logging.info(
-            f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -u origin {repo['primaryBranchName']}")
-        remoteProcessRemoteRepoGpuoStdout, remoteProcessRemoteRepoGpuoStderr = remoteProcessRemoteRepoGpuo.communicate()
-        if len(remoteProcessRemoteRepoGpuoStdout) > 0:
-            logging.info(remoteProcessRemoteRepoGpuoStdout)
-        if len(remoteProcessRemoteRepoGpuoStderr) > 0:
-            logging.warning(remoteProcessRemoteRepoGpuoStderr)
-            logging.info("You may be able to ignore the above warning.")
+        remoteProcessRemoteRepoGpuoExitCode = processLogger(
+            f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -u origin {repo['primaryBranchName']}", remoteProcessRemoteRepoGpuo, ignoreStr="To")[2]
+        if remoteProcessRemoteRepoGpuoExitCode == 1:
+            repo['error'] = True
+            return
         url = constructPatchDefaultUrl(repo)
         data = json.dumps({"default_branch": f"{repo['primaryBranchName']}"})
         headers = constructHeaders(token)
@@ -1033,8 +992,6 @@ if not localMasterDeleteIsANoGo:
 if remoteIsAGo:
     for repo in reposReadyForRemote:
         remoteProcess(repo)
-        if failedToMakeTempDir == True:
-            break
         if repo.get('error'):
             print(f"Error with {repo['htmlUrl']}!")
         else:

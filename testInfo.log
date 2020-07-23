@@ -1,2 +1,3 @@
-2020-07-23 11:29:22,167 INFO Creating a log file!!
-2020-07-23 11:29:23,745 INFO cwd=/Users/gareth/Code/master-blaster: git branch --unset-upstream
+2020-07-23 11:49:25,656 INFO Creating a log file!!
+2020-07-23 11:49:25,660 INFO cwd=/Users/gareth/Code/master-blaster: git branch
+2020-07-23 11:49:25,687 INFO b'  dev\n* logging\n  main\n  prod\n'

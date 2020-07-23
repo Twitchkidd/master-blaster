@@ -27,7 +27,7 @@ logging.info("Creating a log file!!")
 
 def main():
 
-    def processLogger(string, prc, errCrashes=True, ignoreStr=""):
+    def processLogger(string, prc, ignoreStr=""):
         """Log what process is being run and stdout, return of 0 is good, 1 is error"""
         logging.info(string)
         print(string)
@@ -40,21 +40,17 @@ def main():
                 logging.warning(stderr)
                 logging.info("You may be able to ignore the above warning.")
                 return (stdout, stderr, 0)
-            if errCrashes == False:
-                logging.warning(stderr)
-                print(stderr)
-                return (stdout, stderr, 0)
             logging.warning(stderr)
             print(stderr)
             return (stdout, stderr, 1)
         return (stdout, stderr, 0)
 
-    process = Popen(["git", "branch", "--unset-upstream"],
+    process = Popen(["git", "symbolic-ref", "refs/remotes/origin/HEAD", "refs/remotes/origin/main"],
                     stdout=PIPE, stderr=PIPE)
     stdout, stderr, exitCode = processLogger(
-        f"cwd={Path.cwd()}: git branch --unset-upstream", process)
+        f"cwd={Path.cwd()}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main", process)
     print(stdout)
-    print(stderr)
+    print(len(stderr))
     print(exitCode)
     print("Heyyy!")
     # dicticle = {}
