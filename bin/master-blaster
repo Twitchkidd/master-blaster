@@ -774,6 +774,8 @@ def remoteProcess(repo):
                             f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
                         remoteProcessLocalRepoGpdm = Popen(
                             ["git", "push", "--delete", "origin", "master"], cwd=f"{localRepo['path']}", stdout=PIPE, stderr=PIPE)
+                        remoteProcessLocalRepoGpdmExitCode = processLogger(
+                            f"cwd={localRepo['path']}: git push --delete origin master", remoteProcessLocalRepoGpdm)
                         logging.info(
                             f"cwd={localRepo['path']}: git push --delete origin master")
                         remoteProcessLocalRepoGpdmStdout, remoteProcessLocalRepoGpdmStderr = remoteProcessLocalRepoGpdm.communicate()
