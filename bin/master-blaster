@@ -642,7 +642,7 @@ def check(repo):
     return None
 
 
-def processLogger(string, prc, errCrashes=True, ignoreStr=""):
+def processLogger(string, prc, ignoreStr=""):
     """Log what process is being run and stdout, return of 0 is good, 1 is error"""
     logging.info(string)
     print(string)
@@ -654,10 +654,6 @@ def processLogger(string, prc, errCrashes=True, ignoreStr=""):
         if ignoreStr != "" and ignoreStr in stderr.decode():
             logging.warning(stderr)
             logging.info("You may be able to ignore the above warning.")
-            return (stdout, stderr, 0)
-        if errCrashes == False:
-            logging.warning(stderr)
-            print(stderr)
             return (stdout, stderr, 0)
         logging.warning(stderr)
         print(stderr)
@@ -703,7 +699,7 @@ def localProcess(repo):
             localProcessGcm = Popen(["git", "checkout", "master"], cwd=localRepo['path'],
                                     stdout=PIPE, stderr=PIPE)
             processLogger(f"cwd={localRepo['path']}: git checkout master",
-                          localProcessGcm, errCrashes=False, ignoreStr="Already on")
+                          localProcessGcm, ignoreStr="Already on")
             localProcessGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'],
                                     stdout=PIPE, stderr=PIPE)
             localProcessGbmExitCode = processLogger(
@@ -782,6 +778,11 @@ def remoteProcess(repo):
                     remoteProcessLocalRepoGpuo=Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd = localRepo['path'],
                                                        stdout = PIPE, stderr = PIPE)
 
+                    remoteProcessLocalRepoGpuoExitCode=processLogger(
+                        f"cwd={localRepo['path']}: git push -u origin {repo['primaryBranchName']}", remoteProcessLocalRepoGpuo)
+                    if remoteProcessLocalRepoGpuoExitCode == 1:
+                        repo['error']=True
+                        return
                     logging.info(
                         f"cwd={localRepo['path']}: git push -u origin {repo['primaryBranchName']}")
                     remoteProcessLocalRepoGpuoStdout, remoteProcessLocalRepoGpuoStderr = remoteProcessLocalRepoGpuo.communicate()

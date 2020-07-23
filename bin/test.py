@@ -28,31 +28,31 @@ logging.info("Creating a log file!!")
 def main():
 
     def processLogger(string, prc, errCrashes=True, ignoreStr=""):
-    """Log what process is being run and stdout, return of 0 is good, 1 is error"""
-    logging.info(string)
-    print(string)
-    stdout, stderr = prc.communicate()
-    if len(stdout) > 0:
-        logging.info(stdout)
-        print(stdout)
-    if len(stderr) > 0:
-        if ignoreStr != "" and ignoreStr in stderr.decode():
-            logging.warning(stderr)
-            logging.info("You may be able to ignore the above warning.")
-            return (stdout, stderr, 0)
-        if errCrashes == False:
+        """Log what process is being run and stdout, return of 0 is good, 1 is error"""
+        logging.info(string)
+        print(string)
+        stdout, stderr = prc.communicate()
+        if len(stdout) > 0:
+            logging.info(stdout)
+            print(stdout)
+        if len(stderr) > 0:
+            if ignoreStr != "" and ignoreStr in stderr.decode():
+                logging.warning(stderr)
+                logging.info("You may be able to ignore the above warning.")
+                return (stdout, stderr, 0)
+            if errCrashes == False:
+                logging.warning(stderr)
+                print(stderr)
+                return (stdout, stderr, 0)
             logging.warning(stderr)
             print(stderr)
-            return (stdout, stderr, 0)
-        logging.warning(stderr)
-        print(stderr)
-        return (stdout, stderr, 1)
-    return (stdout, stderr, 0)
+            return (stdout, stderr, 1)
+        return (stdout, stderr, 0)
 
-    process = Popen(["git", "push", "--unset-upstream"],
+    process = Popen(["git", "branch", "--unset-upstream"],
                     stdout=PIPE, stderr=PIPE)
     stdout, stderr, exitCode = processLogger(
-        f"cwd={Path.cwd()}: git push --unset-upstream", process)
+        f"cwd={Path.cwd()}: git branch --unset-upstream", process)
     print(stdout)
     print(stderr)
     print(exitCode)
