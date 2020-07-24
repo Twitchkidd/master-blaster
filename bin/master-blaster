@@ -23,12 +23,9 @@ import requests
 from subprocess import Popen, PIPE
 import sys
 
-# ! Testing! #
-# * ``` From u/merfi on SO! ``` * #
-
 
 def get_active_branch_name(path):
-
+    """ From u/merfi on SO, added a path param """
     head_dir = Path(path) / ".git" / "HEAD"
     with head_dir.open("r") as f:
         content = f.read().splitlines()
@@ -38,6 +35,7 @@ def get_active_branch_name(path):
             return line.partition("refs/heads/")[2]
 
 
+# ! Testing! #
 currentBranch = ""
 if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
     currentBranch = get_active_branch_name(f"{Path.cwd()}")
@@ -730,13 +728,24 @@ def localProcess(repo):
 def localMasterDeleteProcess(repo):
     for localRepo in localRepos:
         if f"{repo['htmlUrl']}.git" == localRepo['url']:
+            localMasterDeleteProcessCheckoutPrimary = Popen(
+                ["git", "checkout", f"{repo['primaryBranchName']}"], cwd=localRepo['path'],  stdout=PIPE, stderr=PIPE)
+            localMasterDeleteProcessCheckoutPrimaryExitCode = processLogger(
+                f"cwd={localRepo['path']}: git checkout {repo['primaryBranchName']}", localMasterDeleteProcessCheckoutPrimary, ignoreStr="Already on")[2]
+            if localMasterDeleteProcessCheckoutPrimaryExitCode == 1:
+                repo['error'] = True
+                return
             localMasterDeleteProcessBranchD = Popen(
                 ["git", "branch", "-d", "master"], cwd=localRepo['path'],  stdout=PIPE, stderr=PIPE)
             processLogger(
                 f"cwd={localRepo['path']}: git branch -d master", localMasterDeleteProcessBranchD)
-
+            localMasterDeleteProcessCheckoutPrevious = Popen(
+                ["git", "checkout", f"{localRepo['branch']}"], cwd=localRepo['path'], stdout=PIPE, stderr=PIPE)
+            processLogger(f"cwd={localRepo['path']}: git checkout {localRepo['branch']}",
+                          localMasterDeleteProcessCheckoutPrevious, ignoreStr="Already on")
 
 # * ``` Update remote repo that still has master! ``` * #
+
 
 def constructPatchDefaultUrl(repo):
     return f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}"
