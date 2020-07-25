@@ -2,6 +2,10 @@
 
 Rename primary branches of code repositories!
 
+# URGENT
+
+PLEASE DON'T USE THIS YET I MESSED IT ALL UP FOR JUST A MOMENT PLEASE HANG IN UNTIL THIS AFTERNOON EASTERN TIME THANK YOU!
+
 ### v1.1!!!
 
 Hello! Anyone coming in to contribute, I'm going to be working in the v1.1 project in the projects tab and on the 'dev' branch!
@@ -66,7 +70,7 @@ It also optionally adds a git alias `git new` that starts up repos with 'main' o
 
 ## Instructions!
 
-### *nix!
+### \*nix!
 
 To run `master-blaster`, have Python 3.7 or up installed, and pipenv. Then:
 
