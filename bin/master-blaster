@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Master Blaster - Batch Rename Primary Branches Of Code Repositories
 # Copyright (C) 2020 Gareth Field - field.gareth @ gmail.com
 
@@ -23,9 +25,9 @@ import requests
 from subprocess import Popen, PIPE
 import sys
 
+# * ``` From u/merfi on SO, added a path param ``` * #
 
 def get_active_branch_name(path):
-    """ From u/merfi on SO, added a path param """
     head_dir = Path(path) / ".git" / "HEAD"
     with head_dir.open("r") as f:
         content = f.read().splitlines()
