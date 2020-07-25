@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import subprocess
+from subprocess import Popen, PIPE
+from pathlib import Path
 import logging
 # import requests
 # import json
@@ -19,12 +20,39 @@ import logging
 logging.basicConfig(filename='testInfo.log', filemode='w',
                     level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 print("""
-    Log file found at ./info.log!
+    Log file found at ./testInfo.log!
 """)
 logging.info("Creating a log file!!")
 
 
 def main():
+
+    def processLogger(string, prc, ignoreStr=""):
+        """Log what process is being run and stdout, return of 0 is good, 1 is error"""
+        logging.info(string)
+        print(string)
+        stdout, stderr = prc.communicate()
+        if len(stdout) > 0:
+            logging.info(stdout)
+            print(stdout)
+        if len(stderr) > 0:
+            if ignoreStr != "" and ignoreStr in stderr.decode():
+                logging.warning(stderr)
+                logging.info("You may be able to ignore the above warning.")
+                return (stdout, stderr, 0)
+            logging.warning(stderr)
+            print(stderr)
+            return (stdout, stderr, 1)
+        return (stdout, stderr, 0)
+
+    process = Popen(["git", "clone", "https://github.com/Twitchkidd/master-blaster.git"],
+                    stdout=PIPE, stderr=PIPE)
+    stdout, stderr, exitCode = processLogger(
+        f"cwd={Path.cwd()}: git clone https://github.com/Twitchkidd/master-blaster.git", process)
+    print(stdout)
+    print(stderr)
+    print(exitCode)
+    print("Heyyy!")
     # dicticle = {}
     # result = subprocess.run(["git", "branch"], universal_newlines=True,
     #                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -41,6 +69,7 @@ def main():
     # response = requests.patch("https://api.github.com/repos/Twitchkidd/master-blaster",
     #                           data=params, headers=headers)
     # print(response.status_code)
+
     # processOne = subprocess.Popen(
     #     ["mkdir", "-pv", "/Users/gareth/Code/master-blaster-Twitchkidd/"], cwd="/Users/gareth/Code", stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # stdoutOne, stderrOne = processOne.communicate()
@@ -132,15 +161,30 @@ def main():
     #     f"cwd={localRepo['path']}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['primaryBranchName']}")
     # if localProcessGsro.stderr:
     #     logging.warning(localProcessGsro.stderr)
-    localPath = "/Users/gareth/Code"
-    testRepo = "test-blm"
-    testProcess = subprocess.Popen(
-        ["git", "clone", f"https://github.com/Twitchkidd/{testRepo}.git"], cwd=localPath, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-    print(f"process stdout read length: {len(testProcess.stdout.read())}")
-    print(testProcess.stdout.read())
-    testStderr = testProcess.stderr.read()
-    print(f"process stderr read length: {len(testStderr)}")
-    print(testStderr)
+    # localPath = "/Users/gareth/Code"
+    # testRepo = "test-blm"
+    # testProcess = subprocess.Popen(
+    #     ["git", "clone", f"https://github.com/Twitchkidd/{testRepo}.git"], cwd=localPath, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    # print(f"process stdout read length: {len(testProcess.stdout.read())}")
+    # print(testProcess.stdout.read())
+    # testStderr = testProcess.stderr.read()
+    # print(f"process stderr read length: {len(testStderr)}")
+    # print(testStderr)
+    # config = Path.home() / ".gitconfig"
+    # with config.open("r") as f:
+    #     content = f.read().splitlines()
+    #     for line in content:
+    #         print(line)
+    # gitNewGcg = Popen(["git", "config", "--global", "alias.new", "'!git init && git symbolic-ref HEAD refs/heads/main'"],
+    #                   stdout=PIPE, stderr=PIPE)
+    # print("git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'")
+    # gitNewGcgStdout, gitNewGcgStderr = gitNewGcg.communicate()
+    # if len(gitNewGcgStdout) > 0:
+    #     print(gitNewGcgStdout)
+    # if len(gitNewGcgStderr) > 0:
+    #     print(gitNewGcgStderr)
+    #     print(f"Error creating git alias! {gitNewGcgStderr}")
+    #     return
 
 
 if __name__ == "__main__":

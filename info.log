@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2020-07-18 07:15:31,721 INFO Creating a log file!!
 2020-07-18 07:15:37,229 INFO Username: Twitchkidd
 2020-07-18 07:15:39,648 INFO Repository types chosen: All repositories I'm the owner of, public and private. (Collaborator/Organization repo types in development!)
@@ -45,3 +46,6 @@
 2020-07-18 07:49:47,377 INFO localBranchInfoGitBranchStdout: b'  main\n* master\n'
 2020-07-18 07:49:49,692 INFO cwd=/Users/gareth/Code: rm -dfRv ./master-blaster-Twitchkidd
 2020-07-18 07:49:49,697 INFO git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'
+=======
+2020-07-18 11:49:19,041 INFO Creating a log file!!
+>>>>>>> 69d33920eaae5a26607b2a54c8a582596a1ee6f1
