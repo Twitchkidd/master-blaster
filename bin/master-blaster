@@ -27,34 +27,20 @@ import sys
 # * ``` From u/merfi on SO! ``` * #
 
 
-<<<<<<< HEAD
 def get_active_branch_name(path):
 
     head_dir = Path(path) / ".git" / "HEAD"
     with head_dir.open("r") as f:
         content = f.read().splitlines()
-=======
-# def get_active_branch_name(path):
-
-#     head_dir = Path(path) / ".git" / "HEAD"
-#     with head_dir.open("r") as f:
-#         content = f.read().splitlines()
->>>>>>> 9c6b43f30e1e0c74f6b6e4036d3c1754dc1d6d10
 
     for line in content:
         if line[0:4] == "ref:":
             return line.partition("refs/heads/")[2]
 
 
-<<<<<<< HEAD
-currentBranch = ""
-if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
-    currentBranch = get_active_branch_name(f"{Path.cwd()}")
-=======
 # currentBranch = ""
 # if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
 #     currentBranch = get_active_branch_name(f"{Path.cwd()}")
->>>>>>> 9c6b43f30e1e0c74f6b6e4036d3c1754dc1d6d10
 
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
