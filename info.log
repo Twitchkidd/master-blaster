@@ -1,25 +1,8 @@
-2020-07-26 10:10:13,741 INFO Creating a log file!!
-2020-07-26 10:10:26,059 INFO Username: Twitchkidd
-2020-07-26 10:10:27,344 INFO Repository types chosen: All repositories I'm the owner of, public and private. (Collaborator/Organization repo types in development!)
-2020-07-26 10:10:27,344 INFO Naming selection: All primary branches renamed to 'main'.
-2020-07-26 10:10:36,723 INFO Local directory to search: /Users/gareth/Code
-2020-07-26 10:10:46,154 INFO Confirm remove local directories after: True
-2020-07-26 10:10:46,167 INFO Add git alias `git new`: main
-2020-07-26 10:11:28,000 INFO cwd=/Users/gareth/Code/cloneWithMasterReturnBranchTest: git branch
-2020-07-26 10:11:28,010 INFO b'  main\n* master\n'
-2020-07-26 10:11:28,013 INFO cwd=/Users/gareth/Code/courses/dang-thats-delicious: git branch
-2020-07-26 10:11:28,021 INFO b'* main\n'
-2020-07-26 10:11:28,024 INFO cwd=/Users/gareth/Code/dots: git branch
-2020-07-26 10:11:28,032 INFO b'* main\n'
-2020-07-26 10:11:28,035 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
-2020-07-26 10:11:28,043 INFO b'* main\n'
-2020-07-26 10:11:28,045 INFO cwd=/Users/gareth/Code/master-blaster: git branch
-2020-07-26 10:11:28,052 INFO b'* dev\n  main\n'
-2020-07-26 10:11:28,055 INFO cwd=/Users/gareth/Code/projects/penny/polar-pairs: git branch
-2020-07-26 10:11:28,062 INFO b'* main\n'
-2020-07-26 10:11:28,065 INFO cwd=/Users/gareth/Code/ReactNativeTemplate: git branch
-2020-07-26 10:11:28,073 INFO b'  dev\n* main\n'
-2020-07-26 10:11:28,076 INFO cwd=/Users/gareth/Code/site-deets: git branch
-2020-07-26 10:11:28,084 INFO b'  main\n* master\n'
-2020-07-26 10:11:38,378 INFO cwd=/Users/gareth/Code: rm -dfRv ./master-blaster-Twitchkidd
-2020-07-26 10:11:38,382 INFO git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'
+2020-07-26 11:42:16,178 INFO master-blaster v1.0.5
+2020-07-26 11:42:16,178 INFO Creating a log file!!
+2020-07-26 11:42:20,068 INFO Username: Twitchkidd
+2020-07-26 11:42:21,716 INFO Repository types chosen: All repositories I'm the owner of, public and private.
+2020-07-26 11:42:21,716 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-26 11:42:25,378 INFO Local directory to search: /Users/gareth/Code
+2020-07-26 11:42:29,172 INFO Confirm remove local directories after: True
+2020-07-26 11:42:29,187 INFO Add git alias `git new`: main

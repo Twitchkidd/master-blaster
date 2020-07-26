@@ -48,19 +48,23 @@ GITHUB_API = "https://api.github.com"
 
 # * ``` License text! ``` * #
 licenseText = """
-    master-blaster  Copyright (C) 2020  Gareth Field
-    This program comes with ABSOLUTELY NO WARRANTY;
-    This is free software, and you are welcome to redistribute it
-    under certain conditions;
+    master-blaster: Rename primary branches of code repositories.
+    Copyright (C) 2020  Gareth Field field.gareth@gmail.com
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-# licenseText = """
-#     master-blaster  Copyright (C) 2020  Gareth Field
-#     This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-#     This is free software, and you are welcome to redistribute it
-#     under certain conditions; type `show c' for details.
-# """
 print(licenseText)
-# print("Working on `show w' and `show c', actually! It's GNU public 3+! No closed versions!")
 
 # * ``` Intro text! ``` * #
 intro = """
@@ -71,20 +75,12 @@ print(intro)
 
 # * ``` Explanation of token thing! ``` * #
 tokenExplanation = """
-    GitHub is deprecating password-based token generation! This is great for
+    Also, GitHub is deprecating password-based token generation! This is great for
     security, it just means you're going to have to go to GitHub.com and
-    come back with an access token to make this program work.
+    come back with an access token to run the program, and it's a couple of steps,
+    still faster than doing each manually if you have a bunch of repos, though.
+    Thank you!
 """
-# tokenExplanation = """
-#     GitHub is deprecating password-based token generation! This is great for
-#     security, it just means you're going to have to go to GitHub.com and
-#     come back with an access token to make this program work.
-
-#     The next question will determine whether the program needs a token with the more
-#     general `repo` scope or the more limited `public_repo` scope, and there will
-#     be instructions for what to do at GitHub.com when we're ready to go here. This
-#     program can be run again for further and any future repos.
-# """
 print(tokenExplanation)
 
 # * ``` Write to a new or existing log file! ``` * #
@@ -97,6 +93,7 @@ logging.basicConfig(filename='info.log', filemode='w',
 print("""
     Log file to be found at ./info.log!
 """)
+logging.info("master-blaster v1.0.5")
 logging.info("Creating a log file!!")
 
 # * ~~~  Username gathering! ~~~ * #
@@ -106,12 +103,12 @@ username = ""
 
 # * ``` Ask for username! ``` * #
 usernamePrompt = """
-    Please enter your GitHub username!
+    First, please enter your GitHub username!
 """
 
 
 def usernameConfirmationPrompt(usernameInput):
-    return f"GitHub username: {usernameInput}?"
+    return f"Confirm username: {usernameInput}"
 
 
 usernameConfirmed = False
@@ -205,7 +202,8 @@ questions = [
 
 # * ``` Extract the data from the set of prompts from dictionary! ``` * #
 answers = questionary.prompt(questions)
-repoTypes = answers['repoTypes']
+# repoTypes = answers['repoTypes']
+repoTypes = "All repositories I'm the owner of, public and private."
 logging.info(f"Repository types chosen: {repoTypes}")
 logging.info(f"Naming selection: {answers['namesSelection']}")
 
@@ -271,9 +269,11 @@ if answers['namesSelection'] == namesPerRepo:
 localDirectoriesPrompt = """
     Repositories not present locally will be cloned to a temporary folder,
     updated, the update pushed, (the default branch on GitHub.com updated,) and
-    then deleted locally depending on your choice in two questions. This can
-    decrease the use of bandwidth and reduce potential conflicts by scanning for
-    repositories that are present locally. Is this okay?
+    then deleted locally depending on your choice in just a moment.
+    
+    The program can decrease the use of bandwidth and reduce potential conflicts
+    by scanning for repositories that are present locally, from home or a specified
+    directory for code. Okay?
 """
 localDirectories = questionary.confirm(localDirectoriesPrompt).ask()
 
@@ -282,8 +282,8 @@ localDirectory = Path.home()
 
 # * ``` Which local directory? ``` * #
 localDirectoryPrompt = """
-    Do you keep all of your projects in a certain directory? Type that in here
-    to limit and speed up search. Default is ~/, hit enter for default.
+    Do you keep all of your coding projects in a certain directory? Type that in
+    here to limit and speed up search. Default is home, ~/, hit enter for default.
     Example: /Users/gareth/Code
 """
 
@@ -398,17 +398,24 @@ else:
 def tokenPrompt(tokenTypeArg):
     return f"""
     -- Get a token! --
+
     Since password-based token generation is being deprecated,
     please get a personal access token with the correct scope(s)
-    in order to run this program.
+    to run this program!
+
     To get this token, go to https://github.com, sign in,
     then go to 'Settings', then 'Developer Settings',
     then 'Personal access tokens', then 'Generate new token',
     confirm your password, name the token in the 'Note' input field,
-    and select the {tokenTypeArg} scope, then 'Generate Token',
-    then copy it to your clipboard,
-    please save it first in case there's an error,
-    then paste it back here into the prompt,
+    select the {tokenTypeArg} scope, then 'Generate Token',
+    and then copy it to your clipboard.
+
+    Please save it somewhere first in case there's an error!
+
+    For more thorough (and visual) instructions in the GitHub docs,
+    see the personal access token part here: https://bit.ly/2X0cr3j
+
+    Paste it back here into the prompt and hit enter to continue:
     """
 
 
@@ -650,14 +657,12 @@ def processLogger(string, prc, ignoreStr=""):
     stdout, stderr = prc.communicate()
     if len(stdout) > 0:
         logging.info(stdout)
-        print(stdout)
     if len(stderr) > 0:
         if ignoreStr != "" and ignoreStr in stderr.decode():
             logging.warning(stderr)
             logging.info("You may be able to ignore the above warning.")
             return (stdout, stderr, 0)
         logging.warning(stderr)
-        print(stderr)
         return (stdout, stderr, 1)
     return (stdout, stderr, 0)
 
@@ -1054,8 +1059,8 @@ if gitNew:
 
 # * ``` Denoument! ``` * #
 
-print("Check the log file at ./info.log for details!\n")
-print("Thank you for using master-blaster!")
+print("Thank you for using master-blaster!\n")
+print("Check the log file at ./info.log for details!")
 
 # ! Testing! #
 if(len(currentBranch) > 0):
