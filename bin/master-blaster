@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Master Blaster - Batch Rename Primary Branches Of Code Repositories
 # Copyright (C) 2020 Gareth Field - field.gareth @ gmail.com
 
@@ -23,55 +25,23 @@ import requests
 from subprocess import Popen, PIPE
 import sys
 
-<< << << < HEAD
-# ! Testing! #
-# * ``` From u/merfi on SO! ``` * #
-
-
-<< << << < HEAD
-def get_active_branch_name(path):
-
-
-== == == =
+# * ``` From u/merfi on SO, added a path param ``` * #
 
 
 def get_active_branch_name(path):
-    """ From u/merfi on SO, added a path param """
-
-
->>>>>> > 69d33920eaae5a26607b2a54c8a582596a1ee6f1
- head_dir = Path(path) / ".git" / "HEAD"
-  with head_dir.open("r") as f:
-       content = f.read().splitlines()
-== == == =
-# def get_active_branch_name(path):
-
-#     head_dir = Path(path) / ".git" / "HEAD"
-#     with head_dir.open("r") as f:
-#         content = f.read().splitlines()
->>>>>> > 9c6b43f30e1e0c74f6b6e4036d3c1754dc1d6d10
+    head_dir = Path(path) / ".git" / "HEAD"
+    with head_dir.open("r") as f:
+        content = f.read().splitlines()
 
  for line in content:
       if line[0:4] == "ref:":
            return line.partition("refs/heads/")[2]
 
 
-<< << << < HEAD
-<< << << < HEAD
-currentBranch = ""
-if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
-    currentBranch = get_active_branch_name(f"{Path.cwd()}")
-== == == =
-# currentBranch = ""
-# if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
-#     currentBranch = get_active_branch_name(f"{Path.cwd()}")
->>>>>> > 9c6b43f30e1e0c74f6b6e4036d3c1754dc1d6d10
-== == == =
 # ! Testing! #
 currentBranch = ""
 if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
     currentBranch = get_active_branch_name(f"{Path.cwd()}")
->>>>>> > 69d33920eaae5a26607b2a54c8a582596a1ee6f1
 
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
@@ -1072,26 +1042,11 @@ if remoteIsAGo:
 def runGitNew():
     gitNewGcg = Popen(["git", "config", "--global", "alias.new", f"!git init && git symbolic-ref HEAD refs/heads/{name}"],
                       stdout=PIPE, stderr=PIPE)
-
-
-<< << << < HEAD
- logging.info(
-      f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{name}'")
-  gitNewGcgStdout, gitNewGcgStderr = gitNewGcg.communicate()
-   if len(gitNewGcgStdout) > 0:
-        logging.info(gitNewGcgStdout)
-    if len(gitNewGcgStderr) > 0:
-        logging.warning(gitNewGcgStderr)
-        print(f"Error creating git alias! {gitNewGcgStderr}")
-        return
-    else:
-== == == =
- gitNewGcgExitCode = processLogger(
-      f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{name}'", gitNewGcg)[2]
-  if gitNewGcgExitCode == 0:
->>>>>> > 69d33920eaae5a26607b2a54c8a582596a1ee6f1
- print(
-      f"Git alias git new: initalize git repo with HEAD ref refs/heads/{name}")
+    gitNewGcgExitCode = processLogger(
+        f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{name}'", gitNewGcg)[2]
+    if gitNewGcgExitCode == 0:
+        print(
+            f"Git alias git new: initalize git repo with HEAD ref refs/heads/{name}")
 
 
 if gitNew:
