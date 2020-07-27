@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="master-blaster",
-    version="0.0.1",
+    version="1.0.5",
     author="Gareth Field",
     author_email="field.gareth@gmail.com",
     description="Rename primary branches of code repositories.",
