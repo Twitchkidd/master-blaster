@@ -312,7 +312,7 @@ if localDirectories:
             if confirmResetToHomeResponse:
                 localDirectory = Path.home()
                 localDirectoryConfirmed = True
-                # ! Testing! #
+                # ! Testing ! #
                 logging.info(f"Local directory to search: {localDirectory}")
             else:
                 continue

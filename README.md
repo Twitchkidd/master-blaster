@@ -2,21 +2,13 @@
 
 Rename primary branches of code repositories!
 
-# Update to Urgent, Below:
+### v1.0.5 Knock-on-wood Stable!
 
-I've mostly fixed things, but I still have to update the readme. 1.0.5 is pending.
+Bugs squashed! Still no warranty, and the testing could be more robust, and more automated, and the logging needs a brush up to be a little more helpful, but I've dog-fooded this on all 76 of my repos, and I would totally tell my friends to run this, which I think is the real test, lol. Oh, unless they're on Windows, not because of the file system, that should be fine, just I'm not sure the addition of the interpreter string at the top will play nice with winpty yet, so that's TBD for 1.0.6 at the moment.
 
-# URGENT
+Still looking for contributions! At the time of the writing of this README, the Projects tab hasn't been updated, but looking there and opening issues would be appreciated for sure!
 
-PLEASE DON'T USE THIS YET I MESSED IT ALL UP FOR JUST A MOMENT PLEASE HANG IN UNTIL THIS AFTERNOON EASTERN TIME THANK YOU!
-
-### v1.1!!!
-
-Hello! Anyone coming in to contribute, I'm going to be working in the v1.1 project in the projects tab and on the 'dev' branch!
-
-### v1!!!
-
-Woohoo! Ready to launch this thing! It's not perfect, but it does the thing, at least on my machine! 😉
+Also this is packaged on PyPi now! And running it is just `pip install master-blaster` and `master-blaster`, none of that other nonsense with `pipenv`. Major improvement, lol. That's still part of development though, I should document what it takes to run the dev branch, let's see ... CONTRIBUTING.md started!
 
 ## Warnings!
 
@@ -76,19 +68,15 @@ It also optionally adds a git alias `git new` that starts up repos with 'main' o
 
 ### \*nix!
 
-To run `master-blaster`, have Python 3.7 or up installed, and pipenv. Then:
+To run `master-blaster`, have Python 3.6 or up installed, and pip, then:
 
-`git clone https://github.com/Twitchkidd/master-blaster.git`
-
-`cd master-blaster`
-
-`pipenv install`
-
-`pipenv shell`
+`pip install master-blaster`
 
 `master-blaster`
 
 ### Windows!
+
+#### Hey, I'm sorry, I may have broken
 
 Just instead of `master-blaster`, run `winpty python ./bin/master-blaster`!
 
