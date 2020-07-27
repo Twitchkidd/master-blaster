@@ -1,3 +1,0 @@
-2020-07-23 12:14:23,728 INFO Creating a log file!!
-2020-07-23 12:14:23,732 INFO cwd=/Users/gareth/Code/master-blaster: git push --delete origin master
-2020-07-23 12:14:27,686 WARNING b'To https://github.com/Twitchkidd/master-blaster.git\n - [deleted]         master\n'
