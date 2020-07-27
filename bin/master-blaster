@@ -39,9 +39,9 @@ def get_active_branch_name(path):
 
 
 # ! Testing! #
-# currentBranch = ""
-# if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
-#     currentBranch = get_active_branch_name(f"{Path.cwd()}")
+currentBranch = ""
+if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
+    currentBranch = get_active_branch_name(f"{Path.cwd()}")
 
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
@@ -85,11 +85,11 @@ print(tokenExplanation)
 
 # * ``` Write to a new or existing log file! ``` * #
 # ! Testing! #
-# # filemode='w' will not append to the file, it'll write over
-# logging.basicConfig(filename='info.log', filemode='w',
-#                     level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
-logging.basicConfig(filename='info.log',
+# filemode='w' will not append to the file, it'll write over
+logging.basicConfig(filename='info.log', filemode='w',
                     level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+# logging.basicConfig(filename='info.log',
+#                     level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 print("""
     Log file to be found at ./info.log!
 """)
@@ -129,14 +129,14 @@ while not usernameConfirmed:
         if usernameConfirmationResponse:
             username = usernameResponse
             # ! Testing! #
-            logging.info(f"Username: {username}")
+            # logging.info(f"Username: {username}")
             usernameConfirmed = True
             continue
 
 
 # ! Testing ! #
-# username = "Twitchkidd"
-# logging.info(f"Username: {username}")
+username = "Twitchkidd"
+logging.info(f"Username: {username}")
 
 # * ~~~ Set of questionary dictionary questions! ~~~ * #
 
@@ -313,7 +313,7 @@ if localDirectories:
                 localDirectory = Path.home()
                 localDirectoryConfirmed = True
                 # ! Testing ! #
-                logging.info(f"Local directory to search: {localDirectory}")
+                # logging.info(f"Local directory to search: {localDirectory}")
             else:
                 continue
         else:
@@ -324,8 +324,8 @@ if localDirectories:
                     localDirectory = customLocalDirectoryResponse
                     localDirectoryConfirmed = True
                     # ! Testing! #
-                    logging.info(
-                        f"Local directory to search: {localDirectory}")
+                    # logging.info(
+                    #     f"Local directory to search: {localDirectory}")
                     pass
             else:
                 print(
@@ -333,8 +333,8 @@ if localDirectories:
                 continue
 
 # ! Testing! #
-# localDirectory = f"{Path.home()}/Code"
-# logging.info(f"Local directory to search: {localDirectory}")
+localDirectory = f"{Path.home()}/Code"
+logging.info(f"Local directory to search: {localDirectory}")
 
 # * ``` Ask to delete cloned repos! ``` * #
 confirmRemoveLocalDirectoriesAfterPrompt = """
@@ -345,13 +345,13 @@ if localDirectories:
     confirmRemoveLocalDirectoriesAfter = questionary.confirm(
         confirmRemoveLocalDirectoriesAfterPrompt).ask()
     # ! Testing! #
-    logging.info(
-        f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
+    # logging.info(
+    #     f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
 
 # ! Testing! #
-# confirmRemoveLocalDirectoriesAfter = True
-# logging.info(
-#     f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
+confirmRemoveLocalDirectoriesAfter = True
+logging.info(
+    f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
 
 # * ~~~ New Git Alias! ~~~ * #
 
@@ -378,16 +378,16 @@ token = ""
 
 # ! Testing! #
 # * ``` Placeholder variables for the testing tokens! ``` * #
-# tokenRepoScope = ""
-# tokenPublicRepoScope = ""
+tokenRepoScope = ""
+tokenPublicRepoScope = ""
 
 # ! Testing! #
-# with open("./repo.txt", 'r') as repoF:
-#     tokenRepoScope = repoF.read(40)
+with open("./repo.txt", 'r') as repoF:
+    tokenRepoScope = repoF.read(40)
 
 # ! Testing! #
-# with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
-#     tokenPublicRepoScope = repoPublicRepoF.read(40)
+with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
+    tokenPublicRepoScope = repoPublicRepoF.read(40)
 
 if repoTypes in [repoTypesAll, repoTypesOwner, repoTypesCollaborator, repoTypesOrganization]:
     tokenType = "repo"
@@ -430,8 +430,8 @@ def getToken():
             token = customTokenResponse
             tokenConfirmed = True
             continue
-    # # ! Testing! #
-    # token = tokenRepoScope
+    # ! Testing! #
+    token = tokenRepoScope
     # # token = "fermf"
     return token
 
@@ -1083,8 +1083,8 @@ print("Thank you for using master-blaster!\n")
 print("Check the log file at ./info.log for details!")
 
 # ! Testing! #
-# if(len(currentBranch) > 0):
-#     Popen(["git", "checkout", f"{currentBranch}"],
-#           stdout=PIPE, stderr=PIPE)
+if(len(currentBranch) > 0):
+    Popen(["git", "checkout", f"{currentBranch}"],
+          stdout=PIPE, stderr=PIPE)
 
 sys.exit()
