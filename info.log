@@ -1,23 +1,41 @@
-2020-07-27 12:19:19,916 INFO master-blaster v1.0.5
-2020-07-27 12:19:19,916 INFO Creating a log file!!
-2020-07-27 12:19:23,819 INFO Username: Twitchkidd
-2020-07-27 12:19:24,166 INFO Repository types chosen: All repositories I'm the owner of, public and private.
-2020-07-27 12:19:24,167 INFO Naming selection: All primary branches renamed to 'main'.
-2020-07-27 12:19:25,366 INFO Local directory to search: /Users/gareth/Code
-2020-07-27 12:19:25,999 INFO Confirm remove local directories after: True
-2020-07-27 12:19:26,013 INFO Add git alias `git new`: main
-2020-07-27 12:20:08,593 INFO cwd=/Users/gareth/Code/courses/dang-thats-delicious: git branch
-2020-07-27 12:20:08,601 INFO b'* main\n'
-2020-07-27 12:20:08,604 INFO cwd=/Users/gareth/Code/dots: git branch
-2020-07-27 12:20:08,611 INFO b'* main\n'
-2020-07-27 12:20:08,614 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
-2020-07-27 12:20:08,621 INFO b'* main\n'
-2020-07-27 12:20:08,624 INFO cwd=/Users/gareth/Code/master-blaster: git branch
-2020-07-27 12:20:08,631 INFO b'* dev\n  main\n'
-2020-07-27 12:20:08,634 INFO cwd=/Users/gareth/Code/projects/penny/polar-pairs: git branch
-2020-07-27 12:20:08,642 INFO b'* main\n'
-2020-07-27 12:20:08,644 INFO cwd=/Users/gareth/Code/ReactNativeTemplate: git branch
-2020-07-27 12:20:08,651 INFO b'  dev\n* main\n'
-2020-07-27 12:20:08,655 INFO cwd=/Users/gareth/Code/site-deets: git branch
-2020-07-27 12:20:08,662 INFO b'* main\n'
-2020-07-27 12:21:13,360 INFO git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'
+2020-07-27 13:11:40,273 INFO master-blaster v1.0.5
+2020-07-27 13:11:40,273 INFO Creating a log file!!
+2020-07-27 13:11:41,587 INFO Username: Twitchkidd
+2020-07-27 13:11:41,967 INFO Repository types chosen: All repositories I'm the owner of, public and private.
+2020-07-27 13:11:41,967 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-27 13:11:42,554 INFO Local directory to search: /Users/gareth/Code
+2020-07-27 13:11:43,001 INFO Confirm remove local directories after: True
+2020-07-27 13:11:43,016 INFO Add git alias `git new`: main
+2020-07-27 13:12:23,119 INFO cwd=/Users/gareth/Code/courses/dang-thats-delicious: git branch
+2020-07-27 13:12:23,127 INFO b'* main\n'
+2020-07-27 13:12:23,130 INFO cwd=/Users/gareth/Code/dots: git branch
+2020-07-27 13:12:23,137 INFO b'* main\n'
+2020-07-27 13:12:23,140 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
+2020-07-27 13:12:23,147 INFO b'* main\n'
+2020-07-27 13:12:23,150 INFO cwd=/Users/gareth/Code/locallyBlastIt: git branch
+2020-07-27 13:12:23,157 INFO b'* main\n'
+2020-07-27 13:12:23,160 INFO cwd=/Users/gareth/Code/localMasterDelete: git branch
+2020-07-27 13:12:23,167 INFO b'* main\n'
+2020-07-27 13:12:23,170 INFO cwd=/Users/gareth/Code/localProcess: git branch
+2020-07-27 13:12:23,177 INFO b'* master\n'
+2020-07-27 13:12:23,180 INFO cwd=/Users/gareth/Code/master-blaster: git branch
+2020-07-27 13:12:23,187 INFO b'* dev\n  main\n'
+2020-07-27 13:12:23,190 INFO cwd=/Users/gareth/Code/projects/penny/polar-pairs: git branch
+2020-07-27 13:12:23,197 INFO b'* main\n'
+2020-07-27 13:12:23,199 INFO cwd=/Users/gareth/Code/ReactNativeTemplate: git branch
+2020-07-27 13:12:23,206 INFO b'  dev\n* main\n'
+2020-07-27 13:12:23,209 INFO cwd=/Users/gareth/Code/site-deets: git branch
+2020-07-27 13:12:23,216 INFO b'* main\n'
+2020-07-27 13:12:28,945 INFO cwd=/Users/gareth/Code/localProcess: git checkout master
+2020-07-27 13:12:28,958 INFO b'Your branch is based on \'origin/master\', but the upstream is gone.\n  (use "git branch --unset-upstream" to fixup)\n'
+2020-07-27 13:12:28,959 WARNING b"Already on 'master'\n"
+2020-07-27 13:12:28,959 INFO You may be able to ignore the above warning.
+2020-07-27 13:12:28,962 INFO cwd=/Users/gareth/Code/localProcess: git branch -m master main
+2020-07-27 13:12:28,976 INFO cwd=/Users/gareth/Code/localProcess: git fetch
+2020-07-27 13:12:29,279 WARNING b'From https://github.com/twitchkidd/localProcess\n * [new branch]      main       -> origin/main\n'
+2020-07-27 13:12:29,279 INFO You may be able to ignore the above warning.
+2020-07-27 13:12:29,282 INFO cwd=/Users/gareth/Code/localProcess: git branch --unset-upstream
+2020-07-27 13:12:29,293 INFO cwd=/Users/gareth/Code/localProcess: git branch -u origin/main
+2020-07-27 13:12:29,302 INFO b"Branch 'main' set up to track remote branch 'main' from 'origin'.\n"
+2020-07-27 13:12:29,305 INFO cwd=/Users/gareth/Code/localProcess: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
+2020-07-27 13:12:29,315 INFO git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'
