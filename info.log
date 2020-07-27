@@ -1,11 +1,23 @@
-2020-07-27 05:52:47,955 INFO master-blaster v1.0.5
-2020-07-27 05:52:47,955 INFO Creating a log file!!
-2020-07-27 05:52:48,803 INFO Username: Twitchkidd
-2020-07-27 05:52:49,143 INFO Repository types chosen: All repositories I'm the owner of, public and private.
-2020-07-27 05:52:49,143 INFO Naming selection: All primary branches renamed to 'main'.
-2020-07-27 05:52:50,275 INFO Local directory to search: /Users/gareth/Code
-2020-07-27 05:52:50,860 INFO Confirm remove local directories after: True
-2020-07-27 05:52:50,878 INFO Add git alias `git new`: main
-2020-07-27 05:54:12,701 INFO cwd=/Users/gareth/Code/master-blaster: git branch
-2020-07-27 05:54:12,712 INFO b'* dev\n  main\n'
-2020-07-27 05:54:12,715 INFO git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'
+2020-07-27 12:19:19,916 INFO master-blaster v1.0.5
+2020-07-27 12:19:19,916 INFO Creating a log file!!
+2020-07-27 12:19:23,819 INFO Username: Twitchkidd
+2020-07-27 12:19:24,166 INFO Repository types chosen: All repositories I'm the owner of, public and private.
+2020-07-27 12:19:24,167 INFO Naming selection: All primary branches renamed to 'main'.
+2020-07-27 12:19:25,366 INFO Local directory to search: /Users/gareth/Code
+2020-07-27 12:19:25,999 INFO Confirm remove local directories after: True
+2020-07-27 12:19:26,013 INFO Add git alias `git new`: main
+2020-07-27 12:20:08,593 INFO cwd=/Users/gareth/Code/courses/dang-thats-delicious: git branch
+2020-07-27 12:20:08,601 INFO b'* main\n'
+2020-07-27 12:20:08,604 INFO cwd=/Users/gareth/Code/dots: git branch
+2020-07-27 12:20:08,611 INFO b'* main\n'
+2020-07-27 12:20:08,614 INFO cwd=/Users/gareth/Code/projects/gareth/gfcom: git branch
+2020-07-27 12:20:08,621 INFO b'* main\n'
+2020-07-27 12:20:08,624 INFO cwd=/Users/gareth/Code/master-blaster: git branch
+2020-07-27 12:20:08,631 INFO b'* dev\n  main\n'
+2020-07-27 12:20:08,634 INFO cwd=/Users/gareth/Code/projects/penny/polar-pairs: git branch
+2020-07-27 12:20:08,642 INFO b'* main\n'
+2020-07-27 12:20:08,644 INFO cwd=/Users/gareth/Code/ReactNativeTemplate: git branch
+2020-07-27 12:20:08,651 INFO b'  dev\n* main\n'
+2020-07-27 12:20:08,655 INFO cwd=/Users/gareth/Code/site-deets: git branch
+2020-07-27 12:20:08,662 INFO b'* main\n'
+2020-07-27 12:21:13,360 INFO git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/main'

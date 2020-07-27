@@ -453,7 +453,6 @@ def constructHeaders(token):
 
 
 def constructReposParams():
-    print(repoTypes)
     params = {}
     if repoTypes == repoTypesAll:
         params = {"per_page": "1000", }
@@ -487,7 +486,6 @@ while not reposResponseConfirmed:
     token = getToken()
     url = constructReposUrl()
     params = constructReposParams()
-    print(params)
     headers = constructHeaders(token)
     print("Checking for repos ...")
     reposResponse = requests.get(url, params=params, headers=headers)
@@ -504,9 +502,6 @@ while not reposResponseConfirmed:
             repos.append(
                 {"defaultBranch": repository['default_branch'], "htmlUrl": repository['html_url'], "name": repository['name'], "owner-login": f"{repository['owner']['login']}", "primaryBranchName": name})
         pass
-
-# ! Testing! #
-print(repos)
 
 
 # * If they wanted to name each primary branch, do so now! * #
@@ -592,7 +587,7 @@ if localDirectories:
                 try:
                     with open(f"{root}/{subdir}/.git/config", "r") as configFile:
                         localRepos.append(
-                            {"url": getLocalRepoUrl(configFile), "path": f"{root}/{subdir}", "branch": f"{get_active_branch_name(f'{root}/{subdir}')}"})
+                            {"url": getLocalRepoUrl(configFile).lower(), "path": f"{root}/{subdir}", "branch": f"{get_active_branch_name(f'{root}/{subdir}')}"})
                 except Exception as err:
                     # print(f"Exception: {err}")
                     pass
@@ -613,46 +608,57 @@ reposReadyForRemote = []
 
 
 def check(repo):
+    print(repo)
     if repo['hasMasterBranch'] and repo['hasPrimaryBranchName']:
         repo['status'] = "error: remote has both master branch and new primary branch name"
         reposWithErrors.append(repo)
+        print(repo)
         return None
     if not repo['hasMasterBranch'] and not repo['hasPrimaryBranchName']:
         repo['status'] = "error: remote has neither master nor new primary branch name"
         reposWithErrors.append(repo)
+        print(repo)
         return None
     if repo.get('localHasPrimaryBranchName') != None:
         if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName'] and not repo['localHasMaster'] and repo['localHasPrimaryBranchName']:
             repo['status'] = "already blasted"
             reposAlreadyBlasted.append(repo)
+            print(repo)
             return None
         if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName'] and repo['localHasMaster'] and repo['localHasPrimaryBranchName']:
             repo['status'] = "candidate to delete local master"
             reposReadyForLocalMasterDelete.append(repo)
+            print(repo)
             return None
         if repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
             if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName']:
                 repo['status'] = "candidate for local process"
                 reposReadyForLocal.append(repo)
+                print(repo)
                 return None
             if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
                 repo['status'] = "candidate for remote process"
                 reposReadyForRemote.append(repo)
+                print(repo)
                 return None
         repo['status'] = f"error: {repo}"
         reposWithErrors.append(repo)
+        print(repo)
         return None
     else:
         if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName']:
             repo['status'] = "already blasted"
             reposAlreadyBlasted.append(repo)
+            print(repo)
             return None
         if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
             repo['status'] = "candidate for remote process"
             reposReadyForRemote.append(repo)
+            print(repo)
             return None
     repo['status'] = f"error: {repo}"
     reposWithErrors.append(repo)
+    print(repo)
     return None
 
 
@@ -676,10 +682,10 @@ def processLogger(string, prc, ignoreStr="", secondIgnoreStr=""):
 if localDirectories:
     print("Checking repos ...")
     for repo in repos:
-        if f"{repo['htmlUrl']}.git" in localRepoUrls:
+        if f"{repo['htmlUrl']}.git".lower() in localRepoUrls:
             localPath = ""
             for localRepo in localRepos:
-                if localRepo['url'] == f"{repo['htmlUrl']}.git":
+                if localRepo['url'] == f"{repo['htmlUrl']}.git".lower():
                     localPath = localRepo['path']
             localBranchInfoGitBranch = Popen(
                 ["git", "branch"], cwd=localPath,  stdout=PIPE, stderr=PIPE)
@@ -688,6 +694,8 @@ if localDirectories:
             repo['localHasMaster'] = "master" in f"{localBranchInfoGitBranchStdout}"
             repo['localHasPrimaryBranchName'] = repo[
                 'primaryBranchName'] in f"{localBranchInfoGitBranchStdout}"
+            check(repo)
+        else:
             check(repo)
 else:
     print("Checking repos ...")
@@ -703,7 +711,7 @@ remoteIsAGo = False
 # * ``` Update local repo that still has master to sync with remote that already has the chosen name! ``` * #
 def localProcess(repo):
     for localRepo in localRepos:
-        if f"{repo['htmlUrl']}.git" == localRepo['url']:
+        if f"{repo['htmlUrl']}.git".lower() == localRepo['url']:
             localProcessGcm = Popen(["git", "checkout", "master"], cwd=localRepo['path'],
                                     stdout=PIPE, stderr=PIPE)
             processLogger(f"cwd={localRepo['path']}: git checkout master",
@@ -740,7 +748,7 @@ def localProcess(repo):
 
 def localMasterDeleteProcess(repo):
     for localRepo in localRepos:
-        if f"{repo['htmlUrl']}.git" == localRepo['url']:
+        if f"{repo['htmlUrl']}.git".lower() == localRepo['url']:
             localMasterDeleteProcessCheckoutPrimary = Popen(
                 ["git", "checkout", f"{repo['primaryBranchName']}"], cwd=localRepo['path'],  stdout=PIPE, stderr=PIPE)
             localMasterDeleteProcessCheckoutPrimaryExitCode = processLogger(
@@ -770,9 +778,9 @@ tempDirCreated = False
 
 def remoteProcess(repo):
     if localDirectories:
-        if f"{repo['htmlUrl']}.git" in localRepoUrls:
+        if f"{repo['htmlUrl']}.git".lower() in localRepoUrls:
             for localRepo in localRepos:
-                if f"{repo['htmlUrl']}.git" == localRepo['url']:
+                if f"{repo['htmlUrl']}.git".lower() == localRepo['url']:
                     remoteProcessLocalRepoGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'],
                                                       stdout=PIPE, stderr=PIPE)
                     processLogger(
@@ -820,18 +828,18 @@ def remoteProcess(repo):
             remoteProcessRemoteRepoGcl = Popen(["git", "clone", f"{repo['htmlUrl']}.git", f"./{repo['owner-login']}/{repo['name']}"], cwd=f"{localDirectory}/master-blaster-{username}/",
                                                stdout=PIPE, stderr=PIPE)
             remoteProcessRemoteRepoGclExitCode = processLogger(
-                f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}", remoteProcessRemoteRepoGcl, ignoreStr="Clone")[2]
+                f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}", remoteProcessRemoteRepoGcl, ignoreStr="Cloning")[2]
             if remoteProcessRemoteRepoGclExitCode == 1:
                 repo['error'] = True
                 return
             remoteProcessRemoteRepoGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
                                                stdout=PIPE, stderr=PIPE)
             processLogger(
-                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}: git branch -m master {repo['primaryBranchName']}", remoteProcessRemoteRepoGbm)
+                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']/{repo['name']}}: git branch -m master {repo['primaryBranchName']}", remoteProcessRemoteRepoGbm)
             remoteProcessRemoteRepoGpuo = Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
                                                 stdout=PIPE, stderr=PIPE)
             remoteProcessRemoteRepoGpuoExitCode = processLogger(
-                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}: git push -u origin {repo['primaryBranchName']}", remoteProcessRemoteRepoGpuo, ignoreStr="To")[2]
+                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']/{repo['name']}}: git push -u origin {repo['primaryBranchName']}", remoteProcessRemoteRepoGpuo, ignoreStr="To")[2]
             if remoteProcessRemoteRepoGpuoExitCode == 1:
                 repo['error'] = True
                 return
@@ -871,7 +879,7 @@ def remoteProcess(repo):
         remoteProcessRemoteRepoGcl = Popen(["git", "clone", f"{repo['htmlUrl']}.git", f"./{repo['owner-login']}/{repo['name']}"], cwd=f"{localDirectory}/master-blaster-{username}",
                                            stdout=PIPE, stderr=PIPE)
         remoteProcessRemoteRepoGclExitCode = processLogger(
-            f"cwd={localDirectory}/master-blaster-{username}: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}", remoteProcessRemoteRepoGcl, ignoreStr="Clone")[2]
+            f"cwd={localDirectory}/master-blaster-{username}: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}", remoteProcessRemoteRepoGcl, ignoreStr="Cloning")[2]
         if remoteProcessRemoteRepoGclExitCode == 1:
             repo['error'] = True
             return
@@ -991,6 +999,7 @@ if remoteIsAGo:
         else:
             print(f"Remote process completed for {repo['htmlUrl']}")
 
+print(tempDirCreated)
 if tempDirCreated:
     removeLocalDirectoriesProcess = Popen(
         ["rm", "-dfRv", f"./master-blaster-{username}"], cwd=localDirectory,  stdout=PIPE, stderr=PIPE)
