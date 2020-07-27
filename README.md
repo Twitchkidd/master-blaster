@@ -2,6 +2,10 @@
 
 Rename primary branches of code repositories!
 
+### v1.0.6 Run commands!
+
+Ahh! Almost there, at the moment we're just going to have to be okay with the extra `pip install questionary requests`, it's just two packages, no prob.
+
 ### v1.0.5 Knock-on-wood Stable!
 
 Bugs squashed! Still no warranty, and the testing could be more robust, and more automated, and the logging needs a brush up to be a little more helpful, but I've dog-fooded this on all 76 of my repos, and I would totally tell my friends to run this, which I think is the real test, lol. Oh, unless they're on Windows, not because of the file system, that should be fine, just I'm not sure the addition of the interpreter string at the top will play nice with winpty yet, so that's TBD for 1.0.6 at the moment.
@@ -72,11 +76,19 @@ To run `master-blaster`, have Python 3.6 or up installed, and pip, then:
 
 `pip install master-blaster`
 
+Then, unless you have them installed already:
+
+`pip install questionary requests`
+
+And then run:
+
 `master-blaster`
+
+to start the program!
 
 ### Windows!
 
-#### Hey, I'm sorry, I may have broken
+#### Hey, I'm sorry, I may have broken this! 1.0.7, promise!
 
 Just instead of `master-blaster`, run `winpty python ./bin/master-blaster`!
 
