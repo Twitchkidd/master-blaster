@@ -19,11 +19,18 @@
 import json
 import logging
 import os
+import sys
 from pathlib import Path
+from subprocess import Popen, PIPE
+
+# Add vendor directory to module search path
+parent_dir = os.path.abspath(os.path.dirname(__file__))
+vendor_dir = os.path.join(parent_dir, "vendor")
+
+sys.path.append(vendor_dir)
+
 import questionary
 import requests
-from subprocess import Popen, PIPE
-import sys
 
 # * ``` From u/merfi on SO, added a path param ``` * #
 
