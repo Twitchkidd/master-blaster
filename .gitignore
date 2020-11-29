@@ -6,3 +6,4 @@ repo.txt
 .vscode/
 # Should this be here? (Below)
 master_blaster.egg-info/
+info.log
