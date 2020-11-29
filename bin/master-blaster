@@ -40,7 +40,7 @@ def get_active_branch_name(path):
 
 # ! Testing! #
 currentBranch = ""
-if(f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}"):
+if f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}":
     currentBranch = get_active_branch_name(f"{Path.cwd()}")
 
 # This defaults to v3 of the api.
@@ -86,13 +86,19 @@ print(tokenExplanation)
 # * ``` Write to a new or existing log file! ``` * #
 # ! Testing! #
 # filemode='w' will not append to the file, it'll write over
-logging.basicConfig(filename='info.log', filemode='w',
-                    level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+logging.basicConfig(
+    filename="info.log",
+    filemode="w",
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+)
 # logging.basicConfig(filename='info.log',
 #                     level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
-print("""
+print(
+    """
     Log file to be found at ./info.log!
-""")
+"""
+)
 logging.info("master-blaster v1.0.5")
 logging.info("Creating a log file!!")
 
@@ -122,7 +128,8 @@ while not usernameConfirmed:
         continue
     else:
         usernameConfirmationResponse = questionary.confirm(
-            usernameConfirmationPrompt(usernameResponse)).ask()
+            usernameConfirmationPrompt(usernameResponse)
+        ).ask()
         if usernameConfirmationResponse == False:
             print("Thank you for retrying!")
             continue
@@ -155,7 +162,9 @@ repoTypesOwner = "All repositories I'm the owner of, public and private. (Collab
 repoTypesOwnerPublic = "All repositories I'm the owner of, only public, not private."
 repoTypesAll = "All repositories I'm the owner, collaborator, and/or organization member, public and private."
 repoTypesAllPublic = "All repositories I'm the owner, collaborator, and/or organization member, only public, not private."
-repoTypesCollaborator = "All repositories I'm the owner of and/or a collaborator on, public and private."
+repoTypesCollaborator = (
+    "All repositories I'm the owner of and/or a collaborator on, public and private."
+)
 repoTypesCollaboratorPublic = "All repositories I'm the owner of and/or a collaborator on, only public, not private."
 repoTypesOrganization = "All repositories I'm the owner of and/or a member of the organization, public and private."
 repoTypesOrganizationPublic = "All repositories I'm the owner of and/or a member of the organization, only public, not private."
@@ -186,18 +195,14 @@ questions = [
             # repoTypesCollaboratorPublic,
             # repoTypesOrganization,
             # repoTypesOrganizationPublic
-        ]
+        ],
     },
     {
         "type": "select",
         "name": "namesSelection",
         "message": namesSelectionPrompt,
-        "choices": [
-            namesMain,
-            namesCustom,
-            namesPerRepo
-        ]
-    }
+        "choices": [namesMain, namesCustom, namesPerRepo],
+    },
 ]
 
 # * ``` Extract the data from the set of prompts from dictionary! ``` * #
@@ -224,16 +229,17 @@ confirmResetToMainPrompt = """
 
 
 def customNameConfirmPrompt(inputName):
-    return f'''{inputName} for all primary branches?'''
+    return f"""{inputName} for all primary branches?"""
 
 
-if answers['namesSelection'] == namesCustom:
+if answers["namesSelection"] == namesCustom:
     nameConfirmed = False
     while not nameConfirmed:
         customNameResponse = questionary.text(customNamePrompt).ask()
         if customNameResponse == "":
             confirmResetToMainResponse = questionary.confirm(
-                confirmResetToMainPrompt).ask()
+                confirmResetToMainPrompt
+            ).ask()
             if confirmResetToMainResponse:
                 name = "main"
                 nameConfirmed = True
@@ -242,7 +248,8 @@ if answers['namesSelection'] == namesCustom:
                 continue
         else:
             confirmCustomNameResponse = questionary.confirm(
-                customNameConfirmPrompt(customNameResponse)).ask()
+                customNameConfirmPrompt(customNameResponse)
+            ).ask()
             if confirmCustomNameResponse:
                 name = customNameResponse
                 nameConfirmed = True
@@ -259,7 +266,7 @@ interactiveNamingConfirmationPrompt = """
     Okay! We'll name them after we fetch the set of repos!
 """
 
-if answers['namesSelection'] == namesPerRepo:
+if answers["namesSelection"] == namesPerRepo:
     interactive = True
     print(interactiveNamingConfirmationPrompt)
 
@@ -297,18 +304,18 @@ confirmRemoveLocalDirectoriesAfter = False
 
 
 def customLocalDirectoryConfirmPrompt(inputDir):
-    return f'''{inputDir} for all primary branches?'''
+    return f"""{inputDir} for all primary branches?"""
 
 
 # * ``` Ask which directory to use to search for local repos! ``` * #
 if localDirectories:
     localDirectoryConfirmed = False
     while not localDirectoryConfirmed:
-        customLocalDirectoryResponse = questionary.text(
-            localDirectoryPrompt).ask()
+        customLocalDirectoryResponse = questionary.text(localDirectoryPrompt).ask()
         if customLocalDirectoryResponse == "":
             confirmResetToHomeResponse = questionary.confirm(
-                confirmResetToHomePrompt).ask()
+                confirmResetToHomePrompt
+            ).ask()
             if confirmResetToHomeResponse:
                 localDirectory = Path.home()
                 localDirectoryConfirmed = True
@@ -319,7 +326,8 @@ if localDirectories:
         else:
             if os.path.isdir(customLocalDirectoryResponse):
                 confirmCustomLocalDirectoryResponse = questionary.confirm(
-                    customLocalDirectoryConfirmPrompt(customLocalDirectoryResponse)).ask()
+                    customLocalDirectoryConfirmPrompt(customLocalDirectoryResponse)
+                ).ask()
                 if confirmCustomLocalDirectoryResponse:
                     localDirectory = customLocalDirectoryResponse
                     localDirectoryConfirmed = True
@@ -329,7 +337,8 @@ if localDirectories:
                     pass
             else:
                 print(
-                    f"Error! Directory not showing as valid: {customLocalDirectoryResponse}")
+                    f"Error! Directory not showing as valid: {customLocalDirectoryResponse}"
+                )
                 continue
 
 # ! Testing! #
@@ -343,7 +352,8 @@ confirmRemoveLocalDirectoriesAfterPrompt = """
 
 if localDirectories:
     confirmRemoveLocalDirectoriesAfter = questionary.confirm(
-        confirmRemoveLocalDirectoriesAfterPrompt).ask()
+        confirmRemoveLocalDirectoriesAfterPrompt
+    ).ask()
     # ! Testing! #
     # logging.info(
     #     f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
@@ -351,7 +361,8 @@ if localDirectories:
 # ! Testing! #
 confirmRemoveLocalDirectoriesAfter = True
 logging.info(
-    f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
+    f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}"
+)
 
 # * ~~~ New Git Alias! ~~~ * #
 
@@ -382,14 +393,19 @@ tokenRepoScope = ""
 tokenPublicRepoScope = ""
 
 # ! Testing! #
-with open("./repo.txt", 'r') as repoF:
+with open("./repo.txt", "r") as repoF:
     tokenRepoScope = repoF.read(40)
 
 # ! Testing! #
-with open("./repoPublicRepo.txt", 'r') as repoPublicRepoF:
+with open("./repoPublicRepo.txt", "r") as repoPublicRepoF:
     tokenPublicRepoScope = repoPublicRepoF.read(40)
 
-if repoTypes in [repoTypesAll, repoTypesOwner, repoTypesCollaborator, repoTypesOrganization]:
+if repoTypes in [
+    repoTypesAll,
+    repoTypesOwner,
+    repoTypesCollaborator,
+    repoTypesOrganization,
+]:
     tokenType = "repo"
 else:
     tokenType = "public repo"
@@ -442,12 +458,14 @@ def getToken():
 def constructReposUrl():
     return f"{GITHUB_API}/user/repos"
 
+
 # * ``` Construct the headers! ``` * #
 
 
 def constructHeaders(token):
-    headers = {"Authorization": 'token ' + token}
+    headers = {"Authorization": "token " + token}
     return headers
+
 
 # * ``` Custruct the parameters! ``` * #
 
@@ -455,7 +473,9 @@ def constructHeaders(token):
 def constructReposParams():
     params = {}
     if repoTypes == repoTypesAll:
-        params = {"per_page": "1000", }
+        params = {
+            "per_page": "1000",
+        }
     if repoTypes == repoTypesAllPublic:
         params = {"per_page": "1000", "visibility": "public"}
     # if repoTypes == repoTypesOwner:
@@ -466,14 +486,19 @@ def constructReposParams():
     if repoTypes == repoTypesCollaborator:
         params = {"per_page": "1000", "type": "owner,collaborator"}
     if repoTypes == repoTypesCollaboratorPublic:
-        params = {"per_page": "1000", "visibility": "public",
-                  "type": "owner,collaborator"}
+        params = {
+            "per_page": "1000",
+            "visibility": "public",
+            "type": "owner,collaborator",
+        }
     if repoTypes == repoTypesOrganization:
-        params = {"per_page": "1000",
-                  "type": "owner,collaborator,organization_member"}
+        params = {"per_page": "1000", "type": "owner,collaborator,organization_member"}
     if repoTypes == repoTypesOrganizationPublic:
-        params = {"per_page": "1000", "visibility": "public",
-                  "type": "owner,collaborator,organization_member"}
+        params = {
+            "per_page": "1000",
+            "visibility": "public",
+            "type": "owner,collaborator,organization_member",
+        }
     return params
 
 
@@ -493,45 +518,58 @@ while not reposResponseConfirmed:
     if reposResponse.status_code >= 400:
         logging.warning(f"Response status: {reposResponse.status_code}")
         print(
-            f"Network error! Possibly the token! Try again please! If this is not your GitHub username, please restart the program: {username}")
+            f"Network error! Possibly the token! Try again please! If this is not your GitHub username, please restart the program: {username}"
+        )
         continue
     else:
         print("Repos received!")
         reposResponseConfirmed = True
         for repository in reposResponse.json():
             repos.append(
-                {"defaultBranch": repository['default_branch'], "htmlUrl": repository['html_url'], "name": repository['name'], "owner-login": f"{repository['owner']['login']}", "primaryBranchName": name})
+                {
+                    "defaultBranch": repository["default_branch"],
+                    "htmlUrl": repository["html_url"],
+                    "name": repository["name"],
+                    "owner-login": f"{repository['owner']['login']}",
+                    "primaryBranchName": name,
+                }
+            )
         pass
 
 
 # * If they wanted to name each primary branch, do so now! * #
 if interactive:
-    print("""
+    print(
+        """
         Interactive naming mode!
-    """)
+    """
+    )
     for repo in repos:
         primaryBranchNameConfirmed = False
         while not primaryBranchNameConfirmed:
             repoNameResponse = questionary.text(
-                f"Primary branch name for {repo['htmlUrl']}?").ask()
+                f"Primary branch name for {repo['htmlUrl']}?"
+            ).ask()
             if repoNameResponse == "":
                 defaultNameResponse = questionary.confirm(
-                    f"Default primary branch name {name} for {repo['htmlUrl']}?")
+                    f"Default primary branch name {name} for {repo['htmlUrl']}?"
+                )
                 if defaultNameResponse:
-                    logging.info(
-                        f"Primary branch name for {repo['htmlUrl']}: {name}")
+                    logging.info(f"Primary branch name for {repo['htmlUrl']}: {name}")
                     primaryBranchNameConfirmed = True
                     continue
                 else:
                     continue
             else:
                 customRepoNameConfirmed = questionary.confirm(
-                    f"{repoNameResponse} for {repo['htmlUrl']}?")
+                    f"{repoNameResponse} for {repo['htmlUrl']}?"
+                )
                 if customRepoNameConfirmed:
                     primaryBranchNameConfirmed = True
-                    repo['primaryBranchName'] = repoNameResponse
+                    repo["primaryBranchName"] = repoNameResponse
                     logging.info(
-                        f"Primary branch name for {repo['htmlUrl']}: {repoNameResponse}")
+                        f"Primary branch name for {repo['htmlUrl']}: {repoNameResponse}"
+                    )
                     continue
                 else:
                     pass
@@ -546,20 +584,20 @@ def constructBranchesUrl(repo, which):
 
 # * ``` Check each remote to see if they have master branches or branches with the name already! ``` * #
 for repo in repos:
-    primaryBranchUrl = constructBranchesUrl(repo, repo['primaryBranchName'])
+    primaryBranchUrl = constructBranchesUrl(repo, repo["primaryBranchName"])
     masterBranchUrl = constructBranchesUrl(repo, "master")
     headers = constructHeaders(token)
     print(f"Checking branches for {repo['htmlUrl']}.")
     primaryBranchResponse = requests.get(primaryBranchUrl, headers=headers)
     masterBranchResponse = requests.get(masterBranchUrl, headers=headers)
-    if primaryBranchResponse.json().get('message'):
-        repo['hasPrimaryBranchName'] = False
-    if masterBranchResponse.json().get('message'):
-        repo['hasMasterBranch'] = False
-    if primaryBranchResponse.json().get('name'):
-        repo['hasPrimaryBranchName'] = True
-    if masterBranchResponse.json().get('name'):
-        repo['hasMasterBranch'] = True
+    if primaryBranchResponse.json().get("message"):
+        repo["hasPrimaryBranchName"] = False
+    if masterBranchResponse.json().get("message"):
+        repo["hasMasterBranch"] = False
+    if primaryBranchResponse.json().get("name"):
+        repo["hasPrimaryBranchName"] = True
+    if masterBranchResponse.json().get("name"):
+        repo["hasMasterBranch"] = True
 
 
 # * ~~~ If they wanted to use local clones, look for them! ~~~ * #
@@ -572,22 +610,27 @@ localRepos = []
 def getLocalRepoUrl(configFile):
     url = ""
     for line in configFile:
-        if line.find('url =') != -1:
-            remoteOriginUrlStart = line.find('url =')
-            url = line[remoteOriginUrlStart + 6:-1]
+        if line.find("url =") != -1:
+            remoteOriginUrlStart = line.find("url =")
+            url = line[remoteOriginUrlStart + 6 : -1]
             return url
 
 
 # * ``` Find all local repos that share a name with the repos to change! (Url is test for owner!) ``` * #
 if localDirectories:
-    repoNames = [repo['name'] for repo in repos]
+    repoNames = [repo["name"] for repo in repos]
     for root, subdirs, files in os.walk(f"{localDirectory}"):
         for subdir in subdirs:
             if any(subdir == repoName for repoName in repoNames):
                 try:
                     with open(f"{root}/{subdir}/.git/config", "r") as configFile:
                         localRepos.append(
-                            {"url": getLocalRepoUrl(configFile).lower(), "path": f"{root}/{subdir}", "branch": f"{get_active_branch_name(f'{root}/{subdir}')}"})
+                            {
+                                "url": getLocalRepoUrl(configFile).lower(),
+                                "path": f"{root}/{subdir}",
+                                "branch": f"{get_active_branch_name(f'{root}/{subdir}')}",
+                            }
+                        )
                 except Exception as err:
                     # print(f"Exception: {err}")
                     pass
@@ -595,7 +638,7 @@ if localDirectories:
 # * ~~~ Change the branches! ~~~ * #
 
 # * ``` The set of local repo origin urls! ``` * #
-localRepoUrls = [localRepo['url'] for localRepo in localRepos]
+localRepoUrls = [localRepo["url"] for localRepo in localRepos]
 
 # * ``` Placeholder variables for groups of checked repos! ``` * #
 reposAlreadyBlasted = []
@@ -608,53 +651,93 @@ reposReadyForRemote = []
 
 
 def check(repo):
-    if repo['hasMasterBranch'] and repo['hasPrimaryBranchName']:
-        repo['status'] = "error: remote has both master branch and new primary branch name"
+    if repo["hasMasterBranch"] and repo["hasPrimaryBranchName"]:
+        repo[
+            "status"
+        ] = "error: remote has both master branch and new primary branch name"
         reposWithErrors.append(repo)
         return None
-    if not repo['hasMasterBranch'] and not repo['hasPrimaryBranchName']:
-        repo['status'] = "error: remote has neither master nor new primary branch name"
+    if not repo["hasMasterBranch"] and not repo["hasPrimaryBranchName"]:
+        repo["status"] = "error: remote has neither master nor new primary branch name"
         reposWithErrors.append(repo)
         return None
-    if repo.get('localHasPrimaryBranchName') != None:
-        if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName'] and not repo['localHasMaster'] and repo['localHasPrimaryBranchName']:
-            repo['status'] = "already blasted"
+    if repo.get("localHasPrimaryBranchName") != None:
+        if (
+            not repo["hasMasterBranch"]
+            and repo["hasPrimaryBranchName"]
+            and repo["defaultBranch"] == repo["primaryBranchName"]
+            and not repo["localHasMaster"]
+            and repo["localHasPrimaryBranchName"]
+        ):
+            repo["status"] = "already blasted"
             reposAlreadyBlasted.append(repo)
             return None
-        if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName'] and repo['localHasMaster'] and repo['localHasPrimaryBranchName']:
-            repo['status'] = "candidate to delete local master"
+        if (
+            not repo["hasMasterBranch"]
+            and repo["hasPrimaryBranchName"]
+            and repo["defaultBranch"] == repo["primaryBranchName"]
+            and repo["localHasMaster"]
+            and repo["localHasPrimaryBranchName"]
+        ):
+            repo["status"] = "candidate to delete local master"
             reposReadyForLocalMasterDelete.append(repo)
             return None
-        if repo['localHasMaster'] and not repo['localHasPrimaryBranchName']:
-            if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName']:
-                repo['status'] = "candidate for local process"
+        if repo["localHasMaster"] and not repo["localHasPrimaryBranchName"]:
+            if (
+                not repo["hasMasterBranch"]
+                and repo["hasPrimaryBranchName"]
+                and repo["defaultBranch"] == repo["primaryBranchName"]
+            ):
+                repo["status"] = "candidate for local process"
                 reposReadyForLocal.append(repo)
                 return None
-            if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
-                repo['status'] = "candidate for remote process"
+            if (
+                repo["hasMasterBranch"]
+                and not repo["hasPrimaryBranchName"]
+                and repo["defaultBranch"] == "master"
+            ):
+                repo["status"] = "candidate for remote process"
                 reposReadyForRemote.append(repo)
                 return None
-        if repo['defaultBranch'] != repo['primaryBranchName'] and repo['defaultBranch'] != "master":
-            repo['status'] = f"Primary branch neither {repo['primaryBranchName']} nor master"
+        if (
+            repo["defaultBranch"] != repo["primaryBranchName"]
+            and repo["defaultBranch"] != "master"
+        ):
+            repo[
+                "status"
+            ] = f"Primary branch neither {repo['primaryBranchName']} nor master"
             reposWithErrors.append(repo)
             return None
-        repo['status'] = f"error: {repo}"
+        repo["status"] = f"error: {repo}"
         reposWithErrors.append(repo)
         return None
     else:
-        if not repo['hasMasterBranch'] and repo['hasPrimaryBranchName'] and repo['defaultBranch'] == repo['primaryBranchName']:
-            repo['status'] = "already blasted"
+        if (
+            not repo["hasMasterBranch"]
+            and repo["hasPrimaryBranchName"]
+            and repo["defaultBranch"] == repo["primaryBranchName"]
+        ):
+            repo["status"] = "already blasted"
             reposAlreadyBlasted.append(repo)
             return None
-        if repo['hasMasterBranch'] and not repo['hasPrimaryBranchName'] and repo['defaultBranch'] == "master":
-            repo['status'] = "candidate for remote process"
+        if (
+            repo["hasMasterBranch"]
+            and not repo["hasPrimaryBranchName"]
+            and repo["defaultBranch"] == "master"
+        ):
+            repo["status"] = "candidate for remote process"
             reposReadyForRemote.append(repo)
             return None
-        if repo['defaultBranch'] != repo['primaryBranchName'] and repo['defaultBranch'] != "master":
-            repo['status'] = f"Primary branch neither {repo['primaryBranchName']} nor master"
+        if (
+            repo["defaultBranch"] != repo["primaryBranchName"]
+            and repo["defaultBranch"] != "master"
+        ):
+            repo[
+                "status"
+            ] = f"Primary branch neither {repo['primaryBranchName']} nor master"
             reposWithErrors.append(repo)
             return None
-    repo['status'] = f"error: {repo}"
+    repo["status"] = f"error: {repo}"
     reposWithErrors.append(repo)
     return None
 
@@ -682,15 +765,18 @@ if localDirectories:
         if f"{repo['htmlUrl']}.git".lower() in localRepoUrls:
             localPath = ""
             for localRepo in localRepos:
-                if localRepo['url'] == f"{repo['htmlUrl']}.git".lower():
-                    localPath = localRepo['path']
+                if localRepo["url"] == f"{repo['htmlUrl']}.git".lower():
+                    localPath = localRepo["path"]
             localBranchInfoGitBranch = Popen(
-                ["git", "branch"], cwd=localPath,  stdout=PIPE, stderr=PIPE)
+                ["git", "branch"], cwd=localPath, stdout=PIPE, stderr=PIPE
+            )
             localBranchInfoGitBranchStdout = processLogger(
-                f"cwd={localPath}: git branch", localBranchInfoGitBranch)[0]
-            repo['localHasMaster'] = "master" in f"{localBranchInfoGitBranchStdout}"
-            repo['localHasPrimaryBranchName'] = repo[
-                'primaryBranchName'] in f"{localBranchInfoGitBranchStdout}"
+                f"cwd={localPath}: git branch", localBranchInfoGitBranch
+            )[0]
+            repo["localHasMaster"] = "master" in f"{localBranchInfoGitBranchStdout}"
+            repo["localHasPrimaryBranchName"] = (
+                repo["primaryBranchName"] in f"{localBranchInfoGitBranchStdout}"
+            )
             check(repo)
         else:
             check(repo)
@@ -708,59 +794,123 @@ remoteIsAGo = False
 # * ``` Update local repo that still has master to sync with remote that already has the chosen name! ``` * #
 def localProcess(repo):
     for localRepo in localRepos:
-        if f"{repo['htmlUrl']}.git".lower() == localRepo['url']:
-            localProcessGcm = Popen(["git", "checkout", "master"], cwd=localRepo['path'],
-                                    stdout=PIPE, stderr=PIPE)
-            processLogger(f"cwd={localRepo['path']}: git checkout master",
-                          localProcessGcm, ignoreStr="Already on", secondIgnoreStr="Switched to")
-            localProcessGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'],
-                                    stdout=PIPE, stderr=PIPE)
+        if f"{repo['htmlUrl']}.git".lower() == localRepo["url"]:
+            localProcessGcm = Popen(
+                ["git", "checkout", "master"],
+                cwd=localRepo["path"],
+                stdout=PIPE,
+                stderr=PIPE,
+            )
             processLogger(
-                f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}", localProcessGbm)
-            localProcessGf = Popen(["git", "fetch"], cwd=localRepo['path'],
-                                   stdout=PIPE, stderr=PIPE)
+                f"cwd={localRepo['path']}: git checkout master",
+                localProcessGcm,
+                ignoreStr="Already on",
+                secondIgnoreStr="Switched to",
+            )
+            localProcessGbm = Popen(
+                ["git", "branch", "-m", "master", repo["primaryBranchName"]],
+                cwd=localRepo["path"],
+                stdout=PIPE,
+                stderr=PIPE,
+            )
+            processLogger(
+                f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}",
+                localProcessGbm,
+            )
+            localProcessGf = Popen(
+                ["git", "fetch"], cwd=localRepo["path"], stdout=PIPE, stderr=PIPE
+            )
             localProcessGfExitCode = processLogger(
-                f"cwd={localRepo['path']}: git fetch", localProcessGf, ignoreStr="From")[2]
+                f"cwd={localRepo['path']}: git fetch", localProcessGf, ignoreStr="From"
+            )[2]
             if localProcessGfExitCode == 1:
-                repo['error'] = True
+                repo["error"] = True
                 return
-            localProcessGbuu = Popen(["git", "branch", "--unset-upstream"], cwd=localRepo['path'],
-                                     stdout=PIPE, stderr=PIPE)
+            localProcessGbuu = Popen(
+                ["git", "branch", "--unset-upstream"],
+                cwd=localRepo["path"],
+                stdout=PIPE,
+                stderr=PIPE,
+            )
             processLogger(
-                f"cwd={localRepo['path']}: git branch --unset-upstream", localProcessGbuu)
-            localProcessGbuo = Popen(["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"], cwd=localRepo['path'],
-                                     stdout=PIPE, stderr=PIPE)
+                f"cwd={localRepo['path']}: git branch --unset-upstream",
+                localProcessGbuu,
+            )
+            localProcessGbuo = Popen(
+                ["git", "branch", "-u", f"origin/{repo['primaryBranchName']}"],
+                cwd=localRepo["path"],
+                stdout=PIPE,
+                stderr=PIPE,
+            )
             localProcessGbuoExitCode = processLogger(
-                f"cwd={localRepo['path']}: git branch -u origin/{repo['primaryBranchName']}", localProcessGbuo, ignoreStr="To")[2]
+                f"cwd={localRepo['path']}: git branch -u origin/{repo['primaryBranchName']}",
+                localProcessGbuo,
+                ignoreStr="To",
+            )[2]
             if localProcessGbuoExitCode == 1:
-                repo['error'] = True
+                repo["error"] = True
                 return
-            localProcessGsro = Popen(["git", "symbolic-ref", "refs/remotes/origin/HEAD",
-                                      f"refs/remotes/origin/{repo['primaryBranchName']}"], cwd=localRepo['path'],  stdout=PIPE, stderr=PIPE)
+            localProcessGsro = Popen(
+                [
+                    "git",
+                    "symbolic-ref",
+                    "refs/remotes/origin/HEAD",
+                    f"refs/remotes/origin/{repo['primaryBranchName']}",
+                ],
+                cwd=localRepo["path"],
+                stdout=PIPE,
+                stderr=PIPE,
+            )
             processLogger(
-                f"cwd={localRepo['path']}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['primaryBranchName']}", localProcessGsro)
+                f"cwd={localRepo['path']}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['primaryBranchName']}",
+                localProcessGsro,
+            )
 
 
 # * ``` Delete stray master branch! ``` * #
 
+
 def localMasterDeleteProcess(repo):
     for localRepo in localRepos:
-        if f"{repo['htmlUrl']}.git".lower() == localRepo['url']:
+        if f"{repo['htmlUrl']}.git".lower() == localRepo["url"]:
             localMasterDeleteProcessCheckoutPrimary = Popen(
-                ["git", "checkout", f"{repo['primaryBranchName']}"], cwd=localRepo['path'],  stdout=PIPE, stderr=PIPE)
+                ["git", "checkout", f"{repo['primaryBranchName']}"],
+                cwd=localRepo["path"],
+                stdout=PIPE,
+                stderr=PIPE,
+            )
             localMasterDeleteProcessCheckoutPrimaryExitCode = processLogger(
-                f"cwd={localRepo['path']}: git checkout {repo['primaryBranchName']}", localMasterDeleteProcessCheckoutPrimary, ignoreStr="Already on", secondIgnoreStr="Switched to")[2]
+                f"cwd={localRepo['path']}: git checkout {repo['primaryBranchName']}",
+                localMasterDeleteProcessCheckoutPrimary,
+                ignoreStr="Already on",
+                secondIgnoreStr="Switched to",
+            )[2]
             if localMasterDeleteProcessCheckoutPrimaryExitCode == 1:
-                repo['error'] = True
+                repo["error"] = True
                 return
             localMasterDeleteProcessBranchD = Popen(
-                ["git", "branch", "-d", "master"], cwd=localRepo['path'],  stdout=PIPE, stderr=PIPE)
+                ["git", "branch", "-d", "master"],
+                cwd=localRepo["path"],
+                stdout=PIPE,
+                stderr=PIPE,
+            )
             processLogger(
-                f"cwd={localRepo['path']}: git branch -d master", localMasterDeleteProcessBranchD)
+                f"cwd={localRepo['path']}: git branch -d master",
+                localMasterDeleteProcessBranchD,
+            )
             localMasterDeleteProcessCheckoutPrevious = Popen(
-                ["git", "checkout", f"{localRepo['branch']}"], cwd=localRepo['path'], stdout=PIPE, stderr=PIPE)
-            processLogger(f"cwd={localRepo['path']}: git checkout {localRepo['branch']}",
-                          localMasterDeleteProcessCheckoutPrevious, ignoreStr="Already on", secondIgnoreStr="Switched to")
+                ["git", "checkout", f"{localRepo['branch']}"],
+                cwd=localRepo["path"],
+                stdout=PIPE,
+                stderr=PIPE,
+            )
+            processLogger(
+                f"cwd={localRepo['path']}: git checkout {localRepo['branch']}",
+                localMasterDeleteProcessCheckoutPrevious,
+                ignoreStr="Already on",
+                secondIgnoreStr="Switched to",
+            )
+
 
 # * ``` Update remote repo that still has master! ``` * #
 
@@ -773,115 +923,208 @@ def remoteProcess(repo):
     if localDirectories:
         if f"{repo['htmlUrl']}.git".lower() in localRepoUrls:
             for localRepo in localRepos:
-                if f"{repo['htmlUrl']}.git".lower() == localRepo['url']:
-                    remoteProcessLocalRepoGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=localRepo['path'],
-                                                      stdout=PIPE, stderr=PIPE)
+                if f"{repo['htmlUrl']}.git".lower() == localRepo["url"]:
+                    remoteProcessLocalRepoGbm = Popen(
+                        ["git", "branch", "-m", "master", repo["primaryBranchName"]],
+                        cwd=localRepo["path"],
+                        stdout=PIPE,
+                        stderr=PIPE,
+                    )
                     processLogger(
-                        f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}", remoteProcessLocalRepoGbm)
-                    remoteProcessLocalRepoGpuo = Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=localRepo['path'],
-                                                       stdout=PIPE, stderr=PIPE)
+                        f"cwd={localRepo['path']}: git branch -m master {repo['primaryBranchName']}",
+                        remoteProcessLocalRepoGbm,
+                    )
+                    remoteProcessLocalRepoGpuo = Popen(
+                        ["git", "push", "-u", "origin", repo["primaryBranchName"]],
+                        cwd=localRepo["path"],
+                        stdout=PIPE,
+                        stderr=PIPE,
+                    )
                     remoteProcessLocalRepoGpuoExitCode = processLogger(
-                        f"cwd={localRepo['path']}: git push -u origin {repo['primaryBranchName']}", remoteProcessLocalRepoGpuo, ignoreStr="To")[2]
+                        f"cwd={localRepo['path']}: git push -u origin {repo['primaryBranchName']}",
+                        remoteProcessLocalRepoGpuo,
+                        ignoreStr="To",
+                    )[2]
                     if remoteProcessLocalRepoGpuoExitCode == 1:
-                        repo['error'] = True
+                        repo["error"] = True
                         return
                     url = constructPatchDefaultUrl(repo)
                     data = json.dumps(
-                        {"default_branch": f"{repo['primaryBranchName']}"})
+                        {"default_branch": f"{repo['primaryBranchName']}"}
+                    )
                     headers = constructHeaders(token)
                     patchDefaultResponse = requests.patch(
-                        url, data=data, headers=headers)
+                        url, data=data, headers=headers
+                    )
                     if patchDefaultResponse.status_code >= 400:
                         logging.warning(
-                            f"{repo['htmlUrl']} default branch change failed, response status: {patchDefaultResponse.status_code}")
-                        repo['error'] = True
+                            f"{repo['htmlUrl']} default branch change failed, response status: {patchDefaultResponse.status_code}"
+                        )
+                        repo["error"] = True
                         return
                     else:
                         logging.info(
-                            f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+                            f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}."
+                        )
                         remoteProcessLocalRepoGpdm = Popen(
-                            ["git", "push", "--delete", "origin", "master"], cwd=f"{localRepo['path']}", stdout=PIPE, stderr=PIPE)
+                            ["git", "push", "--delete", "origin", "master"],
+                            cwd=f"{localRepo['path']}",
+                            stdout=PIPE,
+                            stderr=PIPE,
+                        )
                         remoteProcessLocalRepoGpdmExitCode = processLogger(
-                            f"cwd={localRepo['path']}: git push --delete origin master", remoteProcessLocalRepoGpdm, ignoreStr="To")[2]
+                            f"cwd={localRepo['path']}: git push --delete origin master",
+                            remoteProcessLocalRepoGpdm,
+                            ignoreStr="To",
+                        )[2]
                         if remoteProcessLocalRepoGpdmExitCode == 1:
-                            repo['error'] = True
+                            repo["error"] = True
                             return
         else:
             if not os.path.isdir(f"{localDirectory}/master-blaster-{username}/"):
                 remoteProcessRemoteRepoMkdir = Popen(
-                    ["mkdir", "-pv", f"{localDirectory}/master-blaster-{username}/"], cwd=localDirectory,  stdout=PIPE, stderr=PIPE)
+                    ["mkdir", "-pv", f"{localDirectory}/master-blaster-{username}/"],
+                    cwd=localDirectory,
+                    stdout=PIPE,
+                    stderr=PIPE,
+                )
                 remoteProcessRemoteRepoMkdirExitCode = processLogger(
-                    f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/", remoteProcessRemoteRepoMkdir)[2]
+                    f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/",
+                    remoteProcessRemoteRepoMkdir,
+                )[2]
                 if remoteProcessRemoteRepoMkdirExitCode == 1:
                     logging.warning("Error making temp dir!")
-                    repo['error'] = True
+                    repo["error"] = True
                     return
-            remoteProcessRemoteRepoGcl = Popen(["git", "clone", f"{repo['htmlUrl']}.git", f"./{repo['owner-login']}/{repo['name']}"], cwd=f"{localDirectory}/master-blaster-{username}/",
-                                               stdout=PIPE, stderr=PIPE)
+            remoteProcessRemoteRepoGcl = Popen(
+                [
+                    "git",
+                    "clone",
+                    f"{repo['htmlUrl']}.git",
+                    f"./{repo['owner-login']}/{repo['name']}",
+                ],
+                cwd=f"{localDirectory}/master-blaster-{username}/",
+                stdout=PIPE,
+                stderr=PIPE,
+            )
             remoteProcessRemoteRepoGclExitCode = processLogger(
-                f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}", remoteProcessRemoteRepoGcl, ignoreStr="Cloning")[2]
+                f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}",
+                remoteProcessRemoteRepoGcl,
+                ignoreStr="Cloning",
+            )[2]
             if remoteProcessRemoteRepoGclExitCode == 1:
-                repo['error'] = True
+                repo["error"] = True
                 return
-            remoteProcessRemoteRepoGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
-                                               stdout=PIPE, stderr=PIPE)
+            remoteProcessRemoteRepoGbm = Popen(
+                ["git", "branch", "-m", "master", repo["primaryBranchName"]],
+                cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
+                stdout=PIPE,
+                stderr=PIPE,
+            )
             processLogger(
-                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -m master {repo['primaryBranchName']}", remoteProcessRemoteRepoGbm)
-            remoteProcessRemoteRepoGpuo = Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
-                                                stdout=PIPE, stderr=PIPE)
+                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -m master {repo['primaryBranchName']}",
+                remoteProcessRemoteRepoGbm,
+            )
+            remoteProcessRemoteRepoGpuo = Popen(
+                ["git", "push", "-u", "origin", repo["primaryBranchName"]],
+                cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
+                stdout=PIPE,
+                stderr=PIPE,
+            )
             remoteProcessRemoteRepoGpuoExitCode = processLogger(
-                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git push -u origin {repo['primaryBranchName']}", remoteProcessRemoteRepoGpuo, ignoreStr="To")[2]
+                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git push -u origin {repo['primaryBranchName']}",
+                remoteProcessRemoteRepoGpuo,
+                ignoreStr="To",
+            )[2]
             if remoteProcessRemoteRepoGpuoExitCode == 1:
-                repo['error'] = True
+                repo["error"] = True
                 return
             url = constructPatchDefaultUrl(repo)
-            data = json.dumps(
-                {"default_branch": f"{repo['primaryBranchName']}"})
+            data = json.dumps({"default_branch": f"{repo['primaryBranchName']}"})
             headers = constructHeaders(token)
-            patchDefaultResponse = requests.patch(
-                url, data=data, headers=headers)
+            patchDefaultResponse = requests.patch(url, data=data, headers=headers)
             if patchDefaultResponse.status_code >= 400:
                 logging.warning(
-                    f"{repo['htmlUrl']} default branch change failed, response status: {patchDefaultResponse.status_code}")
-                repo['error'] = True
+                    f"{repo['htmlUrl']} default branch change failed, response status: {patchDefaultResponse.status_code}"
+                )
+                repo["error"] = True
                 return
             else:
                 logging.info(
-                    f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+                    f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}."
+                )
                 remoteProcessGpdm = Popen(
-                    ["git", "push", "--delete", "origin", "master"], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}", stdout=PIPE, stderr=PIPE)
+                    ["git", "push", "--delete", "origin", "master"],
+                    cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
+                    stdout=PIPE,
+                    stderr=PIPE,
+                )
                 remoteProcessGpdmExitCode = processLogger(
-                    f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git push --delete origin master", remoteProcessGpdm, ignoreStr="To")[2]
+                    f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git push --delete origin master",
+                    remoteProcessGpdm,
+                    ignoreStr="To",
+                )[2]
                 if remoteProcessGpdmExitCode == 1:
-                    repo['error'] = True
+                    repo["error"] = True
                     return
     else:
         if not os.path.isdir(f"{localDirectory}/master-blaster-{username}/"):
             remoteProcessRemoteRepoMkdir = Popen(
-                ["mkdir", "-pv", f"{localDirectory}/master-blaster-{username}/"], cwd=localDirectory,  stdout=PIPE, stderr=PIPE)
+                ["mkdir", "-pv", f"{localDirectory}/master-blaster-{username}/"],
+                cwd=localDirectory,
+                stdout=PIPE,
+                stderr=PIPE,
+            )
             remoteProcessRemoteRepoMkdirExitCode = processLogger(
-                f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/", remoteProcessRemoteRepoMkdir)[2]
+                f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/",
+                remoteProcessRemoteRepoMkdir,
+            )[2]
             if remoteProcessRemoteRepoMkdirExitCode == 1:
                 logging.warning("Error making temp dir!")
-                repo['error'] = True
+                repo["error"] = True
                 return
-        remoteProcessRemoteRepoGcl = Popen(["git", "clone", f"{repo['htmlUrl']}.git", f"./{repo['owner-login']}/{repo['name']}"], cwd=f"{localDirectory}/master-blaster-{username}",
-                                           stdout=PIPE, stderr=PIPE)
+        remoteProcessRemoteRepoGcl = Popen(
+            [
+                "git",
+                "clone",
+                f"{repo['htmlUrl']}.git",
+                f"./{repo['owner-login']}/{repo['name']}",
+            ],
+            cwd=f"{localDirectory}/master-blaster-{username}",
+            stdout=PIPE,
+            stderr=PIPE,
+        )
         remoteProcessRemoteRepoGclExitCode = processLogger(
-            f"cwd={localDirectory}/master-blaster-{username}: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}", remoteProcessRemoteRepoGcl, ignoreStr="Cloning")[2]
+            f"cwd={localDirectory}/master-blaster-{username}: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}",
+            remoteProcessRemoteRepoGcl,
+            ignoreStr="Cloning",
+        )[2]
         if remoteProcessRemoteRepoGclExitCode == 1:
-            repo['error'] = True
+            repo["error"] = True
             return
-        remoteProcessRemoteRepoGbm = Popen(["git", "branch", "-m", "master", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
-                                           stdout=PIPE, stderr=PIPE)
+        remoteProcessRemoteRepoGbm = Popen(
+            ["git", "branch", "-m", "master", repo["primaryBranchName"]],
+            cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
+            stdout=PIPE,
+            stderr=PIPE,
+        )
         processLogger(
-            f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -m master {repo['primaryBranchName']}", remoteProcessRemoteRepoGbm)
-        remoteProcessRemoteRepoGpuo = Popen(["git", "push", "-u", "origin", repo['primaryBranchName']], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
-                                            stdout=PIPE, stderr=PIPE)
+            f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -m master {repo['primaryBranchName']}",
+            remoteProcessRemoteRepoGbm,
+        )
+        remoteProcessRemoteRepoGpuo = Popen(
+            ["git", "push", "-u", "origin", repo["primaryBranchName"]],
+            cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
+            stdout=PIPE,
+            stderr=PIPE,
+        )
         remoteProcessRemoteRepoGpuoExitCode = processLogger(
-            f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -u origin {repo['primaryBranchName']}", remoteProcessRemoteRepoGpuo, ignoreStr="To")[2]
+            f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git branch -u origin {repo['primaryBranchName']}",
+            remoteProcessRemoteRepoGpuo,
+            ignoreStr="To",
+        )[2]
         if remoteProcessRemoteRepoGpuoExitCode == 1:
-            repo['error'] = True
+            repo["error"] = True
             return
         url = constructPatchDefaultUrl(repo)
         data = json.dumps({"default_branch": f"{repo['primaryBranchName']}"})
@@ -889,85 +1132,111 @@ def remoteProcess(repo):
         patchDefaultResponse = requests.patch(url, data=data, headers=headers)
         if patchDefaultResponse.status_code >= 400:
             logging.warning(
-                f"{repo['htmlUrl']} default branch change failed, response status: {patchDefaultResponse.status_code}")
-            repo['error'] = True
+                f"{repo['htmlUrl']} default branch change failed, response status: {patchDefaultResponse.status_code}"
+            )
+            repo["error"] = True
             return
         else:
             logging.info(
-                f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}.")
+                f"Default branch for {repo['htmlUrl']} updated to {repo['primaryBranchName']}."
+            )
             remoteProcessGpdm = Popen(
-                ["git", "push", "--delete", "origin", "master"], cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}", stdout=PIPE, stderr=PIPE)
+                ["git", "push", "--delete", "origin", "master"],
+                cwd=f"{localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}",
+                stdout=PIPE,
+                stderr=PIPE,
+            )
             remoteProcessGpdmExitCode = processLogger(
-                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git push --delete origin master", remoteProcessGpdm, ignoreStr="To")[2]
+                f"cwd={localDirectory}/master-blaster-{username}/{repo['owner-login']}/{repo['name']}: git push --delete origin master",
+                remoteProcessGpdm,
+                ignoreStr="To",
+            )[2]
             if remoteProcessGpdmExitCode == 1:
-                repo['error'] = True
+                repo["error"] = True
                 return
 
 
 if len(reposAlreadyBlasted) > 0:
-    print("""
+    print(
+        """
     The following repos have already been blasted:
-    """)
+    """
+    )
     for repo in reposAlreadyBlasted:
-        print(repo['htmlUrl'])
+        print(repo["htmlUrl"])
     print("\n")
 
 if len(reposWithErrors) > 0:
-    print("""
+    print(
+        """
     The following repos had errors that prevented any process to run on them:
-    """)
+    """
+    )
     for repo in reposWithErrors:
         print(f"{repo['htmlUrl']} {repo['status']}")
     print("\n")
 
 if len(reposReadyForLocal) > 0:
-    print("""
+    print(
+        """
     The following repos are ready to update primary branch and origin locally:
-    """)
+    """
+    )
     for repo in reposReadyForLocal:
-        print(repo['htmlUrl'])
+        print(repo["htmlUrl"])
     localIsAGo = questionary.confirm("Continue?").ask()
     if not localIsAGo:
-        print("""
+        print(
+            """
     Okay! You can run the program again if you change your mind!
-        """)
+        """
+        )
     print("\n")
 
 if len(reposReadyForLocalMasterDelete) > 0:
-    print("""
+    print(
+        """
     The following repos could have their local branch 'master' deleted:
-    """)
+    """
+    )
     for repo in reposReadyForLocalMasterDelete:
-        print(repo['htmlUrl'])
-    localMasterDeleteIsAGo = questionary.confirm(
-        "Delete? Defaults to yes.").ask()
+        print(repo["htmlUrl"])
+    localMasterDeleteIsAGo = questionary.confirm("Delete? Defaults to yes.").ask()
     if localMasterDeleteIsAGo:
-        print("""
+        print(
+            """
     Okay! Local 'master' branches will be deleted!
-        """)
+        """
+        )
     else:
-        print("""
+        print(
+            """
     Okay! You can run the program again if you change your mind!
-        """)
+        """
+        )
     print("\n")
 
 if len(reposReadyForRemote) > 0:
-    print("""
+    print(
+        """
     The following repos are ready to update the primary branch:
-    """)
+    """
+    )
     for repo in reposReadyForRemote:
-        print(repo['htmlUrl'])
+        print(repo["htmlUrl"])
     remoteIsAGo = questionary.confirm("Continue?").ask()
     if not remoteIsAGo:
-        print("""
+        print(
+            """
     Okay! It's a no-go for remote repos!
-        """)
+        """
+        )
     print("\n")
 
 if localIsAGo:
     for repo in reposReadyForLocal:
         localProcess(repo)
-        if repo.get('error'):
+        if repo.get("error"):
             print(f"Error with {repo['htmlUrl']}!")
         else:
             print(f"Local process completed for {repo['htmlUrl']}")
@@ -975,7 +1244,7 @@ if localIsAGo:
 if localMasterDeleteIsAGo:
     for repo in reposReadyForLocalMasterDelete:
         localMasterDeleteProcess(repo)
-        if repo.get('error'):
+        if repo.get("error"):
             print(f"Error with {repo['htmlUrl']}!")
         else:
             print(f"Local master branch deleted for {repo['htmlUrl']}")
@@ -983,14 +1252,21 @@ if localMasterDeleteIsAGo:
 if remoteIsAGo:
     for repo in reposReadyForRemote:
         remoteProcess(repo)
-        if repo.get('error'):
+        if repo.get("error"):
             print(f"Error with {repo['htmlUrl']}!")
         else:
             print(f"Remote process completed for {repo['htmlUrl']}")
 
-if os.path.isdir(f"{localDirectory}/master-blaster-{username}/") and confirmRemoveLocalDirectoriesAfter:
+if (
+    os.path.isdir(f"{localDirectory}/master-blaster-{username}/")
+    and confirmRemoveLocalDirectoriesAfter
+):
     removeLocalDirectoriesProcess = Popen(
-        ["rm", "-dfRv", f"./master-blaster-{username}"], cwd=localDirectory,  stdout=PIPE, stderr=PIPE)
+        ["rm", "-dfRv", f"./master-blaster-{username}"],
+        cwd=localDirectory,
+        stdout=PIPE,
+        stderr=PIPE,
+    )
     logging.info(f"cwd={localDirectory}: rm -dfR ./master-blaster-{username}")
 
 
@@ -999,77 +1275,111 @@ if os.path.isdir(f"{localDirectory}/master-blaster-{username}/") and confirmRemo
 if localIsAGo:
     errors = 0
     for repo in reposReadyForLocal:
-        if repo.get('error'):
+        if repo.get("error"):
             errors = errors + 1
     if errors == len(reposReadyForLocal):
-        print(f"""
+        print(
+            f"""
     All repos ready for local process had errors!
-        """)
+        """
+        )
     elif errors > 0:
-        print(f"""
+        print(
+            f"""
     {errors} errors with repos ready for the local process!
-        """)
-        print(f"""
+        """
+        )
+        print(
+            f"""
     {len(reposReadyForLocal) - errors} repos completed the local process!
-        """)
+        """
+        )
     else:
-        print(f"""
+        print(
+            f"""
     {len(reposReadyForLocal)} repos completed the local process!
-        """)
+        """
+        )
 
 if localMasterDeleteIsAGo:
     errors = 0
     for repo in reposReadyForLocalMasterDelete:
-        if repo.get('error'):
+        if repo.get("error"):
             errors = errors + 1
     if errors == len(reposReadyForLocalMasterDelete):
-        print(f"""
+        print(
+            f"""
     All repos ready for local master branch removal had errors!
-        """)
+        """
+        )
     elif errors > 0:
-        print(f"""
+        print(
+            f"""
     {errors} errors with repos ready for local master branch removal!
-        """)
-        print(f"""
+        """
+        )
+        print(
+            f"""
     {len(reposReadyForLocalMasterDelete) - errors} repos completed local master branch removal!
-        """)
+        """
+        )
     else:
-        print(f"""
+        print(
+            f"""
     {len(reposReadyForLocalMasterDelete)} repos completed local master branch removal!
-        """)
+        """
+        )
 
 if remoteIsAGo:
     errors = 0
     for repo in reposReadyForRemote:
-        if repo.get('error'):
+        if repo.get("error"):
             errors = errors + 1
     if errors == len(reposReadyForRemote):
-        print(f"""
+        print(
+            f"""
     All repos ready for remote process had errors!
-        """)
+        """
+        )
     elif errors > 0:
-        print(f"""
+        print(
+            f"""
     {errors} errors with repos ready for the remote process!
-        """)
-        print(f"""
+        """
+        )
+        print(
+            f"""
     {len(reposReadyForRemote) - errors} repos completed the remote process!
-        """)
+        """
+        )
     else:
-        print(f"""
+        print(
+            f"""
     {len(reposReadyForRemote)} repos completed the remote process!
-        """)
+        """
+        )
 
 # * Add the `git new` alias! * #
 
 
 def runGitNew():
-    gitNewGcg = Popen(["git", "config", "--global", "alias.new", f"!git init && git symbolic-ref HEAD refs/heads/{name}"],
-                      stdout=PIPE, stderr=PIPE)
+    gitNewGcg = Popen(
+        [
+            "git",
+            "config",
+            "--global",
+            "alias.new",
+            f"!git init && git symbolic-ref HEAD refs/heads/{name}",
+        ],
+        stdout=PIPE,
+        stderr=PIPE,
+    )
     gitNewGcgExitCode = processLogger(
-        f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{name}'", gitNewGcg)[2]
+        f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{name}'",
+        gitNewGcg,
+    )[2]
     if gitNewGcgExitCode == 0:
-        print(
-            f"Git alias git new: initalize git repo with HEAD ref refs/heads/{name}")
+        print(f"Git alias git new: initalize git repo with HEAD ref refs/heads/{name}")
     else:
         print("Git alias add failed, see log file.")
 
@@ -1083,8 +1393,7 @@ print("Thank you for using master-blaster!\n")
 print("Check the log file at ./info.log for details!")
 
 # ! Testing! #
-if(len(currentBranch) > 0):
-    Popen(["git", "checkout", f"{currentBranch}"],
-          stdout=PIPE, stderr=PIPE)
+if len(currentBranch) > 0:
+    Popen(["git", "checkout", f"{currentBranch}"], stdout=PIPE, stderr=PIPE)
 
 sys.exit()
