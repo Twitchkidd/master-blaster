@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-# Master Blaster - Batch Rename Primary Branches Of Code Repositories
-# Copyright (C) 2020 Gareth Field - field.gareth @ gmail.com
+# Master Blaster - Batch rename primary branches of GitHub code
+# repositories Copyright (C) 2020 Gareth Field - field.gareth@gmail.com
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,11 +16,40 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import sys
+
+from vendor.lib.reporting import intro
+
+intro()
+
+from vendor.lib.logging import loggingConfig
+
+testing = True
+loggingConfig(testing)
+
+from vendor.lib.auth import auth
+from vendor.lib.options import wizard
+from vendor.lib.dispatch import run
+
+token = None
+token = auth()
+if not token:
+    sys.exit()
+else:
+    options = wizard()
+    run(token, options, testing)
+
+from vendor.lib.reporting import denoument
+
+denoument()
+
+sys.exit()
+
+
 import importlib
 import json
 import logging
 import os
-import sys
 from pathlib import Path
 from subprocess import Popen, PIPE
 
@@ -36,55 +65,8 @@ sys.path.append(vendor_dir)
 import questionary
 import requests
 
-
-# * ``` From u/merfi on SO, added a path param ``` * #
-
-
-def get_active_branch_name(path):
-    head_dir = Path(path) / ".git" / "HEAD"
-    with head_dir.open("r") as f:
-        content = f.read().splitlines()
-
-    for line in content:
-        if line[0:4] == "ref:":
-            return line.partition("refs/heads/")[2]
-
-
-# ! Testing! #
-currentBranch = ""
-if f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}":
-    currentBranch = get_active_branch_name(f"{Path.cwd()}")
-
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
-
-from vendor.lib.reporting import intro
-
-# Introductory text!
-
-intro()
-
-from vendor.lib.logging import loggingConfig
-
-testing = True
-loggingConfig(testing)
-
-# >> Issue 34: Files >> #
-
-# from vendor.lib.auth import auth
-
-# auth()
-
-# from vendor.lib.options import wizard
-
-# wizard()
-
-from vendor.lib.dispatch import run
-
-run()
-
-
-# * ~~~  Username gathering! ~~~ * #
 
 # * ``` Placeholder variable for the username! ``` * #
 username = ""
@@ -1368,14 +1350,3 @@ def runGitNew():
 
 if gitNew:
     runGitNew()
-
-# * ``` Denoument! ``` * #
-
-print("Thank you for using master-blaster!\n")
-print("Check the log file at ./info.log for details!")
-
-# ! Testing! #
-if len(currentBranch) > 0:
-    Popen(["git", "checkout", f"{currentBranch}"], stdout=PIPE, stderr=PIPE)
-
-sys.exit()

@@ -35,3 +35,8 @@ def intro():
       Thank you!
   """
     print(tokenExplanation)
+
+
+def denoument():
+    print("Thank you for using master-blaster!\n")
+    print("Check the log file at ./info.log for details!")
