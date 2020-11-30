@@ -27,3 +27,19 @@ def run(token, testing):
     # ! Testing! #
     if len(currentBranch) > 0:
         Popen(["git", "checkout", f"{currentBranch}"], stdout=PIPE, stderr=PIPE)
+
+    def getToken():
+        tokenConfirmed = False
+        while not tokenConfirmed:
+            customTokenResponse = questionary.text(tokenPrompt(tokenType)).ask()
+            if customTokenResponse == "":
+                print("Please enter the token!")
+                continue
+            else:
+                token = customTokenResponse
+                tokenConfirmed = True
+                continue
+        # ! Testing! #
+        token = tokenRepoScope
+        # # token = "fermf"
+        return token
