@@ -14,3 +14,5 @@ questionary = "\*"
 from [packages]!
 
 `questionary` and `requests` are now embedded in the project! Much easier!
+
+Just `pip install master-blaster && master-blaster` !
