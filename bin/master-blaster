@@ -69,6 +69,21 @@ from vendor.lib.logging import loggingConfig
 testing = True
 loggingConfig(testing)
 
+# >> Issue 34: Files >> #
+
+# from vendor.lib.auth import auth
+
+# auth()
+
+# from vendor.lib.options import wizard
+
+# wizard()
+
+from vendor.lib.dispatch import run
+
+run()
+
+
 # * ~~~  Username gathering! ~~~ * #
 
 # * ``` Placeholder variable for the username! ``` * #

@@ -21,8 +21,8 @@ def intro():
 
     # * ``` Intro text! ``` * #
     intro = """
-      Welcome to master-blaster! This program batch renames primary branches for GitHub users!
-      We'll go through the options before making any changes!
+      Welcome to master-blaster! This program batch renames primary branches
+      for GitHub users! We'll go through the options before making any changes!
   """
     print(intro)
 
