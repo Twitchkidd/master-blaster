@@ -31,8 +31,7 @@ from vendor.lib.auth import auth
 from vendor.lib.options import wizard
 from vendor.lib.dispatch import run
 
-token = None
-token = auth()
+(username, token) = auth()
 if not token:
     sys.exit()
 else:
