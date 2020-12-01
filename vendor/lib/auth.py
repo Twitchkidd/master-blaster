@@ -2,6 +2,10 @@ import logging
 import os
 import sys
 
+# * This file should handle the process of authenticating the user,
+# * including input of the username, and getting and verifying the
+# * token, which should be returned, or None, from the auth function. * #
+
 # what if you appended with Path, like
 # sys.path.append(Path.cwd() / "vendor")
 

@@ -2,6 +2,11 @@ def sayHi():
     print("Hello!")
 
 
+# * If the user can manage to get a personal access token, there
+# * are a set of questions that I suppose we don't **have** to
+# * ask, but it feels like the polite thing to do * #
+
+
 # * ~~~ Set of questionary dictionary questions! ~~~ * #
 
 # * ``` Placeholder variable for repo types!``` * #
