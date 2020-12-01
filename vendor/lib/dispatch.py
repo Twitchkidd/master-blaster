@@ -2,6 +2,11 @@ from pathlib import Path
 from subprocess import Popen, PIPE
 from vendor.lib.options import sayHi
 
+# * Any actions should be run through dispatch.
+# * The run function should take a token, a set
+# * of options, and the testing boolean, and do
+# * the appropriate set of actions. * #
+
 # Yay this works!
 
 # * ``` From u/merfi on SO, added a path param ``` * #
@@ -17,7 +22,7 @@ def get_active_branch_name(path):
             return line.partition("refs/heads/")[2]
 
 
-def run(token, testing):
+def run(token, options, testing):
     currentBranch = ""
     if testing:
         if f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}":

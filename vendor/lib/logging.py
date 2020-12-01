@@ -1,5 +1,9 @@
 import logging
 
+# * Handle logging every operation and error to the log file. * #
+
+# Ooo, what if you did it by date-time run?
+
 
 def loggingConfig(testing):
     if testing:
