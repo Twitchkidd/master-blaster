@@ -1,4 +1,20 @@
-import hey
+#
+
+# reporting #
+# * Text! * #
+
+
+def intro():
+    """Print the license and intro blurb!"""
+
+
+def authBlurb():
+    """Explain the gist of the token thing."""
+
+
+def repoTypesBlurb():
+    """Explain all repos, owner, public/private."""
+
 
 # * Space for text! * #
 
@@ -24,12 +40,11 @@ def intro():
   """
     print(licenseText)
 
-    # * ``` Intro text! ``` * #
-    intro = """
+    introText = """
       Welcome to master-blaster! This program batch renames primary branches
       for GitHub users! We'll go through the options before making any changes!
   """
-    print(intro)
+    print(introText)
 
     # * ``` Explanation of token thing! ``` * #
     tokenExplanation = """

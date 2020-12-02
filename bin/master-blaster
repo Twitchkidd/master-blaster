@@ -18,25 +18,26 @@
 
 import sys
 
-from vendor.lib.reporting import intro
-
-intro()
+testing = True
 
 from vendor.lib.logging import loggingConfig
 
-testing = True
 loggingConfig(testing)
+
+from vendor.lib.reporting import intro
+
+intro()
 
 from vendor.lib.auth import auth
 from vendor.lib.options import wizard
 from vendor.lib.dispatch import run
 
-(username, token) = auth()
-if not token:
+data = auth(testing)
+if not data.token:
     sys.exit()
 else:
-    options = wizard()
-    run(token, options, testing)
+    dataWithOptions = wizard(data)
+    run(dataWithOptions, testing)
 
 from vendor.lib.reporting import denoument
 

@@ -1,3 +1,16 @@
+# shellActions #
+# * Actions taken in the shell environment. * #
+
+
+def grabCurrentBranch():
+    """Grab the current git branch, useful for testing."""
+
+
+from pathlib import Path
+
+# SHEELLLLL!!!!
+
+
 # * Add the `git new` alias! * #
 
 

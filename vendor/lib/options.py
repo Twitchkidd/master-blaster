@@ -1,3 +1,61 @@
+
+# options #
+# * When the user gets a personal access token, get the options. * #
+
+def wizard([username, token, repos]):
+    """Gather naming mode, name or names, catch errors, use local directories, starting local directory, removal of cloned repos, and git new alias."""
+    # TODO Collect testing stuff
+    # reporting #
+    Report repository types blurb.
+
+    Placeholder for naming mode.
+
+    Placeholder for name.
+
+    Get naming mode.
+
+    If custom, get and confirm custom.
+
+    If interactive, go to town.
+
+    Else name is "main"
+    # logging #
+    Log it.
+
+    Check repos based on options for validity.
+
+    Catch low-hanging fruit errors like no main or master on remote.
+
+    Collect them for presentation in groups, though, no one-by-one nonsense.
+
+    Placeholder for local directory.
+    # reporting #
+    Local directories prompt.
+
+    If yes, which local directory or default?
+
+    Test that local directory is real.
+
+    Test all the repos and names again.
+
+    Placeholder for remove cloned repos.
+
+    Ask about remove cloned repos.
+
+    Placeholder for git new.
+
+    Ask about git new.
+
+    Pew Pew.
+    # logging #
+    Log it.
+
+    Return data + naming mode, name(s), use local directory, local directory, remove cloned repos, git new.
+
+
+from pathlib import Path
+
+
 def sayHi():
     print("Hello!")
 

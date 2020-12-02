@@ -1,3 +1,37 @@
+
+
+# networkActions #
+# * Actions taken over the network. * #
+
+Declare the GitHub API url
+
+
+def getReposUrl():
+    url = f"{GITHUB_API}/user/repos"
+    return url
+
+# * ``` Construct the headers! ``` * #
+
+
+def getReposHeaders(token):
+    headers = {"Authorization": 'token ' + token}
+    return headers
+
+# * ``` Custruct the parameters! ``` * #
+
+
+def getReposParams():
+    params = {"per_page": "1000", "type": "owner"}
+    return params
+
+
+def getRepos():
+    """Initial get of repo names"""
+
+
+def getBranchUrl(repo, branch):
+
+
 # * ``` Constructing the url! ``` * #
 
 

@@ -1,3 +1,22 @@
+
+
+# logging #
+# * Handle logging operations and errors to the log file. * #
+
+def loggingConfig(testing):
+    """Configure logging. Report logfile location."""
+
+
+def logInfo(info):
+    """Invoke the logger at the INFO level."""
+
+
+def logError(error):
+
+
+def logCrash(error):
+
+
 import logging
 
 # * Handle logging every operation and error to the log file. * #

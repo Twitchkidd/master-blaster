@@ -1,10 +1,60 @@
+
+
+# auth #
+# * This file should handle the process of authenticating the user,
+# * including input of the username, and getting and verifying the
+# * token, which should be returned second in a touple with the username,
+# * and the token as None if it failed, from the auth function. * #
+
+def auth(testing):
+    """Get GitHub username, get token, validate token, return data,
+    which should be a username, token, and repos."""
+    # shellActions #
+    If testing, grab the current branch.
+    # reporting #
+    Explain the gist of the token thing.
+
+    Placeholder for username.
+
+    Username prompt.
+
+    Confirm username.
+    # logging #
+    Log username.
+
+    Placeholder for token.
+
+    If testing:
+        # shellActions #
+    Grab locally stored token.
+    # reporting #
+    Prompt for token.
+
+    Confirm token.
+
+    Placeholder for repos.
+
+    # networkActions #
+    Get list of repos, validating token.
+
+    Or break the program.
+
+    # logging #
+    And log it.
+
+    Otherwise, scrub data, populate repos.
+
+    return (username, token, repos)
+
+
 import logging
 import os
 import sys
 
 # * This file should handle the process of authenticating the user,
 # * including input of the username, and getting and verifying the
-# * token, which should be returned, or None, from the auth function. * #
+# * token, which should be returned second in a touple with the username,
+# * and the token as None if it failed, from the auth function. * #
 
 # what if you appended with Path, like
 # sys.path.append(Path.cwd() / "vendor")
