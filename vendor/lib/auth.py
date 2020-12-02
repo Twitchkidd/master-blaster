@@ -9,6 +9,7 @@
 def auth(testing):
     """Get GitHub username, get token, validate token, return data,
     which should be a username, token, and repos."""
+    Placeholder for current branch.
     # shellActions #
     If testing, grab the current branch.
 
