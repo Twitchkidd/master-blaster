@@ -1,42 +1,569 @@
+#!/usr/bin/env python3
 
+# Master Blaster - Batch Rename Primary Branches Of Code Repositories
+# Copyright (C) 2020 Gareth Field - field.gareth @ gmail.com
 
-import importlib
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# networkActions #
+# shellActions #
+# auth #
+# dispatch #
+# logging #
+# options #
+# reporting #
+
+import sys
+
 import json
 import logging
+
+# logging #
 import os
 from pathlib import Path
+
+# shellActions #
+# options #
+import questionary
+
+# auth #
+# options #
+import requests
 from subprocess import Popen, PIPE
 
-# what if you appended with Path, like
-# sys.path.append(Path.cwd() / "vendor")
 
-# Add vendor directory to module search path
-parent_dir = os.path.abspath(os.path.dirname(__file__))
-vendor_dir = os.path.join(parent_dir, "vendor")
+def getActiveBranchName(path):
+    # shellActions #
+    # * ``` From u/merfi on SO, added a path param ``` * #
+    head_dir = Path(path) / ".git" / "HEAD"
+    with head_dir.open("r") as f:
+        content = f.read().splitlines()
+    for line in content:
+        if line[0:4] == "ref:":
+            return line.partition("refs/heads/")[2]
 
-sys.path.append(vendor_dir)
 
-import questionary
-import requests
+# dispatch #
+# * This is meant to grab pwd if run in dev! * #
+# This is needed because when you run it in dev, because the
+# dev build uses pipenv, you end up in the wrong branch afterwards,
+# every time after build. I don't really know why.
+# This cleans up on the far side of dispatch.
+# ! Testing! #
+currentBranch = ""
+# shellActions #
+if f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}":
+    currentBranch = getActiveBranchName(f"{Path.cwd()}")
 
+# networkActions #
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
 
-# if repoTypes in [
-#     repoTypesAll,
-#     repoTypesOwner,
-#     repoTypesCollaborator,
-#     repoTypesOrganization,
-# ]:
-#     tokenType = "repo"
-# else:
-#     tokenType = "public repo"
-# simple === "repo"
+# reporting #
+# * ``` License text! ``` * #
+licenseText = """
+    master-blaster: Rename primary branches of code repositories.
+    Copyright (C) 2020  Gareth Field field.gareth@gmail.com
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+print(licenseText)
+
+# * ``` Intro text! ``` * #
+intro = """
+    Welcome to master-blaster! This program batch renames primary branches for GitHub users!
+    We'll go through the options before making any changes!
+"""
+print(intro)
+
+# auth #
+# * ``` Explanation of token thing! ``` * #
+tokenExplanation = """
+    Also, GitHub is deprecating password-based token generation! This is great for
+    security, it just means you're going to have to go to GitHub.com and
+    come back with an access token to run the program, and it's a couple of steps,
+    still faster than doing each manually if you have a bunch of repos, though.
+    Thank you!
+"""
+print(tokenExplanation)
+
+# logging #
+# * ``` Write to a new or existing log file! ``` * #
+# ! Testing! #
+# filemode='w' will not append to the file, it'll write over
+logging.basicConfig(
+    filename="info.log",
+    filemode="w",
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+)
+# logging.basicConfig(filename='info.log',
+#                     level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+# reporting #
+print(
+    """
+    Log file to be found at ./info.log!
+"""
+)
+# logging #
+logging.info("master-blaster v1.0.5")
+logging.info("Creating a log file!!")
+
+# auth #
+# * ~~~  Username gathering! ~~~ * #
+
+# * ``` Placeholder variable for the username! ``` * #
+username = ""
+
+# * ``` Ask for username! ``` * #
+usernamePrompt = """
+    First, please enter your GitHub username!
+"""
 
 
+def usernameConfirmationPrompt(usernameInput):
+    return f"Confirm username: {usernameInput}"
+
+
+usernameConfirmed = False
+while not usernameConfirmed:
+    usernameResponse = questionary.text(usernamePrompt).ask()
+    if usernameResponse == "":
+        print("GitHub username blank: Please try again!")
+        continue
+    if len(usernameResponse) >= 40:
+        print("GitHub usernames are 39 chars or less: please try again!")
+        continue
+    else:
+        usernameConfirmationResponse = questionary.confirm(
+            usernameConfirmationPrompt(usernameResponse)
+        ).ask()
+        if usernameConfirmationResponse == False:
+            print("Thank you for retrying!")
+            continue
+        if usernameConfirmationResponse:
+            username = usernameResponse
+            # ! Testing! #
+            # logging.info(f"Username: {username}")
+            usernameConfirmed = True
+            continue
+
+
+# ! Testing ! #
+username = "Twitchkidd"
+# logging #
+logging.info(f"Username: {username}")
+
+
+# options #
+# * ~~~ Set of questionary dictionary questions! ~~~ * #
+
+# * ``` Placeholder variable for repo types!``` * #
+repoTypes = ""
+
+# * ``` What types of repos! ``` * #
+
+# * ``` Question ``` * #
+repoTypesPrompt = """
+    What set of repositories do you want to update?
+"""
+
+# * ``` Choices ``` * #
+repoTypesOwner = "All repositories I'm the owner of, public and private. (Collaborator/Organization repo types in development!)"
+repoTypesOwnerPublic = "All repositories I'm the owner of, only public, not private."
+repoTypesAll = "All repositories I'm the owner, collaborator, and/or organization member, public and private."
+repoTypesAllPublic = "All repositories I'm the owner, collaborator, and/or organization member, only public, not private."
+repoTypesCollaborator = (
+    "All repositories I'm the owner of and/or a collaborator on, public and private."
+)
+repoTypesCollaboratorPublic = "All repositories I'm the owner of and/or a collaborator on, only public, not private."
+repoTypesOrganization = "All repositories I'm the owner of and/or a member of the organization, public and private."
+repoTypesOrganizationPublic = "All repositories I'm the owner of and/or a member of the organization, only public, not private."
+
+# * ``` What to name the primary branches and choices! ``` * #
+
+# * ``` Question ``` * #
+namesSelectionPrompt = """
+    What would you like to name your primary branches? (Default 'main'.)
+"""
+
+# * ``` Choices ``` * #
+namesMain = "All primary branches renamed to 'main'."
+namesCustom = "Choose name for all primary branches renamed to. "
+namesPerRepo = "Choose a name for the primary branch for each repo."
+
+questions = [
+    {
+        "type": "select",
+        "name": "repoTypes",
+        "message": repoTypesPrompt,
+        "choices": [
+            repoTypesOwner,
+            # repoTypesOwnerPublic,
+            # repoTypesAll,
+            # repoTypesAllPublic,
+            # repoTypesCollaborator,
+            # repoTypesCollaboratorPublic,
+            # repoTypesOrganization,
+            # repoTypesOrganizationPublic
+        ],
+    },
+    {
+        "type": "select",
+        "name": "namesSelection",
+        "message": namesSelectionPrompt,
+        "choices": [namesMain, namesCustom, namesPerRepo],
+    },
+]
+
+# * ``` Extract the data from the set of prompts from dictionary! ``` * #
+answers = questionary.prompt(questions)
+# repoTypes = answers['repoTypes']
+repoTypes = "All repositories I'm the owner of, public and private."
+# logging #
+logging.info(f"Repository types chosen: {repoTypes}")
+logging.info(f"Naming selection: {answers['namesSelection']}")
+
+# options #
+# * ~~~ Custom primary branch flow! ~~~ * #
+
+# * ``` Placeholder variable for the primary branch name! ``` * #
+name = "main"
+
+# * ``` Custom name for all branches! ``` * #
+customNamePrompt = """
+    What name are you choosing for primary branches?
+"""
+
+# * ``` Confirm reset to main! ``` * #
+confirmResetToMainPrompt = """
+    Default: use 'main' for all primary branches?
+"""
+
+
+def customNameConfirmPrompt(inputName):
+    return f"""{inputName} for all primary branches?"""
+
+
+if answers["namesSelection"] == namesCustom:
+    nameConfirmed = False
+    while not nameConfirmed:
+        customNameResponse = questionary.text(customNamePrompt).ask()
+        if customNameResponse == "":
+            confirmResetToMainResponse = questionary.confirm(
+                confirmResetToMainPrompt
+            ).ask()
+            if confirmResetToMainResponse:
+                name = "main"
+                nameConfirmed = True
+                # logging #
+                logging.info(f"Name for primary branches: {name}")
+                # options #
+            else:
+                continue
+        else:
+            confirmCustomNameResponse = questionary.confirm(
+                customNameConfirmPrompt(customNameResponse)
+            ).ask()
+            if confirmCustomNameResponse:
+                name = customNameResponse
+                nameConfirmed = True
+                # logging #
+                logging.info(f"Name for primary branches: {name}")
+                # options #
+                pass
+
+# * ~~~ Interactive naming mode choice handling! ~~~ * #
+
+# * ``` Placeholder variable for interactive naming mode! ``` * #
+interactive = False
+
+# * ``` Confirmation that interactive naming mode will happen! ``` * #
+interactiveNamingConfirmationPrompt = """
+    Okay! We'll name them after we fetch the set of repos!
+"""
+
+if answers["namesSelection"] == namesPerRepo:
+    interactive = True
+    print(interactiveNamingConfirmationPrompt)
+
+# * ~~~ Local directory choice handling! ~~~ * #
+
+# * ``` Local directory yay or nay! ``` * #
+localDirectoriesPrompt = """
+    Repositories not present locally will be cloned to a temporary folder,
+    updated, the update pushed, (the default branch on GitHub.com updated,) and
+    then deleted locally depending on your choice in just a moment.
+    
+    The program can decrease the use of bandwidth and reduce potential conflicts
+    by scanning for repositories that are present locally, from home or a specified
+    directory for code. Okay?
+"""
+localDirectories = questionary.confirm(localDirectoriesPrompt).ask()
+
+# * ``` Placeholder variable for local directory selection! ``` * #
+localDirectory = Path.home()
+
+# * ``` Which local directory? ``` * #
+localDirectoryPrompt = """
+    Do you keep all of your coding projects in a certain directory? Type that in
+    here to limit and speed up search. Default is home, ~/, hit enter for default.
+    Example: /Users/gareth/Code
+"""
+
+# * ``` Confirm reset to home! ``` * #
+confirmResetToHomePrompt = """
+    Default: use '~/' for local directory search?
+"""
+
+# * ``` Placeholder variable for confirming removal of local directories after! ``` * #
+confirmRemoveLocalDirectoriesAfter = False
+
+
+def customLocalDirectoryConfirmPrompt(inputDir):
+    return f"""{inputDir} for all primary branches?"""
+
+
+# * ``` Ask which directory to use to search for local repos! ``` * #
+if localDirectories:
+    localDirectoryConfirmed = False
+    while not localDirectoryConfirmed:
+        customLocalDirectoryResponse = questionary.text(localDirectoryPrompt).ask()
+        if customLocalDirectoryResponse == "":
+            confirmResetToHomeResponse = questionary.confirm(
+                confirmResetToHomePrompt
+            ).ask()
+            if confirmResetToHomeResponse:
+                localDirectory = Path.home()
+                localDirectoryConfirmed = True
+                # ! Testing ! #
+                # logging.info(f"Local directory to search: {localDirectory}")
+                # options #
+            else:
+                continue
+        else:
+            # shellActions #
+            if os.path.isdir(customLocalDirectoryResponse):
+                # options #
+                confirmCustomLocalDirectoryResponse = questionary.confirm(
+                    customLocalDirectoryConfirmPrompt(customLocalDirectoryResponse)
+                ).ask()
+                if confirmCustomLocalDirectoryResponse:
+                    localDirectory = customLocalDirectoryResponse
+                    localDirectoryConfirmed = True
+                    # ! Testing! #
+                    # logging.info(
+                    #     f"Local directory to search: {localDirectory}")
+                    # options #
+                    pass
+            else:
+                print(
+                    f"Error! Directory not showing as valid: {customLocalDirectoryResponse}"
+                )
+                continue
+
+# ! Testing! #
+localDirectory = f"{Path.home()}/Code"
+# logging #
+logging.info(f"Local directory to search: {localDirectory}")
+
+# options #
+# * ``` Ask to delete cloned repos! ``` * #
+confirmRemoveLocalDirectoriesAfterPrompt = """
+    Remove newly cloned repositories after process complete? Defaults to yes.
+"""
+
+if localDirectories:
+    confirmRemoveLocalDirectoriesAfter = questionary.confirm(
+        confirmRemoveLocalDirectoriesAfterPrompt
+    ).ask()
+    # ! Testing! #
+    # logging.info(
+    #     f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
+    # options #
+
+# ! Testing! #
+confirmRemoveLocalDirectoriesAfter = True
+# logging #
+logging.info(
+    f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}"
+)
+
+# options #
+# * ~~~ New Git Alias! ~~~ * #
+
+# * ``` Placeholder variable for git alias selection! ``` * #
+gitNew = True
+
+# * ``` Prompt! ``` * #
+gitNewPrompt = f"""
+    Add a git alias 'git new' that initializes
+    new git repos with commit as {name}? Defaults to yes.
+"""
+
+# * ``` Ask it! ``` * #
+if not interactive:
+    gitNew = questionary.confirm(gitNewPrompt)
+    # * ``` Log the choice! ``` * #
+    logging.info(f"Add git alias `git new`: {name}")
+
+# auth #
+# * ~~~ Token Time! ~~~ * #
+
+# * ``` Placeholder variables for the token! ``` * #
+token = ""
+
+# shellActions #
+# ! Testing! #
+# * ``` Placeholder variables for the testing tokens! ``` * #
+tokenRepoScope = ""
+tokenPublicRepoScope = ""
+
+# ! Testing! #
+with open("./repo.txt", "r") as repoF:
+    tokenRepoScope = repoF.read(40)
+
+# ! Testing! #
+with open("./repoPublicRepo.txt", "r") as repoPublicRepoF:
+    tokenPublicRepoScope = repoPublicRepoF.read(40)
+
+# networkActions #
+if repoTypes in [
+    repoTypesAll,
+    repoTypesOwner,
+    repoTypesCollaborator,
+    repoTypesOrganization,
+]:
+    tokenType = "repo"
+else:
+    tokenType = "public repo"
+
+
+def tokenPrompt(tokenTypeArg):
+    # auth #
+    return f"""
+    -- Get a token! --
+
+    Since password-based token generation is being deprecated,
+    please get a personal access token with the correct scope(s)
+    to run this program!
+
+    To get this token, go to https://github.com, sign in,
+    then go to 'Settings', then 'Developer Settings',
+    then 'Personal access tokens', then 'Generate new token',
+    confirm your password, name the token in the 'Note' input field,
+    select the {tokenTypeArg} scope, then 'Generate Token',
+    and then copy it to your clipboard.
+
+    Please save it somewhere first in case there's an error!
+
+    For more thorough (and visual) instructions in the GitHub docs,
+    see the personal access token part here: https://bit.ly/2X0cr3j
+
+    Paste it back here into the prompt and hit enter to continue:
+    """
+
+
+def getToken():
+    tokenConfirmed = False
+    while not tokenConfirmed:
+        customTokenResponse = questionary.text(tokenPrompt(tokenType)).ask()
+        if customTokenResponse == "":
+            print("Please enter the token!")
+            continue
+        else:
+            token = customTokenResponse
+            tokenConfirmed = True
+            continue
+    # ! Testing! #
+    # shellActions #
+    token = tokenRepoScope
+    # # token = "fermf"
+    # auth #
+    return token
+
+
+# networkActions #
+# * ``` Constructing the url! ``` * #
+
+
+def constructReposUrl():
+    return f"{GITHUB_API}/user/repos"
+
+
+# * ``` Construct the headers! ``` * #
+
+
+def constructHeaders(token):
+    headers = {"Authorization": "token " + token}
+    return headers
+
+
+# * ``` Custruct the parameters! ``` * #
+
+
+def constructReposParams():
+    params = {}
+    if repoTypes == repoTypesAll:
+        params = {
+            "per_page": "1000",
+        }
+    if repoTypes == repoTypesAllPublic:
+        params = {"per_page": "1000", "visibility": "public"}
+    # if repoTypes == repoTypesOwner:
+    if repoTypes == "All repositories I'm the owner of, public and private.":
+        params = {"per_page": "1000", "type": "owner"}
+    if repoTypes == repoTypesOwnerPublic:
+        params = {"per_page": "1000", "visibility": "public", "type": "owner"}
+    if repoTypes == repoTypesCollaborator:
+        params = {"per_page": "1000", "type": "owner,collaborator"}
+    if repoTypes == repoTypesCollaboratorPublic:
+        params = {
+            "per_page": "1000",
+            "visibility": "public",
+            "type": "owner,collaborator",
+        }
+    if repoTypes == repoTypesOrganization:
+        params = {"per_page": "1000", "type": "owner,collaborator,organization_member"}
+    if repoTypes == repoTypesOrganizationPublic:
+        params = {
+            "per_page": "1000",
+            "visibility": "public",
+            "type": "owner,collaborator,organization_member",
+        }
+    return params
+
+
+# options #
 # * ``` Placeholder variable for the total set of repos! ``` * #
 repos = []
 
+# auth #
+# dispatch #
+# options #
+# networkActions #
 # * ``` Ask for the token until the response comes back okay, then extract the data from the API call! ``` * #
 reposResponseConfirmed = False
 while not reposResponseConfirmed:
@@ -45,8 +572,6 @@ while not reposResponseConfirmed:
     params = constructReposParams()
     headers = constructHeaders(token)
     print("Checking for repos ...")
-    # >> right here, the token/initial auth part needs to be ahead of the options part,
-    # >> so we need a requests.get(url, params={simpler}, headers={simple}) here
     reposResponse = requests.get(url, params=params, headers=headers)
     # Bad token returns a 401! #
     if reposResponse.status_code >= 400:
@@ -70,7 +595,7 @@ while not reposResponseConfirmed:
             )
         pass
 
-
+# options #
 # * If they wanted to name each primary branch, do so now! * #
 if interactive:
     print(
@@ -89,7 +614,9 @@ if interactive:
                     f"Default primary branch name {name} for {repo['htmlUrl']}?"
                 )
                 if defaultNameResponse:
+                    # logging #
                     logging.info(f"Primary branch name for {repo['htmlUrl']}: {name}")
+                    # options #
                     primaryBranchNameConfirmed = True
                     continue
                 else:
@@ -101,21 +628,26 @@ if interactive:
                 if customRepoNameConfirmed:
                     primaryBranchNameConfirmed = True
                     repo["primaryBranchName"] = repoNameResponse
+                    # logging #
                     logging.info(
                         f"Primary branch name for {repo['htmlUrl']}: {repoNameResponse}"
                     )
+                    # options #
                     continue
                 else:
                     pass
 
-
 # * ~~~ Take all these repos and test them against what the name is supposed to be! ~~~ * #
 
+# networkActions #
 # * ``` Construct the url! ``` * #
+
+
 def constructBranchesUrl(repo, which):
     return f"{GITHUB_API}/repos/{repo['owner-login']}/{repo['name']}/branches/{which}"
 
 
+# dispatch #
 # * ``` Check each remote to see if they have master branches or branches with the name already! ``` * #
 for repo in repos:
     primaryBranchUrl = constructBranchesUrl(repo, repo["primaryBranchName"])
@@ -139,8 +671,10 @@ for repo in repos:
 # * ``` Placeholder variable for the set of local repos! ``` * #
 localRepos = []
 
+# shellActions #
+# * ``` Check git config file for remote url! ``` * #
 
-# * ``` Check got config file for remote url! ``` * #
+
 def getLocalRepoUrl(configFile):
     url = ""
     for line in configFile:
@@ -150,6 +684,7 @@ def getLocalRepoUrl(configFile):
             return url
 
 
+# shellActions #
 # * ``` Find all local repos that share a name with the repos to change! (Url is test for owner!) ``` * #
 if localDirectories:
     repoNames = [repo["name"] for repo in repos]
@@ -892,3 +1427,49 @@ if remoteIsAGo:
     {len(reposReadyForRemote)} repos completed the remote process!
         """
         )
+
+# * Add the `git new` alias! * #
+
+
+def runGitNew():
+    # shellActions #
+    gitNewGcg = Popen(
+        [
+            "git",
+            "config",
+            "--global",
+            "alias.new",
+            f"!git init && git symbolic-ref HEAD refs/heads/{name}",
+        ],
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    # logging #
+    gitNewGcgExitCode = processLogger(
+        f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{name}'",
+        gitNewGcg,
+    )[2]
+    # reporting #
+    if gitNewGcgExitCode == 0:
+        print(f"Git alias git new: initalize git repo with HEAD ref refs/heads/{name}")
+    else:
+        print("Git alias add failed, see log file.")
+
+
+# dispatch #
+if gitNew:
+    runGitNew()
+
+
+# reporting #
+# * ``` Denoument! ``` * #
+
+print("Thank you for using master-blaster!\n")
+print("Check the log file at ./info.log for details!")
+
+# shellActions#
+# ! Testing! #
+if len(currentBranch) > 0:
+    Popen(["git", "checkout", f"{currentBranch}"], stdout=PIPE, stderr=PIPE)
+
+# // sys.exit()
