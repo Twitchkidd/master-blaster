@@ -5,22 +5,7 @@
 
 
 def intro():
-    """Print the license and intro blurb!"""
-
-
-def authBlurb():
-    """Explain the gist of the token thing."""
-
-
-def repoTypesBlurb():
-    """Explain all repos, owner, public/private."""
-
-
-# * Space for text! * #
-
-
-def intro():
-    # * ``` License text! ``` * #
+    """Print the license, intro blurb, and token blurb!"""
     licenseText = """
       master-blaster: Rename primary branches of code repositories.
       Copyright (C) 2020  Gareth Field field.gareth@gmail.com
@@ -46,7 +31,6 @@ def intro():
   """
     print(introText)
 
-    # * ``` Explanation of token thing! ``` * #
     tokenExplanation = """
       Also, GitHub is deprecating password-based token generation! This is great for
       security, it just means you're going to have to go to GitHub.com and
@@ -55,6 +39,10 @@ def intro():
       Thank you!
   """
     print(tokenExplanation)
+
+
+def repoTypesBlurb():
+    """Explain all repos, owner, public/private."""
 
 
 def denoument():

@@ -11,8 +11,6 @@ def auth(testing):
     which should be a username, token, and repos."""
     # shellActions #
     If testing, grab the current branch.
-    # reporting #
-    Explain the gist of the token thing.
 
     Placeholder for username.
 
