@@ -132,6 +132,87 @@ def getToken(testing):
 
 def repoTypesBlurb():
     """Explain all repos, owner, public/private."""
+    print(
+        "Currently the only supported set of repos is all repos user is owner of, public and private."
+    )
+
+
+def getNamingMode(main, custom, perRepo):
+    return questionary.select(
+        "What would you like to name your primary branches? (Default 'main'.)",
+        choices=[main, custom, perRepo],
+    ).ask()
+
+
+def customNameConfirmPrompt(inputName):
+    return f"""{inputName} for all primary branches?"""
+
+
+def getCustomName():
+    """For when the user wants to set all repos primary branches to a custom name."""
+    # * ``` Custom name for all branches! ``` * #
+    customNamePrompt = """
+      What name are you choosing for primary branches?
+  """
+    # * ``` Confirm reset to main! ``` * #
+    confirmResetToMainPrompt = """
+      Default: use 'main' for all primary branches?
+  """
+    name = "main"
+    nameConfirmed = False
+    while not nameConfirmed:
+        customNameResponse = questionary.text(customNamePrompt).ask()
+        if customNameResponse == "":
+            confirmResetToMainResponse = questionary.confirm(
+                confirmResetToMainPrompt
+            ).ask()
+            if confirmResetToMainResponse:
+                name = "main"
+                nameConfirmed = True
+        else:
+            confirmCustomNameResponse = questionary.confirm(
+                customNameConfirmPrompt(customNameResponse)
+            ).ask()
+            if confirmCustomNameResponse:
+                name = customNameResponse
+                nameConfirmed = True
+    logInfo(f"Name for primary branches: {name}")
+    return name
+
+
+def getCustomNames(repos):
+    """For when the user wants to set a custom name for each repo primary branch."""
+    print(
+        """
+        Interactive naming mode!
+    """
+    )
+    name = "main"
+    for repo in repos:
+        primaryBranchNameConfirmed = False
+        while not primaryBranchNameConfirmed:
+            repoNameResponse = questionary.text(
+                f"Primary branch name for {repo['htmlUrl']}?"
+            ).ask()
+            if repoNameResponse == "":
+                defaultNameResponse = questionary.confirm(
+                    f"Default primary branch name {name} for {repo['htmlUrl']}?"
+                )
+                if defaultNameResponse:
+                    repo["primaryBranchName"] = name
+                    logInfo(f"Primary branch name for {repo['htmlUrl']}: {name}")
+                    primaryBranchNameConfirmed = True
+            else:
+                customRepoNameConfirmed = questionary.confirm(
+                    f"{repoNameResponse} for {repo['htmlUrl']}?"
+                )
+                if customRepoNameConfirmed:
+                    repo["primaryBranchName"] = repoNameResponse
+                    logInfo(
+                        f"Primary branch name for {repo['htmlUrl']}: {repoNameResponse}"
+                    )
+                    primaryBranchNameConfirmed = True
+    return repos
 
 
 def denoument():

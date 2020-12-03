@@ -1,32 +1,51 @@
+from vendor.lib.reporting import repoTypesBlurb
+from vendor.lib.reporting import getNamingMode
+from vendor.lib.reporting import getCustomName
+from vendor.lib.reporting import getCustomNames
+
 
 # options #
 # * When the user gets a personal access token, get the options. * #
 
-def wizard([username, token, repos]):
+def applyName(name, repos):
+    for repo in repos:
+        repo["primaryBranchName"] = name
+    return repos
+
+
+def checkBranches(🤣):
+    """Catch low-hanging fruit errors like no main or master on remote.
+    Collect them for presentation in groups, though, no one-by-one nonsense."""
+
+
+def wizard(username, token, repos):
     """Gather naming mode, name or names, catch errors, use local directories, starting local directory, removal of cloned repos, and git new alias."""
-    # TODO Collect testing stuff
-    # reporting #
-    Report repository types blurb.
+    reposCopy = repos
+    # * Report repository types blurb. * #
+    repoTypesBlurb()
+    # * Placeholder for naming mode. * #
+    namingMode = ""
+    # * Placeholder for name. * #
+    name = ""
+    # * Variables for the naming mode choices (questionary returns string of answer) * #
+    main = "All primary branches renamed to 'main'."
+    custom = "Choose name for all primary branches renamed to. "
+    perRepo = "Choose a name for the primary branch for each repo."
+    # * Get naming mode. * #
+    namingMode = getNamingMode(main, custom, perRepo)
+    # * If default, assign it. * #
+    if namingMode == main:
+        name = "main"
+    # * If custom, get and confirm custom. * #
+    if namingMode == custom:
+        name = getCustomName()
+    # * If interactive, get the names and apply, otherwise apply name. * #
+    if namingMode == perRepo:
+        reposCopy = getCustomNames(repos)
+    else:
+        reposCopy = applyName(name, repos)
+    # * Check repos based on options for validity. * #
 
-    Placeholder for naming mode.
-
-    Placeholder for name.
-
-    Get naming mode.
-
-    If custom, get and confirm custom.
-
-    If interactive, go to town.
-
-    Else name is "main"
-    # logging #
-    Log it.
-
-    Check repos based on options for validity.
-
-    Catch low-hanging fruit errors like no main or master on remote.
-
-    Collect them for presentation in groups, though, no one-by-one nonsense.
 
     Placeholder for local directory.
     # reporting #
@@ -50,6 +69,8 @@ def wizard([username, token, repos]):
     # logging #
     Log it.
 
+    # TODO Collect testing stuff
+
     Return data + naming mode, name(s), use local directory, local directory, remove cloned repos, git new.
 
 
@@ -60,121 +81,7 @@ def sayHi():
     print("Hello!")
 
 
-# * If the user can manage to get a personal access token, there
-# * are a set of questions that I suppose we don't **have** to
-# * ask, but it feels like the polite thing to do * #
 
-
-# * ~~~ Set of questionary dictionary questions! ~~~ * #
-
-# * ``` Placeholder variable for repo types!``` * #
-repoTypes = ""
-
-# * ``` What types of repos! ``` * #
-
-# * ``` Question ``` * #
-repoTypesPrompt = """
-    What set of repositories do you want to update?
-"""
-
-# * ``` Choices ``` * #
-repoTypesOwner = "All repositories I'm the owner of, public and private. (Collaborator/Organization repo types in development!)"
-repoTypesOwnerPublic = "All repositories I'm the owner of, only public, not private."
-repoTypesAll = "All repositories I'm the owner, collaborator, and/or organization member, public and private."
-repoTypesAllPublic = "All repositories I'm the owner, collaborator, and/or organization member, only public, not private."
-repoTypesCollaborator = (
-    "All repositories I'm the owner of and/or a collaborator on, public and private."
-)
-repoTypesCollaboratorPublic = "All repositories I'm the owner of and/or a collaborator on, only public, not private."
-repoTypesOrganization = "All repositories I'm the owner of and/or a member of the organization, public and private."
-repoTypesOrganizationPublic = "All repositories I'm the owner of and/or a member of the organization, only public, not private."
-
-# * ``` What to name the primary branches and choices! ``` * #
-
-# * ``` Question ``` * #
-namesSelectionPrompt = """
-    What would you like to name your primary branches? (Default 'main'.)
-"""
-
-# * ``` Choices ``` * #
-namesMain = "All primary branches renamed to 'main'."
-namesCustom = "Choose name for all primary branches renamed to. "
-namesPerRepo = "Choose a name for the primary branch for each repo."
-
-questions = [
-    {
-        "type": "select",
-        "name": "repoTypes",
-        "message": repoTypesPrompt,
-        "choices": [
-            repoTypesOwner,
-            # repoTypesOwnerPublic,
-            # repoTypesAll,
-            # repoTypesAllPublic,
-            # repoTypesCollaborator,
-            # repoTypesCollaboratorPublic,
-            # repoTypesOrganization,
-            # repoTypesOrganizationPublic
-        ],
-    },
-    {
-        "type": "select",
-        "name": "namesSelection",
-        "message": namesSelectionPrompt,
-        "choices": [namesMain, namesCustom, namesPerRepo],
-    },
-]
-
-# * ``` Extract the data from the set of prompts from dictionary! ``` * #
-answers = questionary.prompt(questions)
-# repoTypes = answers['repoTypes']
-repoTypes = "All repositories I'm the owner of, public and private."
-logging.info(f"Repository types chosen: {repoTypes}")
-logging.info(f"Naming selection: {answers['namesSelection']}")
-
-# * ~~~ Custom primary branch flow! ~~~ * #
-
-# * ``` Placeholder variable for the primary branch name! ``` * #
-name = "main"
-
-# * ``` Custom name for all branches! ``` * #
-customNamePrompt = """
-    What name are you choosing for primary branches?
-"""
-
-# * ``` Confirm reset to main! ``` * #
-confirmResetToMainPrompt = """
-    Default: use 'main' for all primary branches?
-"""
-
-
-def customNameConfirmPrompt(inputName):
-    return f"""{inputName} for all primary branches?"""
-
-
-if answers["namesSelection"] == namesCustom:
-    nameConfirmed = False
-    while not nameConfirmed:
-        customNameResponse = questionary.text(customNamePrompt).ask()
-        if customNameResponse == "":
-            confirmResetToMainResponse = questionary.confirm(
-                confirmResetToMainPrompt
-            ).ask()
-            if confirmResetToMainResponse:
-                name = "main"
-                nameConfirmed = True
-                logging.info(f"Name for primary branches: {name}")
-            else:
-                continue
-        else:
-            confirmCustomNameResponse = questionary.confirm(
-                customNameConfirmPrompt(customNameResponse)
-            ).ask()
-            if confirmCustomNameResponse:
-                name = customNameResponse
-                nameConfirmed = True
-                logging.info(f"Name for primary branches: {name}")
-                pass
 
 # * ~~~ Interactive naming mode choice handling! ~~~ * #
 
