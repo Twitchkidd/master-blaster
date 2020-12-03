@@ -1,82 +1,46 @@
-
+import requests
+from vendor.lib.logging import logWarning
 
 # networkActions #
 # * Actions taken over the network. * #
 
-Declare the GitHub API url
+# This defaults to v3 of the api.
+GITHUB_API = "https://api.github.com"
 
-
-def getReposUrl():
+def getRepos(username, token):
+    """Get list of repos, validating token, or break the program, and log it."""
+    """You can get a token of None now!!!"""
+    repos = []
+    if token == None:
+        return username, token, repos
     url = f"{GITHUB_API}/user/repos"
-    return url
-
-# * ``` Construct the headers! ``` * #
-
-
-def getReposHeaders(token):
     headers = {"Authorization": 'token ' + token}
-    return headers
-
-# * ``` Custruct the parameters! ``` * #
-
-
-def getReposParams():
     params = {"per_page": "1000", "type": "owner"}
-    return params
-
-
-def getRepos():
-    """Initial get of repo names"""
+    print("Checking for repos ...")
+    response = requests.get(url, params=params, headers=headers)
+    # Bad token returns a 401! #
+    if response.status_code >= 400:
+        logWarning(f"Response status: {response.status_code}")
+        print(
+            f"Network error! Possibly the token! Try again please! If this is not your GitHub username, please restart the program: {username}"
+        )
+        repos = None
+    else:
+        print("Repos received!")
+        reposResponseConfirmed = True
+        for repository in response.json():
+            repos.append(
+                {
+                    "defaultBranch": repository["default_branch"],
+                    "htmlUrl": repository["html_url"],
+                    "name": repository["name"],
+                    "owner-login": f"{repository['owner']['login']}",
+                    # "primaryBranchName": name,
+                    # This can only be pulled out later.
+                }
+            )
+    return repos
 
 
 def getBranchUrl(repo, branch):
 
-
-# * ``` Constructing the url! ``` * #
-
-
-def constructReposUrl():
-    return f"{GITHUB_API}/user/repos"
-
-
-# * ``` Construct the headers! ``` * #
-
-
-def constructHeaders(token):
-    headers = {"Authorization": "token " + token}
-    return headers
-
-
-# * ``` Custruct the parameters! ``` * #
-
-
-def constructReposParams():
-    params = {}
-    if repoTypes == repoTypesAll:
-        params = {
-            "per_page": "1000",
-        }
-    if repoTypes == repoTypesAllPublic:
-        params = {"per_page": "1000", "visibility": "public"}
-    # if repoTypes == repoTypesOwner:
-    if repoTypes == "All repositories I'm the owner of, public and private.":
-        params = {"per_page": "1000", "type": "owner"}
-    if repoTypes == repoTypesOwnerPublic:
-        params = {"per_page": "1000", "visibility": "public", "type": "owner"}
-    if repoTypes == repoTypesCollaborator:
-        params = {"per_page": "1000", "type": "owner,collaborator"}
-    if repoTypes == repoTypesCollaboratorPublic:
-        params = {
-            "per_page": "1000",
-            "visibility": "public",
-            "type": "owner,collaborator",
-        }
-    if repoTypes == repoTypesOrganization:
-        params = {"per_page": "1000", "type": "owner,collaborator,organization_member"}
-    if repoTypes == repoTypesOrganizationPublic:
-        params = {
-            "per_page": "1000",
-            "visibility": "public",
-            "type": "owner,collaborator,organization_member",
-        }
-    return params

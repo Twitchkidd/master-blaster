@@ -17,30 +17,36 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import sys
+from vendor.lib.actions.shell import getCurrentBranch
+from vendor.lib.actions.shell import setCurrentBranch
+from vendor.lib.auth import auth
+from vendor.lib.dispatch import run
+from vendor.lib.logging import loggingConfig
+from vendor.lib.options import wizard
+from vendor.lib.reporting import intro
+from vendor.lib.reporting import denoument
 
 testing = True
 
-from vendor.lib.logging import loggingConfig
-
 loggingConfig(testing)
 
-from vendor.lib.reporting import intro
+currentBranch = ""
+if testing:
+    currentBranch = getCurrentBranch()
 
 intro()
 
-from vendor.lib.auth import auth
-from vendor.lib.options import wizard
-from vendor.lib.dispatch import run
-
 data = auth(testing)
-if not data.token:
+
+if not data.repos:
     sys.exit()
 else:
     dataWithOptions = wizard(data)
     run(dataWithOptions, testing)
 
-from vendor.lib.reporting import denoument
-
 denoument()
+
+if testing:
+    setCurrentBranch(currentBranch)
 
 sys.exit()

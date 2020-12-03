@@ -25,15 +25,19 @@ def loggingConfig(testing):
     logging.info("Creating a log file!!")
 
 
-
 def logInfo(info):
     """Invoke the logger at the INFO level."""
+    logging.info(info)
 
 
-def logError(error):
+def logWarning(warning):
+    """Invoke the logger at the WARNING level."""
+    logging.warning(warning)
 
 
 def logCrash(error):
+
+
 
 
 import logging

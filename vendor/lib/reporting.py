@@ -1,4 +1,6 @@
-#
+import questionary
+from vendor.lib.logging import logInfo
+from vendor.lib.actions.shell import getLocalToken
 
 # reporting #
 # * Text! * #
@@ -39,6 +41,93 @@ def intro():
       Thank you!
   """
     print(tokenExplanation)
+
+
+def usernameConfirmationPrompt(usernameInput):
+    return f"Confirm username: {usernameInput}"
+
+
+def getUsername(testing):
+    """Get the GitHub username and return it."""
+    # * ``` Placeholder variable for the username! ``` * #
+    username = ""
+
+    # * ``` Ask for username! ``` * #
+    usernamePrompt = """
+      First, please enter your GitHub username!
+  """
+
+    usernameConfirmed = False
+    while not usernameConfirmed:
+        usernameResponse = questionary.text(usernamePrompt).ask()
+        if usernameResponse == "":
+            print("GitHub username blank: Please try again!")
+            continue
+        if len(usernameResponse) >= 40:
+            print("GitHub usernames are 39 chars or less: please try again!")
+            continue
+        else:
+            usernameConfirmationResponse = questionary.confirm(
+                usernameConfirmationPrompt(usernameResponse)
+            ).ask()
+            if usernameConfirmationResponse == False:
+                print("Thank you for retrying!")
+                continue
+            if usernameConfirmationResponse:
+                username = usernameResponse
+                if not testing:
+                    logInfo(f"Username: {username}")
+                    usernameConfirmed = True
+                    continue
+
+    if testing:
+        username = "Twitchkidd"
+        logInfo(f"Username: {username}")
+
+    return username
+
+
+def getToken(testing):
+    """Get token from user, validate, return tuple of token and repos."""
+    # * Placeholder for token. * #
+    token = ""
+
+    tokenPrompt = """
+    -- Token-getting time! --
+
+    For good security, password-based token generation is being
+    deprecated, so these are the steps to get a personal access
+    token with the correct scope:
+
+    Browse to https://github.com, sign in, then go to 'Settings',
+    then 'Developer Settings', then 'Personal access tokens',
+    then 'Generate new token', confirm your password, select the
+    'repo' scope, then 'Generate Token', then copy that to clipboard.
+
+    To avoid repeat in case of network error, save it somewhere first,
+    then paste it back here into the prompt and hit enter to continue:
+
+    For thorough and visual instructions in the GitHub docs,
+    see the personal access tokens part: https://bit.ly/2X0cr3j
+    
+    """
+    print(tokenPrompt)
+
+    tokenConfirmed = False
+    while not tokenConfirmed:
+        customTokenResponse = questionary.text(tokenPrompt).ask()
+        if customTokenResponse == "":
+            print("Please enter the token!")
+            continue
+        else:
+            token = customTokenResponse
+            tokenConfirmed = True
+            continue
+
+    if testing:
+        token = getLocalToken()
+
+    return token
 
 
 def repoTypesBlurb():

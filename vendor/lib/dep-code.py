@@ -1,5 +1,18 @@
 #!/usr/bin/env python3
 
+# what if you appended with Path, like
+# sys.path.append(Path.cwd() / "vendor")
+
+# Add vendor directory to module search path
+parent_dir = os.path.abspath(os.path.dirname(__file__))
+vendor_dir = os.path.join(parent_dir, "vendor")
+
+sys.path.append(vendor_dir)
+
+import questionary
+import requests
+
+
 # Master Blaster - Batch Rename Primary Branches Of Code Repositories
 # Copyright (C) 2020 Gareth Field - field.gareth @ gmail.com
 
