@@ -33,7 +33,8 @@ def checkBranches(username, token, repos, localRepos):
     reposReadyForRemote = []
 
     # * ``` Take in the state of the branch names and defaults and categorize them! ``` * #
-
+    # You need to collect the info that the previous code had, the info the current code has,
+    # and go from there.
     def check(repo):
         if repo["hasMasterBranch"] and repo["hasPrimaryBranchName"]:
             repo[
