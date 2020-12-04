@@ -267,15 +267,15 @@ def getLocalDirectory(testing):
     return localDirectory
 
 
-def getRemoveLocalDirectories(testing):
-    confirmRemoveLocalDirectoriesPrompt = """
+def getRemoveClones(testing):
+    confirmRemoveClonesPrompt = """
         Remove newly cloned repositories after process complete? Defaults to yes.
     """
-    confirmRemoveAfter = questionary.confirm(confirmRemoveLocalDirectoriesPrompt).ask()
+    confirmRemoveClones = questionary.confirm(confirmRemoveClonesPrompt).ask()
     if testing:
-        confirmRemoveAfter = True
-    logInfo(f"Confirm remove local directories after: {confirmRemoveAfter}")
-    return confirmRemoveAfter
+        confirmRemoveClones = True
+    logInfo(f"Confirm remove clones after: {confirmRemoveClones}")
+    return confirmRemoveClones
 
 
 def getGitNew(namingMode, perRepo, name, testing):

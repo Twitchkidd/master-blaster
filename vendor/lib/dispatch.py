@@ -28,7 +28,6 @@ def run(data, options, testing):
 
 from pathlib import Path
 from subprocess import Popen, PIPE
-from vendor.lib.options import sayHi
 
 # * Any actions should be run through dispatch.
 # * The run function should take a token, a set

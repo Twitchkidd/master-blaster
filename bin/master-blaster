@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from pathlib import Path
 import sys
 from vendor.lib.actions.shell import getCurrentBranch
 from vendor.lib.actions.shell import setCurrentBranch
@@ -32,7 +33,7 @@ loggingConfig(testing)
 
 currentBranch = ""
 if testing:
-    currentBranch = getCurrentBranch()
+    currentBranch = getCurrentBranch(Path.cwd())
 
 intro()
 
