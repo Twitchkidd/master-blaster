@@ -1,11 +1,15 @@
+from vendor.lib.actions.shell import getLocalDirectories
 from vendor.lib.reporting import repoTypesBlurb
 from vendor.lib.reporting import getNamingMode
 from vendor.lib.reporting import getCustomName
 from vendor.lib.reporting import getCustomNames
-
+from vendor.lib.reporting import getLocalDirectory
+from vendor.lib.reporting import getRemoveLocalDirectories
+from vendor.lib.reporting import getGitNew
 
 # options #
 # * When the user gets a personal access token, get the options. * #
+
 
 def applyName(name, repos):
     for repo in repos:
@@ -13,14 +17,17 @@ def applyName(name, repos):
     return repos
 
 
-def checkBranches(🤣):
+def checkBranches(pleaseGo):
     """Catch low-hanging fruit errors like no main or master on remote.
     Collect them for presentation in groups, though, no one-by-one nonsense."""
+    print("Gotta catch em all!")
+    # * Check repos based on options for validity. * #
+    # * Test all the repos and names again. * #
 
 
-def wizard(username, token, repos):
+def wizard(data, testing):
     """Gather naming mode, name or names, catch errors, use local directories, starting local directory, removal of cloned repos, and git new alias."""
-    reposCopy = repos
+    username, token, repos = data
     # * Report repository types blurb. * #
     repoTypesBlurb()
     # * Placeholder for naming mode. * #
@@ -41,169 +48,18 @@ def wizard(username, token, repos):
         name = getCustomName()
     # * If interactive, get the names and apply, otherwise apply name. * #
     if namingMode == perRepo:
-        reposCopy = getCustomNames(repos)
+        repos = getCustomNames(repos)
     else:
-        reposCopy = applyName(name, repos)
-    # * Check repos based on options for validity. * #
+        repos = applyName(name, repos)
 
+    localDirectory = getLocalDirectory(testing)
 
-    Placeholder for local directory.
-    # reporting #
-    Local directories prompt.
+    localDirectories = getLocalDirectories(localDirectory)
 
-    If yes, which local directory or default?
+    removeLocalDirectories = getRemoveLocalDirectories(testing)
 
-    Test that local directory is real.
+    gitNew = getGitNew(namingMode, name, testing)
 
-    Test all the repos and names again.
+    repos = checkBranches(username, token, repos)
 
-    Placeholder for remove cloned repos.
-
-    Ask about remove cloned repos.
-
-    Placeholder for git new.
-
-    Ask about git new.
-
-    Pew Pew.
-    # logging #
-    Log it.
-
-    # TODO Collect testing stuff
-
-    Return data + naming mode, name(s), use local directory, local directory, remove cloned repos, git new.
-
-
-from pathlib import Path
-
-
-def sayHi():
-    print("Hello!")
-
-
-
-
-# * ~~~ Interactive naming mode choice handling! ~~~ * #
-
-# * ``` Placeholder variable for interactive naming mode! ``` * #
-interactive = False
-
-# * ``` Confirmation that interactive naming mode will happen! ``` * #
-interactiveNamingConfirmationPrompt = """
-    Okay! We'll name them after we fetch the set of repos!
-"""
-
-if answers["namesSelection"] == namesPerRepo:
-    interactive = True
-    print(interactiveNamingConfirmationPrompt)
-
-# * ~~~ Local directory choice handling! ~~~ * #
-
-# * ``` Local directory yay or nay! ``` * #
-localDirectoriesPrompt = """
-    Repositories not present locally will be cloned to a temporary folder,
-    updated, the update pushed, (the default branch on GitHub.com updated,) and
-    then deleted locally depending on your choice in just a moment.
-    
-    The program can decrease the use of bandwidth and reduce potential conflicts
-    by scanning for repositories that are present locally, from home or a specified
-    directory for code. Okay?
-"""
-localDirectories = questionary.confirm(localDirectoriesPrompt).ask()
-
-# * ``` Placeholder variable for local directory selection! ``` * #
-localDirectory = Path.home()
-
-# * ``` Which local directory? ``` * #
-localDirectoryPrompt = """
-    Do you keep all of your coding projects in a certain directory? Type that in
-    here to limit and speed up search. Default is home, ~/, hit enter for default.
-    Example: /Users/gareth/Code
-"""
-
-# * ``` Confirm reset to home! ``` * #
-confirmResetToHomePrompt = """
-    Default: use '~/' for local directory search?
-"""
-
-# * ``` Placeholder variable for confirming removal of local directories after! ``` * #
-confirmRemoveLocalDirectoriesAfter = False
-
-
-def customLocalDirectoryConfirmPrompt(inputDir):
-    return f"""{inputDir} for all primary branches?"""
-
-
-# * ``` Ask which directory to use to search for local repos! ``` * #
-if localDirectories:
-    localDirectoryConfirmed = False
-    while not localDirectoryConfirmed:
-        customLocalDirectoryResponse = questionary.text(localDirectoryPrompt).ask()
-        if customLocalDirectoryResponse == "":
-            confirmResetToHomeResponse = questionary.confirm(
-                confirmResetToHomePrompt
-            ).ask()
-            if confirmResetToHomeResponse:
-                localDirectory = Path.home()
-                localDirectoryConfirmed = True
-                # ! Testing ! #
-                # logging.info(f"Local directory to search: {localDirectory}")
-            else:
-                continue
-        else:
-            if os.path.isdir(customLocalDirectoryResponse):
-                confirmCustomLocalDirectoryResponse = questionary.confirm(
-                    customLocalDirectoryConfirmPrompt(customLocalDirectoryResponse)
-                ).ask()
-                if confirmCustomLocalDirectoryResponse:
-                    localDirectory = customLocalDirectoryResponse
-                    localDirectoryConfirmed = True
-                    # ! Testing! #
-                    # logging.info(
-                    #     f"Local directory to search: {localDirectory}")
-                    pass
-            else:
-                print(
-                    f"Error! Directory not showing as valid: {customLocalDirectoryResponse}"
-                )
-                continue
-
-# ! Testing! #
-localDirectory = f"{Path.home()}/Code"
-logging.info(f"Local directory to search: {localDirectory}")
-
-# * ``` Ask to delete cloned repos! ``` * #
-confirmRemoveLocalDirectoriesAfterPrompt = """
-    Remove newly cloned repositories after process complete? Defaults to yes.
-"""
-
-if localDirectories:
-    confirmRemoveLocalDirectoriesAfter = questionary.confirm(
-        confirmRemoveLocalDirectoriesAfterPrompt
-    ).ask()
-    # ! Testing! #
-    # logging.info(
-    #     f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}")
-
-# ! Testing! #
-confirmRemoveLocalDirectoriesAfter = True
-logging.info(
-    f"Confirm remove local directories after: {confirmRemoveLocalDirectoriesAfter}"
-)
-
-# * ~~~ New Git Alias! ~~~ * #
-
-# * ``` Placeholder variable for git alias selection! ``` * #
-gitNew = True
-
-# * ``` Prompt! ``` * #
-gitNewPrompt = f"""
-    Add a git alias 'git new' that initializes
-    new git repos with commit as {name}? Defaults to yes.
-"""
-
-# * ``` Ask it! ``` * #
-if not interactive:
-    gitNew = questionary.confirm(gitNewPrompt)
-    # * ``` Log the choice! ``` * #
-    logging.info(f"Add git alias `git new`: {name}")
+    return username, token, repos, localDirectory, removeLocalDirectories, gitNew

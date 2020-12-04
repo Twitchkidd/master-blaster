@@ -3,6 +3,7 @@ import logging
 # logging #
 # * Handle logging operations and errors to the log file. * #
 
+
 def loggingConfig(testing):
     """Configure logging. Report logfile location."""
     # * ``` If testing, write to new or overwrite existing log file! ``` * #
@@ -15,7 +16,11 @@ def loggingConfig(testing):
             format="%(asctime)s %(levelname)s %(message)s",
         )
     else:
-        logging.basicConfig(filename='info.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+        logging.basicConfig(
+            filename="info.log",
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s %(message)s",
+        )
     print(
         """
         Log file to be found at ./info.log!
@@ -36,15 +41,5 @@ def logWarning(warning):
 
 
 def logCrash(error):
-
-
-
-
-import logging
-
-# * Handle logging every operation and error to the log file. * #
-
-# Ooo, what if you did it by date-time run?
-
-
-def loggingConfig(testing):
+    """AAAAHHHHH!!!!"""
+    logging.error(error)

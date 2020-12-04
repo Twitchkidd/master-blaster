@@ -825,7 +825,10 @@ def check(repo):
 
 
 def processLogger(string, prc, ignoreStr="", secondIgnoreStr=""):
-    """Log what process is being run and stdout, return of 0 is good, 1 is error"""
+    """This function logs the first argument, *RUNS* the code, capturing
+    stdout and stderr, logging those, possibly checks against the third
+    argument, though not the fourth (?) and returns a thruple of stdout,
+    stderr, and either a 0 for success or a 1 for error."""
     logging.info(string)
     stdout, stderr = prc.communicate()
     if len(stdout) > 0:

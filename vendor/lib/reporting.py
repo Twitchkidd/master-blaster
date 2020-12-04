@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 import questionary
 from vendor.lib.logging import logInfo
 from vendor.lib.actions.shell import getLocalToken
@@ -43,14 +45,13 @@ def intro():
     print(tokenExplanation)
 
 
-def usernameConfirmationPrompt(usernameInput):
-    return f"Confirm username: {usernameInput}"
-
-
 def getUsername(testing):
     """Get the GitHub username and return it."""
     # * ``` Placeholder variable for the username! ``` * #
     username = ""
+
+    def usernameConfirmationPrompt(usernameInput):
+        return f"Confirm username: {usernameInput}"
 
     # * ``` Ask for username! ``` * #
     usernamePrompt = """
@@ -89,7 +90,6 @@ def getUsername(testing):
 
 def getToken(testing):
     """Get token from user, validate, return tuple of token and repos."""
-    # * Placeholder for token. * #
     token = ""
 
     tokenPrompt = """
@@ -111,7 +111,6 @@ def getToken(testing):
     see the personal access tokens part: https://bit.ly/2X0cr3j
     
     """
-    print(tokenPrompt)
 
     tokenConfirmed = False
     while not tokenConfirmed:
@@ -144,21 +143,19 @@ def getNamingMode(main, custom, perRepo):
     ).ask()
 
 
-def customNameConfirmPrompt(inputName):
-    return f"""{inputName} for all primary branches?"""
-
-
 def getCustomName():
     """For when the user wants to set all repos primary branches to a custom name."""
-    # * ``` Custom name for all branches! ``` * #
+    name = "main"
     customNamePrompt = """
       What name are you choosing for primary branches?
   """
-    # * ``` Confirm reset to main! ``` * #
     confirmResetToMainPrompt = """
       Default: use 'main' for all primary branches?
   """
-    name = "main"
+
+    def customNameConfirmPrompt(inputName):
+        return f"""{inputName} for all primary branches?"""
+
     nameConfirmed = False
     while not nameConfirmed:
         customNameResponse = questionary.text(customNamePrompt).ask()
@@ -213,6 +210,88 @@ def getCustomNames(repos):
                     )
                     primaryBranchNameConfirmed = True
     return repos
+
+
+def getLocalDirectory(testing):
+    """Local directories prompt. If yes, which local directory or default? Test that local directory is real."""
+    localDirectory = ""
+    localDirectoriesPrompt = """
+        Repositories not present locally will be cloned to a temporary folder,
+        updated, the update pushed, (the default branch on GitHub.com updated,) and
+        then deleted locally depending on your choice in just a moment.
+        
+        To potentially decrease use of bandwidth and reduce conflicts, master-blaster
+        can scan for repositories present locally, starting from the home folder or a
+        specified code directory. Yes, or everything from the cloud?
+    """
+    localDirectories = questionary.confirm(localDirectoriesPrompt).ask()
+    if not localDirectories:
+        return None
+    localDirectoryPrompt = """
+    Do you keep all of your coding projects in a certain directory? Type that in
+    here to limit and speed up search. Default is home, ~/, hit enter for default.
+    Example: /Users/gareth/Code
+"""
+    confirmResetToHomePrompt = """
+        Default: use '~/' for local directory search?
+    """
+
+    def customLocalDirectoryConfirmPrompt(inputDir):
+        return f"""Use '{inputDir}' for local directory search?"""
+
+    localDirectoryConfirmed = False
+    while not localDirectoryConfirmed:
+        customLocalDirectoryResponse = questionary.text(localDirectoryPrompt).ask()
+        if customLocalDirectoryResponse == "":
+            confirmResetToHomeResponse = questionary.confirm(
+                confirmResetToHomePrompt
+            ).ask()
+            if confirmResetToHomeResponse:
+                localDirectory = Path.home()
+                localDirectoryConfirmed = True
+        else:
+            if os.path.isdir(customLocalDirectoryResponse):
+                confirmCustomLocalDirectoryResponse = questionary.confirm(
+                    customLocalDirectoryConfirmPrompt(customLocalDirectoryResponse)
+                ).ask()
+                if confirmCustomLocalDirectoryResponse:
+                    localDirectory = customLocalDirectoryResponse
+                    localDirectoryConfirmed = True
+            else:
+                print(
+                    f"Error! Directory not showing as valid: {customLocalDirectoryResponse}"
+                )
+    if testing:
+        localDirectory = f"{Path.home()}/Code"
+    logInfo(f"Local directory to search: {localDirectory}")
+    return localDirectory
+
+
+def getRemoveLocalDirectories(testing):
+    confirmRemoveLocalDirectoriesPrompt = """
+        Remove newly cloned repositories after process complete? Defaults to yes.
+    """
+    confirmRemoveAfter = questionary.confirm(confirmRemoveLocalDirectoriesPrompt).ask()
+    if testing:
+        confirmRemoveAfter = True
+    logInfo(f"Confirm remove local directories after: {confirmRemoveAfter}")
+    return confirmRemoveAfter
+
+
+def getGitNew(namingMode, perRepo, name, testing):
+    if namingMode == perRepo:
+        return False
+    gitNew = True
+    gitNewPrompt = f"""
+        Add a git alias 'git new' that initializes
+        new git repos with commit as {name}? Defaults to yes.
+    """
+    gitNew = questionary.confirm(gitNewPrompt)
+    if testing:
+        gitNew = True
+    if gitNew:
+        logInfo(f"Add git alias `git new`: {name}")
+    return gitNew
 
 
 def denoument():
