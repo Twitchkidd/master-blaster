@@ -60,7 +60,7 @@ def getLocalRepos(repos, localDirectory):
                 except Exception as err:
                     for repo in repos:
                         if subdir == repo["name"]:
-                            repo["error"] = err
+                            repo["status"] = err
                     logWarning(f"Exception in {subdir}: {err}")
                     pass
     return repos

@@ -36,7 +36,7 @@ def checkBranches(username, token, repos):
     #   htmlUrl
     #   name
     #   owner-login
-    #   [error] # local folder with name, can't read .git/config
+    #   [status] # local folder with name, can't read .git/config
     #   [configUrl]
     #   [localPath]
     #   [currentBranch]
@@ -44,6 +44,22 @@ def checkBranches(username, token, repos):
     #   hasTarget
     #   [localHasMaster]
     #   [localHasTarget]
+
+    #   [status] # local folder with name, can't read .git/config
+    #   default
+    #   hasMaster
+    #   hasTarget
+    #   [localHasMaster]
+    #   [localHasTarget]
+
+    # Errors:
+    #   [status] present: local folder with name can't read .git/config
+    #       is test if valid again
+    #   both hasMaster and hasTarget, default is target
+    #       delete master?
+    #   neither hasMaster nor hasTarget
+    #       mv default target?
+    # >> YOU ARE HERE
 
     def check(repo):
         """If the (remote, this is all remote,) repo has both, which is ahead? Anyway, you
