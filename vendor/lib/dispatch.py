@@ -1,4 +1,4 @@
-
+from vendor.lib.reporting import handleNamingErrors
 
 # dispatch #
 # * Run actions through dispatch.
@@ -6,24 +6,25 @@
 # * and repos list, a set of options, and the
 # * testing boolean, and do the appropriate set of actions. * #
 
-def run(data, options, testing):
-    """We assume that the wizard has managed logical errors in our data already,
-    and that we have ready for local, ready for remote, already blasted, or an
-    error message/grouping."""
-    Run the local process on any repos ready for local.
 
-    Run the remote process on any repos ready for remote.
+def run(dataWithOptions):
+    """Make sure any naming errors are handled, then run any actions to be run!"""
+    username, token, repos, localDirectory, removeClones, gitNew = dataWithOptions
+    repos = handleNamingErrors(repos)
 
-    Remove any cloned repos if that option is enabled.
+    # * Run the local process on any repos ready for local. * #
 
-    Add alias git new if that option is enabled.
+    # * Run the remote process on any repos ready for remote. * #
 
-    Check for any stray master branches.
+    # * Remove any cloned repos if that option is enabled. * #
 
-    If there are, ask about that, if so, chop em.
-    # logging #
-    # reporting #
-    Collect any errors for logging and reporting.
+    # * Add alias git new if that option is enabled. * #
+
+    # * Check for any stray master branches. * #
+
+    # * If there are, ask about that, if so, chop em. * #
+
+    # * Collect any errors for logging and reporting. * #
 
 
 from pathlib import Path

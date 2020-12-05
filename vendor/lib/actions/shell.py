@@ -43,34 +43,27 @@ def getLocalRepoUrl(configFile):
 
 def getLocalRepos(repos, localDirectory):
     if localDirectory == None:
-        return None
-    localRepos = []
-    errorRepos = []
+        return repos
     repoNames = [repo["name"] for repo in repos]
     for root, subdirs, files in os.walk(f"{localDirectory}"):
         for subdir in subdirs:
             if any(subdir == repoName for repoName in repoNames):
                 try:
                     with open(f"{root}/{subdir}/.git/config", "r") as configFile:
-                        localRepos.append(
-                            {
-                                "url": getLocalRepoUrl(configFile).lower(),
-                                "path": f"{root}/{subdir}",
-                                "branch": f"{getCurrentBranch(f'{root}/{subdir}')}",
-                            }
-                        )
+                        for repo in repos:
+                            if subdir == repo["name"]:
+                                repo["configUrl"] = getLocalRepoUrl(configFile).lower()
+                                repo["localPath"] = f"{root}/{subdir}"
+                                repo[
+                                    "currentBranch"
+                                ] = f"{getCurrentBranch(f'{root}/{subdir}')}"
                 except Exception as err:
-                    errorRepos.append({"name": subdir, "error": err})
-                    logWarning(f"Exception: {err}")
+                    for repo in repos:
+                        if subdir == repo["name"]:
+                            repo["error"] = err
+                    logWarning(f"Exception in {subdir}: {err}")
                     pass
-    if errorRepos.len > 0:
-        print(
-            errorRepos.len + " errors searching for local repositories: " + errorRepos
-        )
-    if localRepos.len > 0:
-        return localRepos
-    else:
-        return None
+    return repos
 
 
 def processLogger(string, prc, ignoreStr="", secondIgnoreStr=""):
@@ -90,6 +83,23 @@ def processLogger(string, prc, ignoreStr="", secondIgnoreStr=""):
         logWarning(stderr)
         return (stdout, stderr, 1)
     return (stdout, stderr, 0)
+
+
+def checkLocalBranches(repos):
+    """Determine presence of target/master branches, and what the default is."""
+    for repo in repos:
+        if repo["localPath"]:
+            localBranchGitBranch = Popen(
+                ["git", "branch"], cwd=repo["localPath"], stdout=PIPE, stderr=PIPE
+            )
+            localBranchGitBranchStdout = processLogger(
+                f"cwd={repo['localPath']}: git branch", localBranchGitBranch
+            )[0]
+            repo["localHasMaster"] = "master" in f"{localBranchGitBranchStdout}"
+            repo["localHasTarget"] = (
+                repo["targetName"] in f"{localBranchGitBranchStdout}"
+            )
+    return repos
 
 
 def runGitNew(name):

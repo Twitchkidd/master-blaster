@@ -186,8 +186,8 @@ def getCustomNames(repos):
     )
     name = "main"
     for repo in repos:
-        primaryBranchNameConfirmed = False
-        while not primaryBranchNameConfirmed:
+        targetNameConfirmed = False
+        while not targetNameConfirmed:
             repoNameResponse = questionary.text(
                 f"Primary branch name for {repo['htmlUrl']}?"
             ).ask()
@@ -196,19 +196,19 @@ def getCustomNames(repos):
                     f"Default primary branch name {name} for {repo['htmlUrl']}?"
                 )
                 if defaultNameResponse:
-                    repo["primaryBranchName"] = name
+                    repo["targetName"] = name
                     logInfo(f"Primary branch name for {repo['htmlUrl']}: {name}")
-                    primaryBranchNameConfirmed = True
+                    targetNameConfirmed = True
             else:
                 customRepoNameConfirmed = questionary.confirm(
                     f"{repoNameResponse} for {repo['htmlUrl']}?"
                 )
                 if customRepoNameConfirmed:
-                    repo["primaryBranchName"] = repoNameResponse
+                    repo["targetName"] = repoNameResponse
                     logInfo(
                         f"Primary branch name for {repo['htmlUrl']}: {repoNameResponse}"
                     )
-                    primaryBranchNameConfirmed = True
+                    targetNameConfirmed = True
     return repos
 
 
@@ -228,10 +228,10 @@ def getLocalDirectory(testing):
     if not localDirectories:
         return None
     localDirectoryPrompt = """
-    Do you keep all of your coding projects in a certain directory? Type that in
-    here to limit and speed up search. Default is home, ~/, hit enter for default.
-    Example: /Users/gareth/Code
-"""
+        Do you keep all of your coding projects in a certain directory? Type that in
+        here to limit and speed up search. Default is home, ~/, hit enter for default.
+        Example: /Users/gareth/Code
+    """
     confirmResetToHomePrompt = """
         Default: use '~/' for local directory search?
     """
@@ -292,6 +292,10 @@ def getGitNew(namingMode, perRepo, name, testing):
     if gitNew:
         logInfo(f"Add git alias `git new`: {name}")
     return gitNew
+
+
+def handleNamingErrors(repos):
+    
 
 
 def denoument():
