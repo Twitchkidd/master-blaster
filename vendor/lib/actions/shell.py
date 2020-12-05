@@ -60,7 +60,9 @@ def getLocalRepos(repos, localDirectory):
                 except Exception as err:
                     for repo in repos:
                         if subdir == repo["name"]:
-                            repo["status"] = err
+                            repo[
+                                "status"
+                            ] = "Local folder that possibly isn't git repo, error opening .git/config"
                     logWarning(f"Exception in {subdir}: {err}")
                     pass
     return repos
@@ -99,6 +101,10 @@ def checkLocalBranches(repos):
             repo["localHasTarget"] = (
                 repo["targetName"] in f"{localBranchGitBranchStdout}"
             )
+            if not repo["hasTarget"] and not repo["hasMaster"]:
+                repo["localHasThird"] = (
+                    repo["default"] in f"{localBranchGitBranchStdout}"
+                )
     return repos
 
 

@@ -12,8 +12,6 @@ def getRepos(username, token):
     """Get list of repos, validating token, or break the program, and log it."""
     """You can get a token of None now!!!"""
     repos = []
-    if token == None:
-        return username, token, repos
     url = f"{GITHUB_API}/user/repos"
     headers = {"Authorization": "token " + token}
     params = {"per_page": "1000", "type": "owner"}
@@ -25,8 +23,11 @@ def getRepos(username, token):
             f"Network error! Possibly the token! Try again please! If this is not your GitHub username, please restart the program: {username}"
         )
         logWarning(f"Response status: {response.status_code}")
-        repos = None
+        return None
     else:
+        if response.json().len == 0:
+            print("No repos to blast!")
+            return None
         print("Repos received!")
         reposResponseConfirmed = True
         for repository in response.json():
@@ -61,3 +62,6 @@ def checkRemoteBranches(token, repos):
         if masterBranchResponse.json().get("name"):
             repo["hasMaster"] = True
     return repos
+
+def mvThirdToTargetLocal(repo):
+    

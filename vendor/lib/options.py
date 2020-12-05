@@ -9,6 +9,7 @@ from vendor.lib.reporting import getCustomNames
 from vendor.lib.reporting import getLocalDirectory
 from vendor.lib.reporting import getRemoveClones
 from vendor.lib.reporting import getGitNew
+from vendor.lib.reporting import checkNames
 
 # options: When the user gets a personal access token, get the options. #
 
@@ -28,140 +29,6 @@ def checkBranches(username, token, repos):
             localReposPresent = True
     if localReposPresent:
         repos = checkLocalBranches(repos)
-    for repo in repos:
-        check(repo)
-
-    # Repo:
-    #   default
-    #   htmlUrl
-    #   name
-    #   owner-login
-    #   [status] # local folder with name, can't read .git/config
-    #   [configUrl]
-    #   [localPath]
-    #   [currentBranch]
-    #   hasMaster
-    #   hasTarget
-    #   [localHasMaster]
-    #   [localHasTarget]
-
-    #   [status] # local folder with name, can't read .git/config
-    #   default
-    #   hasMaster
-    #   hasTarget
-    #   [localHasMaster]
-    #   [localHasTarget]
-
-    # Errors:
-    #   [status] present: local folder with name can't read .git/config
-    #       is test if valid again
-    #   both hasMaster and hasTarget, default is target
-    #       delete master?
-    #   neither hasMaster nor hasTarget
-    #       mv default target?
-    # >> YOU ARE HERE
-
-    def check(repo):
-        """If the (remote, this is all remote,) repo has both, which is ahead? Anyway, you
-        can't rename master main in that case. Probably rewrite that. If it doesn't have either,
-        you can't rename master main either. Maybe rename default though? Then, if local has
-        the name already, and a bunch of other stuff, then it's already blasted, or if a bunch
-        of other stuff is a candidate for local master delete, or if the local ... we could never
-        GET to the local process, wtf? Anyway, or if some stuff either local or remote process,
-        or the default is something else even if it has main and master. Again for no local repos."""
-        if repo["hasMaster"] and repo["hasPrimary"]:
-            repo[
-                "status"
-            ] = "error: remote has both master branch and new primary branch name"
-            reposWithErrors.append(repo)
-            return None
-        if not repo["hasMaster"] and not repo["hasPrimary"]:
-            repo[
-                "status"
-            ] = "error: remote has neither master nor new primary branch name"
-            reposWithErrors.append(repo)
-            return None
-        if repo.get("localHasTarget") != None:
-            if (
-                not repo["hasMaster"]
-                and repo["hasPrimary"]
-                and repo["default"] == repo["targetName"]
-                and not repo["localHasMaster"]
-                and repo["localHasTarget"]
-            ):
-                repo["status"] = "already blasted"
-                reposAlreadyBlasted.append(repo)
-                return None
-            if (
-                not repo["hasMaster"]
-                and repo["hasPrimary"]
-                and repo["default"] == repo["targetName"]
-                and repo["localHasMaster"]
-                and repo["localHasTarget"]
-            ):
-                repo["status"] = "candidate to delete local master"
-                reposReadyForLocalMasterDelete.append(repo)
-                return None
-            if repo["localHasMaster"] and not repo["localHasTarget"]:
-                if (
-                    not repo["hasMaster"]
-                    and repo["hasPrimary"]
-                    and repo["default"] == repo["targetName"]
-                ):
-                    repo["status"] = "candidate for local process"
-                    reposReadyForLocal.append(repo)
-                    return None
-                if (
-                    repo["hasMaster"]
-                    and not repo["hasPrimary"]
-                    and repo["default"] == "master"
-                ):
-                    repo["status"] = "candidate for remote process"
-                    reposReadyForRemote.append(repo)
-                    return None
-            if repo["default"] != repo["targetName"] and repo["default"] != "master":
-                repo[
-                    "status"
-                ] = f"Primary branch neither {repo['targetName']} nor master"
-                reposWithErrors.append(repo)
-                return None
-            repo["status"] = f"error: {repo}"
-            reposWithErrors.append(repo)
-            return None
-        else:
-            if (
-                not repo["hasMaster"]
-                and repo["hasPrimary"]
-                and repo["default"] == repo["targetName"]
-            ):
-                repo["status"] = "already blasted"
-                reposAlreadyBlasted.append(repo)
-                return None
-            if (
-                repo["hasMaster"]
-                and not repo["hasPrimary"]
-                and repo["default"] == "master"
-            ):
-                repo["status"] = "candidate for remote process"
-                reposReadyForRemote.append(repo)
-                return None
-            if repo["default"] != repo["targetName"] and repo["default"] != "master":
-                repo[
-                    "status"
-                ] = f"Primary branch neither {repo['targetName']} nor master"
-                reposWithErrors.append(repo)
-                return None
-        repo["status"] = f"error: {repo}"
-        reposWithErrors.append(repo)
-        return None
-
-    # * ``` Placeholder variables for groups of checked repos! ``` * #
-    reposAlreadyBlasted = []
-    reposWithErrors = []
-    reposReadyForLocal = []
-    reposReadyForLocalMasterDelete = []
-    # Why not remote master delete?
-    reposReadyForRemote = []
 
 
 def wizard(data, testing):
@@ -195,7 +62,7 @@ def wizard(data, testing):
     repos = getLocalRepos(repos, localDirectory)
     removeClones = getRemoveClones(testing)
     gitNew = getGitNew(namingMode, name, testing)
-
     repos = checkBranches(username, token, repos)
+    repos = checkNames(repos)
 
     return username, token, repos, localDirectory, removeClones, gitNew

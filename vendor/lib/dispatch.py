@@ -1,4 +1,4 @@
-from vendor.lib.reporting import handleNamingErrors
+from vendor.lib.actions.network import mvThirdToTargetLocal
 
 # dispatch #
 # * Run actions through dispatch.
@@ -8,71 +8,91 @@ from vendor.lib.reporting import handleNamingErrors
 
 
 def run(dataWithOptions):
-    """Make sure any naming errors are handled, then run any actions to be run!"""
+    """Run any actions to be run, and report and log!"""
     username, token, repos, localDirectory, removeClones, gitNew = dataWithOptions
-    repos = handleNamingErrors(repos)
 
-    # * Run the local process on any repos ready for local. * #
+    states = {
+        "pendingMvThirdToTargetLocal": "Do you want to mv third to target? Local repo",
+        "mvThirdToTargetLocal": "Move third to target, local repo.",
+        "pendingMvThirdToTargetClone": "Do you want to mv third to target? Clone repo",
+        "MvThirdToTargetClone": "Move third to target, clone repo.",
+        "pendingMvThirdToTargetAndBlastLocalMaster": "Do you want to mv third to target and blast the local master? Local repo.",
+        "mvThirdToTargetAndBlastLocalMaster": "Move third to target and blast the local master, local repo.",
+        "pendingDeleteRemote": "Delete remote?",
+        "deleteRemote": "Delete remote.",
+        "pendingDeleteLocal": "Delete local?",
+        "deleteLocal": "Delete local.",
+        "pendingDeleteLocalAndRemote": "Delete local and remote?",
+        "deleteLocalAndRemote": "Delete local and remote.",
+        "remoteProcessLocal": "Perfect remote process local repo.",
+        "remoteProcessClone": "Perfect remote process clone repo.",
+        "pendingLocalProcess": "Perfect case local process.",
+        "localProcess": "Local process is a go.",
+        "alreadyBlasted": "Already blasted.",
+        "pathUnclear": "Path unclear.",
+        "folderError": "Local folder that possibly isn't git repo, error opening .git/config",
+    }
 
-    # * Run the remote process on any repos ready for remote. * #
+    reposPendingMvThirdToTargetLocal = []
+    reposMvThirdToTargetLocal = []
+    reposPendingMvThirdToTargetClone = []
+    reposMvThirdToTargetClone = []
+    reposPendingMvThirdToTargetAndBlastLocalMaster = []
+    reposMvThirdToTargetAndBlastLocalMaster = []
+    reposPendingDeleteRemote = []
+    reposDeleteRemote = []
+    reposPendingDeleteLocal = []
+    reposDeleteLocal = []
+    reposPendingDeleteLocalAndRemote = []
+    reposDeleteLocalAndRemote = []
+    reposPendingLocalProcess = []
+    reposLocalProcess = []
+    reposRemoteProcessLocal = []
+    reposRemoteProcessClone = []
+    reposAlreadyBlasted = []
+    reposPathUnclear = []
+    reposFolderError = []
 
-    # * Remove any cloned repos if that option is enabled. * #
+    for repo in repos:
+        if repo["status"] == states.pendingMvThirdToTargetLocal:
+            reposPendingMvThirdToTargetLocal.append(repo)
+        if repo["status"] == states.mvThirdToTargetLocal:
+            reposMvThirdToTargetLocal.append(repo)
+        if repo["status"] == states.pendingMvThirdToTargetClone:
+            reposPendingMvThirdToTargetClone.append(repo)
+        if repo["status"] == states.mvThirdToTargetClone:
+            reposMvThirdToTargetClone.append(repo)
+        if repo["status"] == states.pendingMvThirdToTargetAndBlastLocalMaster:
+            reposPendingMvThirdToTargetAndBlastLocalMaster.append(repo)
+        if repo["status"] == states.mvThirdToTargetAndBlastLocalMaster:
+            reposMvThirdToTargetAndBlastLocalMaster.append(repo)
+        if repo["status"] == states.pendingDeleteRemote:
+            reposPendingDeleteRemote.append(repo)
+        if repo["status"] == states.deleteRemote:
+            reposDeleteRemote.append(repo)
+        if repo["status"] == states.pendingDeleteLocal:
+            reposPendingDeleteLocal.append(repo)
+        if repo["status"] == states.deleteLocal:
+            reposDeleteLocal.append(repo)
+        if repo["status"] == states.pendingDeleteLocalAndRemote:
+            reposPendingDeleteLocalAndRemote.append(repo)
+        if repo["status"] == states.deleteLocalAndRemote:
+            reposDeleteLocalAndRemote.append(repo)
+        if repo["status"] == states.pendingLocalProcess:
+            reposPendingLocalProcess.append(repo)
+        if repo["status"] == states.localProcess:
+            reposLocalProcess.append(repo)
+        if repo["status"] == states.remoteProcessLocal:
+            reposRemoteProcessLocal.append(repo)
+        if repo["status"] == states.remoteProcessClone:
+            reposRemoteProcessClone.append(repo)
+        if repo["status"] == states.alreadyBlasted:
+            reposAlreadyBlasted.append(repo)
+        if repo["status"] == states.pathUnclear:
+            reposPathUnclear.append(repo)
+        if repo["status"] == states.folderError:
+            reposFolderError.append(repo)
 
-    # * Add alias git new if that option is enabled. * #
-
-    # * Check for any stray master branches. * #
-
-    # * If there are, ask about that, if so, chop em. * #
-
-    # * Collect any errors for logging and reporting. * #
-
-
-from pathlib import Path
-from subprocess import Popen, PIPE
-
-# * Any actions should be run through dispatch.
-# * The run function should take a token, a set
-# * of options, and the testing boolean, and do
-# * the appropriate set of actions. * #
-
-# Yay this works!
-
-# * ``` From u/merfi on SO, added a path param ``` * #
-
-
-def get_active_branch_name(path):
-    head_dir = Path(path) / ".git" / "HEAD"
-    with head_dir.open("r") as f:
-        content = f.read().splitlines()
-
-    for line in content:
-        if line[0:4] == "ref:":
-            return line.partition("refs/heads/")[2]
-
-
-def run(token, options, testing):
-    currentBranch = ""
-    if testing:
-        if f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}":
-            currentBranch = get_active_branch_name(f"{Path.cwd()}")
-
-    # This should run last
-    # ! Testing! #
-    if len(currentBranch) > 0:
-        Popen(["git", "checkout", f"{currentBranch}"], stdout=PIPE, stderr=PIPE)
-
-    def getToken():
-        tokenConfirmed = False
-        while not tokenConfirmed:
-            customTokenResponse = questionary.text(tokenPrompt(tokenType)).ask()
-            if customTokenResponse == "":
-                print("Please enter the token!")
-                continue
-            else:
-                token = customTokenResponse
-                tokenConfirmed = True
-                continue
-        # ! Testing! #
-        token = tokenRepoScope
-        # # token = "fermf"
-        return token
+    if len(reposMvThirdToTargetLocal) > 0:
+        for repo in reposMvThirdToTargetLocal:
+            mvThirdToTargetLocal(repo)
