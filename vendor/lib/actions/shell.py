@@ -91,41 +91,136 @@ def checkLocalBranches(repos):
     """Determine presence of target/master branches, and what the default is."""
     for repo in repos:
         if repo["localPath"]:
-            localBranchGitBranch = Popen(
+            gitBranch = Popen(
                 ["git", "branch"], cwd=repo["localPath"], stdout=PIPE, stderr=PIPE
             )
-            localBranchGitBranchStdout = processLogger(
-                f"cwd={repo['localPath']}: git branch", localBranchGitBranch
+            gitBranchStdout = processLogger(
+                f"cwd={repo['localPath']}: git branch", gitBranch
             )[0]
-            repo["localHasMaster"] = "master" in f"{localBranchGitBranchStdout}"
-            repo["localHasTarget"] = (
-                repo["targetName"] in f"{localBranchGitBranchStdout}"
-            )
+            repo["localHasMaster"] = "master" in f"{gitBranchStdout}"
+            repo["localHasTarget"] = repo["targetName"] in f"{gitBranchStdout}"
             if not repo["hasTarget"] and not repo["hasMaster"]:
-                repo["localHasThird"] = (
-                    repo["default"] in f"{localBranchGitBranchStdout}"
-                )
+                repo["localHasThird"] = repo["default"] in f"{gitBranchStdout}"
     return repos
 
 
-def runGitNew(name):
-    """Add the `git new` alias!"""
-    gitNewGcg = Popen(
-        [
-            "git",
-            "config",
-            "--global",
-            "alias.new",
-            f"!git init && git symbolic-ref HEAD refs/heads/{name}",
-        ],
+def renameBranch(initial, final, directory):
+    """Renames a branch of a repo, locally."""
+    gitBranchMove = Popen(
+        ["git", "branch", "-m", initial, final], cwd=directory, stdout=PIPE, stderr=PIPE
+    )
+    processLogger(f"cwd={directory}: git branch -m {initial} {final}", gitBranchMove)
+    # TODO UPDATE THIS TO ERROR STATE HANDLING
+
+
+def pushSettingUpstream(targetName, directory):
+    """Pushes to remote, setting the upstream (remote tracking branch.)"""
+    gitPushSetUpstream = Popen(
+        ["git", "push", "-u", "origin", targetName],
+        cwd={directory},
         stdout=PIPE,
         stderr=PIPE,
     )
-    gitNewGcgExitCode = processLogger(
-        f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{name}'",
-        gitNewGcg,
-    )[2]
-    if gitNewGcgExitCode == 0:
-        print(f"Git alias git new: initalize git repo with HEAD ref refs/heads/{name}")
+    loggerReturn = processLogger(
+        f"cwd={directory}: git push -u origin {targetName}",
+        gitPushSetUpstream,
+        ignoreStr="To",
+    )
+    gitPushSetUpstreamStderr = loggerReturn[1]
+    gitPushSetUpstreamExitCode = loggerReturn[2]
+    if gitPushSetUpstreamExitCode == 1:
+        return gitPushSetUpstreamStderr
     else:
-        print("Git alias add failed, see log file.")
+        return None
+
+
+def deleteRemoteBranch(branch, directory):
+    """Delete the old branch on the remote."""
+    gitPushDelete = Popen(
+        ["git", "push", "--delete", "origin", branch],
+        cwd=directory,
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    loggerReturn = processLogger(
+        f"cwd={directory}: git push --delete origin {branch}",
+        gitPushDelete,
+        ignoreStr="To",
+    )
+    gitPushDeleteStderr = loggerReturn[1]
+    gitPushDeleteExitCode = loggerReturn[2]
+    if gitPushDeleteExitCode == 1:
+        return gitPushDeleteStderr
+    else:
+        return None
+
+
+def mkdirIfNeedBe(username, localDirectory):
+    """/master-blaster-{username} is used as a temp dir."""
+    if not os.path.isdir(f"{localDirectory}/master-blaster-{username}/"):
+        mkdir = Popen(
+            ["mkdir", "-pv", f"{localDirectory}/master-blaster-{username}/"],
+            cwd=localDirectory,
+            stdout=PIPE,
+            stderr=PIPE,
+        )
+        loggerReturn = processLogger(
+            f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/",
+            mkdir,
+        )
+        mkdirStderr = loggerReturn[1]
+        mkdirExitCode = loggerReturn[2]
+        if mkdirExitCode == 1:
+            return mkdirStderr
+        else:
+            return None
+    else:
+        return None
+
+
+def cloneRepo(username, repo, localDirectory):
+    """Clone the repo into the right place!"""
+    gitClone = Popen(
+        [
+            "git",
+            "clone",
+            f"{repo['htmlUrl']}.git",
+            f"./{repo['owner-login']}/{repo['name']}",
+        ],
+        cwd=f"{localDirectory}/master-blaster-{username}/",
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    loggerReturn = processLogger(
+        f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}",
+        gitClone,
+    )
+    gitCloneStderr = loggerReturn[1]
+    gitCloneExitCode = loggerReturn[2]
+    if gitCloneExitCode == 1:
+        return gitCloneStderr
+    else:
+        return None
+
+
+# def runGitNew(name):
+#     """Add the `git new` alias!"""
+#     gitNewGcg = Popen(
+#         [
+#             "git",
+#             "config",
+#             "--global",
+#             "alias.new",
+#             f"!git init && git symbolic-ref HEAD refs/heads/{name}",
+#         ],
+#         stdout=PIPE,
+#         stderr=PIPE,
+#     )
+#     gitNewGcgExitCode = processLogger(
+#         f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{name}'",
+#         gitNewGcg,
+#     )[2]
+#     if gitNewGcgExitCode == 0:
+#         print(f"Git alias git new: initalize git repo with HEAD ref refs/heads/{name}")
+#     else:
+#         print("Git alias add failed, see log file.")

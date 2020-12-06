@@ -63,6 +63,6 @@ def wizard(data, testing):
     removeClones = getRemoveClones(testing)
     gitNew = getGitNew(namingMode, name, testing)
     repos = checkBranches(username, token, repos)
-    repos = checkNames(repos)
+    repos, optionRepos = checkNames(repos)
 
-    return username, token, repos, localDirectory, removeClones, gitNew
+    return username, token, repos, optionRepos, localDirectory, removeClones, gitNew
