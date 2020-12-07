@@ -809,8 +809,384 @@ def checkNames(repos):
     return repos, optionRepos
 
 
-def reportOn(finalRepos):
-    """TODO"""
+def printNamesAndErrors(repos):
+    """Print out the names of successes, if present, then errors, if present."""
+    reposNumber = 0
+    if repos.get("repos"):
+        reposNumber = len(repos.repos)
+    else:
+        reposNumber = len(repos)
+    repoErrorsNumber = 0
+    if repos.get("errors"):
+        repoErrorsNumber = len(repos.errors)
+    if reposNumber > repoErrorsNumber:
+        print(f"Successes: {reposNumber - repoErrorsNumber}\n")
+        if repoErrorsNumber > 0:
+            for repo in repos.repos:
+                error = False
+                for errorRepo in repos.errors:
+                    if repo["name"] == errorRepo["name"]:
+                        error = True
+                if not error:
+                    print(f"{repo['name']}\n")
+            print(f"Errors: {repoErrorsNumber}\n")
+            for errorRepo in repos.errors:
+                print(f"{errorRepo['name']}\n")
+        else:
+            for repo in repos.repos:
+                print(f"{repo['name']}\n")
+    else:
+        print(f"Errors: {repoErrorsNumber}\n")
+        for errorRepo in repos.errors:
+            print(f"{errorRepo['name']}\n")
+
+
+def reportOn(
+    finalRepos, clonesRmAttempted, reposCloneDeletionError, gitNew, gitNewError
+):
+    """What happened?"""
+    # states = {
+    #     "pendingMvThirdToTargetLocal": "Do you want to mv third to target? Local repo",
+    #     "mvThirdToTargetLocal": "Move third to target, local repo.",
+    #     "pendingMvThirdToTargetClone": "Do you want to mv third to target? Clone repo",
+    #     "mvThirdToTargetClone": "Move third to target, clone repo.",
+    #     "pendingMvThirdToTargetAndBlastLocalMaster": "Do you want to mv third to target and blast the local master? Local repo.",
+    #     "mvThirdToTargetAndBlastLocalMaster": "Move third to target and blast the local master, local repo.",
+    #     "pendingDeleteRemote": "Delete remote?",
+    #     "deleteRemote": "Delete remote.",
+    #     "pendingDeleteLocal": "Delete local?",
+    #     "deleteLocal": "Delete local.",
+    #     "pendingDeleteLocalAndRemote": "Delete local and remote?",
+    #     "deleteLocalAndRemote": "Delete local and remote.",
+    #     "remoteProcessLocal": "Perfect remote process local repo.",
+    #     "remoteProcessClone": "Perfect remote process clone repo.",
+    #     "pendingLocalProcess": "Perfect case local process.",
+    #     "localProcess": "Local process is a go.",
+    #     "alreadyBlasted": "Already blasted.",
+    #     "pathUnclear": "Path unclear.",
+    #     "folderError": "Local folder that possibly isn't git repo, error opening .git/config",
+    # }
+    # finalRepos = {
+    #     "reposRemoteProcessLocal": reposRemoteProcessLocal,
+    #     "reposRemoteProcessClone": reposRemoteProcessClone,
+    #     "reposDeleteLocal": optionRepos.reposDeleteLocal,
+    #     "reposDeleteRemote": optionRepos.reposDeleteRemote,
+    #     "reposDeleteLocalAndRemote": optionRepos.reposDeleteLocalAndRemote,
+    #     "reposLocalProcess": optionRepos.reposLocalProcess,
+    #     "reposMvThirdToTargetLocal": optionRepos.reposMvThirdToTargetLocal,
+    #     "reposMvThirdToTargetClone": optionRepos.reposMvThirdToTargetClone,
+    #     "reposMvThirdToTargetAndBlastLocalMaster": optionRepos.reposMvThirdToTargetAndBlastLocalMaster,
+    #     "reposPathUnclear": reposPathUnclear,
+    #     "reposFolderError": reposFolderError,
+    #     "reposAlreadyBlasted": reposAlreadyBlasted,
+    # }
+    print("Process complete!\n")
+
+    reposNumber = len(finalRepos.reposRemoteProcessLocal.repos)
+    repoErrorsNumber = len(finalRepos.reposRemoteProcessLocal.errors)
+    if len(reposNumber) > 0:
+        if not len(repoErrorsNumber) > 0:
+            if len(reposNumber > 1):
+                print(f"{len(reposNumber)} repos blasted from local repos!")
+            else:
+                print(f"{len(reposNumber)} repo blasted from the local repo!")
+        elif len(reposNumber) > len(repoErrorsNumber):
+            if len(repoErrorsNumber) > 1:
+                print(
+                    f"Attempted to blast {len(reposNumber)} repos from local repos, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had errors!"
+                )
+            else:
+                print(
+                    f"Attempted to blast {len(reposNumber)} repos from local repos, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had an error!"
+                )
+        else:
+            if len(reposNumber) > 1:
+                print(
+                    f"Attempted to blast {len(reposNumber)} repos from local repos, all errored!"
+                )
+            else:
+                print(
+                    f"Attempted to blast {len(reposNumber)} repo from the local repo and it errored!"
+                )
+    printNamesAndErrors(finalRepos.reposRemoteProcessLocal)
+
+    reposNumber = len(finalRepos.reposRemoteProcessClone.repos)
+    repoErrorsNumber = len(finalRepos.reposRemoteProcessClone.errors)
+    if len(reposNumber) > 0:
+        if not len(repoErrorsNumber) > 0:
+            if len(reposNumber > 1):
+                print(f"{len(reposNumber)} repos blasted by cloning the repos!")
+            else:
+                print(f"{len(reposNumber)} repo blasted by cloning the repo!")
+        elif len(reposNumber) > len(repoErrorsNumber):
+            if len(repoErrorsNumber) > 1:
+                print(
+                    f"Attempted to blast {len(reposNumber)} repos by cloning the repos, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had errors!"
+                )
+            else:
+                print(
+                    f"Attempted to blast {len(reposNumber)} repos by cloning the repos, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had an error!"
+                )
+        else:
+            if len(reposNumber) > 1:
+                print(
+                    f"Attempted to blast {len(reposNumber)} repos by cloning the repos, all errored!"
+                )
+            else:
+                print(
+                    f"Attempted to blast {len(reposNumber)} repo by cloning the repo and it errored!"
+                )
+    printNamesAndErrors(finalRepos.reposRemoteProcessClone)
+
+    reposNumber = len(finalRepos.reposDeleteLocal.repos)
+    repoErrorsNumber = len(finalRepos.reposDeleteLocal.errors)
+    if len(reposNumber) > 0:
+        if not len(repoErrorsNumber) > 0:
+            if len(reposNumber > 1):
+                print(f"{len(reposNumber)} local master branches blasted!")
+            else:
+                print(f"{len(reposNumber)} local master branch blasted!")
+        elif len(reposNumber) > len(repoErrorsNumber):
+            if len(repoErrorsNumber) > 1:
+                print(
+                    f"Attempted to blast {len(reposNumber)} local master branches, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had errors!"
+                )
+            else:
+                print(
+                    f"Attempted to blast {len(reposNumber)} local master branches, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had an error!"
+                )
+        else:
+            if len(reposNumber) > 1:
+                print(
+                    f"Attempted to blast {len(reposNumber)} local master branches, all errored!"
+                )
+            else:
+                print(
+                    f"Attempted to blast {len(reposNumber)} local master branch and it errored!"
+                )
+    printNamesAndErrors(finalRepos.reposDeleteLocal)
+
+    reposNumber = len(finalRepos.reposDeleteRemote.repos)
+    repoErrorsNumber = len(finalRepos.reposDeleteRemote.errors)
+    if len(reposNumber) > 0:
+        if not len(repoErrorsNumber) > 0:
+            if len(reposNumber > 1):
+                print(
+                    f"{len(reposNumber)} master branches blasted by cloning the repos!"
+                )
+            else:
+                print(f"{len(reposNumber)} master branch blasted by cloning the repo!")
+        elif len(reposNumber) > len(repoErrorsNumber):
+            if len(repoErrorsNumber) > 1:
+                print(
+                    f"Attempted to blast {len(reposNumber)} master branches by cloning the repos, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had errors!"
+                )
+            else:
+                print(
+                    f"Attempted to blast {len(reposNumber)} master branches by cloning the repos, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had an error!"
+                )
+        else:
+            if len(reposNumber) > 1:
+                print(
+                    f"Attempted to blast {len(reposNumber)} master branches by cloning the repos, all errored!"
+                )
+            else:
+                print(
+                    f"Attempted to blast {len(reposNumber)} master branch by cloning the repo and it errored!"
+                )
+    printNamesAndErrors(finalRepos.reposDeleteRemote)
+
+    reposNumber = len(finalRepos.reposDeleteLocalAndRemote.repos)
+    repoErrorsNumber = len(finalRepos.reposDeleteLocalAndRemote.errors)
+    if len(reposNumber) > 0:
+        if not len(repoErrorsNumber) > 0:
+            if len(reposNumber > 1):
+                print(
+                    f"{len(reposNumber)} master branches blasted in local repos and remotely!"
+                )
+            else:
+                print(
+                    f"{len(reposNumber)} master branch blasted in the local repo and remotely!"
+                )
+        elif len(reposNumber) > len(repoErrorsNumber):
+            if len(repoErrorsNumber) > 1:
+                print(
+                    f"Attempted to blast {len(reposNumber)} master branches in a local repo and remotely, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had errors!"
+                )
+            else:
+                print(
+                    f"Attempted to blast {len(reposNumber)} master branches in a local repo and remotely, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had an error!"
+                )
+        else:
+            if len(reposNumber) > 1:
+                print(
+                    f"Attempted to blast {len(reposNumber)} master branches in local repos and remotely, all errored!"
+                )
+            else:
+                print(
+                    f"Attempted to blast {len(reposNumber)} master branch in the local repo and remotely and it errored!"
+                )
+    printNamesAndErrors(finalRepos.reposDeleteLocalAndRemote)
+
+    reposNumber = len(finalRepos.reposLocalProcess.repos)
+    repoErrorsNumber = len(finalRepos.reposLocalProcess.errors)
+    if len(reposNumber) > 0:
+        if not len(repoErrorsNumber) > 0:
+            if len(reposNumber > 1):
+                print(f"{len(reposNumber)} local repos synced with blasted remotes!")
+            else:
+                print(f"{len(reposNumber)} local repo synced with a blasted remote!")
+        elif len(reposNumber) > len(repoErrorsNumber):
+            if len(repoErrorsNumber) > 1:
+                print(
+                    f"Attempted to sync {len(reposNumber)} local repos with blasted remotes, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had errors!"
+                )
+            else:
+                print(
+                    f"Attempted to sync {len(reposNumber)} local repos with blasted remotes, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had an error!"
+                )
+        else:
+            if len(reposNumber) > 1:
+                print(
+                    f"Attempted to sync {len(reposNumber)} local repos with blasted remotes, all errored!"
+                )
+            else:
+                print(
+                    f"Attempted to sync {len(reposNumber)} local repo with a blasted remote and it errored!"
+                )
+    printNamesAndErrors(finalRepos.reposLocalProcess)
+
+    reposNumber = len(finalRepos.reposMvThirdToTargetLocal.repos)
+    repoErrorsNumber = len(finalRepos.reposMvThirdToTargetLocal.errors)
+    if len(reposNumber) > 0:
+        if not len(repoErrorsNumber) > 0:
+            if len(reposNumber > 1):
+                print(f"{len(reposNumber)} branches renamed from local repos!")
+            else:
+                print(f"{len(reposNumber)} branch renamed from the local repo!")
+        elif len(reposNumber) > len(repoErrorsNumber):
+            if len(repoErrorsNumber) > 1:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branches from local repos, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had errors!"
+                )
+            else:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branches from local repos, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had an error!"
+                )
+        else:
+            if len(reposNumber) > 1:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branches from local repos, all errored!"
+                )
+            else:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branches from the local repo and it errored!"
+                )
+    printNamesAndErrors(finalRepos.reposMvThirdToTargetLocal)
+
+    reposNumber = len(finalRepos.reposMvThirdToTargetClone.repos)
+    repoErrorsNumber = len(finalRepos.reposMvThirdToTargetClone.errors)
+    if len(reposNumber) > 0:
+        if not len(repoErrorsNumber) > 0:
+            if len(reposNumber > 1):
+                print(f"{len(reposNumber)} branches renamed by cloning the repos!")
+            else:
+                print(f"{len(reposNumber)} branch renamed by cloning the repo!")
+        elif len(reposNumber) > len(repoErrorsNumber):
+            if len(repoErrorsNumber) > 1:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branches by cloning the repos, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had errors!"
+                )
+            else:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branches by cloning the repos, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had an error!"
+                )
+        else:
+            if len(reposNumber) > 1:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branches by cloning the repos, all errored!"
+                )
+            else:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branch by cloning the repo and it errored!"
+                )
+    printNamesAndErrors(finalRepos.reposMvThirdToTargetClone)
+
+    reposNumber = len(finalRepos.reposMvThirdToTargetAndBlastLocalMaster.repos)
+    repoErrorsNumber = len(finalRepos.reposMvThirdToTargetAndBlastLocalMaster.errors)
+    if len(reposNumber) > 0:
+        if not len(repoErrorsNumber) > 0:
+            if len(reposNumber > 1):
+                print(
+                    f"{len(reposNumber)} branches renamed from local repos and local master branches deleted!"
+                )
+            else:
+                print(
+                    f"{len(reposNumber)} branch renamed from the local repo and the local master branch deleted!"
+                )
+        elif len(reposNumber) > len(repoErrorsNumber):
+            if len(repoErrorsNumber) > 1:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branches from local repos and delete the local master branches, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had errors!"
+                )
+            else:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branches from local repos and delete the local master branches, succeeded with {len(reposNumber) - len(repoErrorsNumber)} while {len(repoErrorsNumber)} had an error!"
+                )
+        else:
+            if len(reposNumber) > 1:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branches from local repos and delete the local master branches, all errored!"
+                )
+            else:
+                print(
+                    f"Attempted to rename {len(reposNumber)} branch from a local repo and delete the local master branch and it errored!"
+                )
+    printNamesAndErrors(finalRepos.reposMvThirdToTargetAndBlastLocalMaster)
+
+    reposNumber = len(finalRepos.reposPathUnclear)
+    if len(reposNumber) > 0:
+        if len(reposNumber > 1):
+            print(
+                f"{len(reposNumber)} repos weren't acted on because the path for action was unclear!"
+            )
+        else:
+            print(
+                f"{len(reposNumber)} repo wasn't acted on because the path for action was unclear!"
+            )
+    printNamesAndErrors(finalRepos.reposPathUnclear)
+
+    reposNumber = len(finalRepos.reposFolderError)
+    if len(reposNumber) > 0:
+        if len(reposNumber > 1):
+            print(
+                f"{len(reposNumber)} repos weren't acted on because there was a local folder that possibly isn't git repo, error opening .git/config!"
+            )
+        else:
+            print(
+                f"{len(reposNumber)} repo wasn't acted on because there was a local folder that possibly isn't git repo, error opening .git/config!"
+            )
+    printNamesAndErrors(finalRepos.reposFolderError)
+
+    reposNumber = len(finalRepos.reposAlreadyBlasted)
+    if len(reposNumber) > 0:
+        if len(reposNumber > 1):
+            print(f"{len(reposNumber)} repos were already blasted!")
+        else:
+            print(f"{len(reposNumber)} repo was already blasted!")
+    printNamesAndErrors(finalRepos.reposAlreadyBlasted)
+
+    if clonesRmAttempted:
+        if reposCloneDeletionError:
+            print("There was an error deleting the cloned repos!")
+        else:
+            print("Cloned repos deleted!")
+
+    if gitNew:
+        if gitNewError:
+            print("There was an error creating the git alias!")
+        else:
+            print("Git alias `git new` created!")
 
 
 def denoument():

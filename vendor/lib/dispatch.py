@@ -276,8 +276,10 @@ def run(dataWithOptions):
         if error:
             reposRemoteProcessClone.errors.append([repo, error])
 
+    clonesRmAttempted = False
     reposCloneDeletionError = False
     if removeClones and len(clonedRepos) > 0:
+        clonesRmAttempted = True
         reposCloneDeletionError = rmCloneFolder(username, localDirectory)
 
     gitNewError = False
@@ -299,4 +301,6 @@ def run(dataWithOptions):
         "reposFolderError": reposFolderError,
     }
 
-    reportOn(finalRepos, reposCloneDeletionError, gitNewError)
+    reportOn(
+        finalRepos, clonesRmAttempted, reposCloneDeletionError, gitNew, gitNewError
+    )
