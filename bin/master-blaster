@@ -39,7 +39,7 @@ intro()
 
 data = auth(testing)
 
-if not data.repos:
+if not data[2]:
     sys.exit()
 else:
     dataWithOptions = wizard(data, testing)

@@ -25,7 +25,7 @@ def checkBranches(username, token, repos):
     repos = checkRemoteBranches(token, repos)
     localReposPresent = False
     for repo in repos:
-        if repo["localPath"]:
+        if repo.get("localPath"):
             localReposPresent = True
     if localReposPresent:
         repos = checkLocalBranches(repos)
@@ -61,7 +61,7 @@ def wizard(data, testing):
     localDirectory = getLocalDirectory(testing)
     repos = getLocalRepos(repos, localDirectory)
     removeClones = getRemoveClones(testing)
-    gitNew = getGitNew(namingMode, name, testing)
+    gitNew = getGitNew(namingMode, perRepo, name, testing)
     repos = checkBranches(username, token, repos)
     repos, optionRepos = checkNames(repos)
 

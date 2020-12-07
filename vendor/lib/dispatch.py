@@ -3,7 +3,7 @@ from vendor.lib.actions.shell import pushSettingUpstream
 from vendor.lib.actions.network import updateDefaultBranch
 from vendor.lib.actions.shell import deleteRemoteBranch
 from vendor.lib.actions.shell import mkdirIfNeedBe
-from vendor.lib.actions.network import cloneRepo
+from vendor.lib.actions.shell import cloneRepo
 from vendor.lib.actions.shell import deleteLocalBranch
 from vendor.lib.actions.shell import checkout
 from vendor.lib.actions.shell import fetch

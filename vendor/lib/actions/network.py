@@ -27,7 +27,7 @@ def getRepos(username, token):
         logWarning(f"Response status: {response.status_code}")
         return None
     else:
-        if response.json().len == 0:
+        if len(response.json()) == 0:
             print("No repos to blast!")
             return None
         print("Repos received!")

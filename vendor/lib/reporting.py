@@ -58,8 +58,7 @@ def getUsername(testing):
       First, please enter your GitHub username!
   """
 
-    usernameConfirmed = False
-    while not usernameConfirmed:
+    while True:
         usernameResponse = questionary.text(usernamePrompt).ask()
         if usernameResponse == "":
             print("GitHub username blank: Please try again!")
@@ -67,19 +66,19 @@ def getUsername(testing):
         if len(usernameResponse) >= 40:
             print("GitHub usernames are 39 chars or less: please try again!")
             continue
-        else:
-            usernameConfirmationResponse = questionary.confirm(
-                usernameConfirmationPrompt(usernameResponse)
-            ).ask()
-            if usernameConfirmationResponse == False:
-                print("Thank you for retrying!")
-                continue
-            if usernameConfirmationResponse:
-                username = usernameResponse
-                if not testing:
-                    logInfo(f"Username: {username}")
-                    usernameConfirmed = True
-                    continue
+        usernameConfirmationResponse = questionary.confirm(
+            usernameConfirmationPrompt(usernameResponse)
+        ).ask()
+        if usernameConfirmationResponse == False:
+            print("Thank you for retrying!")
+            continue
+        if usernameConfirmationResponse:
+            username = usernameResponse
+            if not testing:
+                logInfo(f"Username: {username}")
+                break
+            if testing:
+                break
 
     if testing:
         username = "Twitchkidd"
@@ -297,7 +296,7 @@ def getGitNew(namingMode, perRepo, name, testing):
 def checkNames(repos):
     """This tests repos against various states and prompts for any actions that
     can be caught by looking at any naming errors."""
-
+    print(repos)
     # Repo object [ones in brackets are only conditionally present]:
     #   default
     #   htmlUrl
@@ -564,7 +563,7 @@ def checkNames(repos):
         if repo["status"]:
             continue
         if not repo["hasTarget"] and not repo["hasMaster"]:
-            if repo["localPath"]:
+            if repo.get("localPath"):
                 if (
                     repo["localHasMaster"]
                     and not repo["localHasTarget"]
@@ -592,7 +591,7 @@ def checkNames(repos):
             and repo["hasMaster"]
             and repo["default"] == repo["targetName"]
         ):
-            if repo["localPath"]:
+            if repo.get("localPath"):
                 if repo["localHasTarget"] and repo["localHasMaster"]:
                     repo["status"] = states.pendingDeleteLocalAndRemote
                     reposDeleteLocalAndRemote.repos.append(repo)
@@ -607,7 +606,7 @@ def checkNames(repos):
             reposDeleteRemote.repos.append(repo)
             continue
         if repo["hasMaster"] and not repo["hasTarget"] and repo["default"] == "master":
-            if repo["localPath"]:
+            if repo.get("localPath"):
                 if repo["localHasMaster"] and not repo["localHasTarget"]:
                     repo["status"] = states.remoteProcessLocal
                     continue
@@ -620,7 +619,7 @@ def checkNames(repos):
             and not repo["hasMaster"]
             and repo["default"] == repo["targetName"]
         ):
-            if repo["localPath"]:
+            if repo.get("localPath"):
                 if repo["localHasMaster"] and repo["localHasTarget"]:
                     repo["status"] = states.pendingDeleteLocal
                     reposDeleteLocal.repos.append(repo)

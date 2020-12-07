@@ -94,7 +94,7 @@ def processLogger(string, prc, ignoreStr="", secondIgnoreStr=""):
 def checkLocalBranches(repos):
     """Determine presence of target/master branches, and what the default is."""
     for repo in repos:
-        if repo["localPath"]:
+        if repo.get("localPath"):
             gitBranch = Popen(
                 ["git", "branch"], cwd=repo["localPath"], stdout=PIPE, stderr=PIPE
             )
