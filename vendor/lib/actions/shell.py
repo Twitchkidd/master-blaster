@@ -82,6 +82,10 @@ def processLogger(string, prc, ignoreStr="", secondIgnoreStr=""):
             logWarning(stderr)
             logInfo("You may be able to ignore the above warning.")
             return (stdout, stderr, 0)
+        if secondIgnoreStr != "" and secondIgnoreStr in stderr.decode():
+            logWarning(stderr)
+            logInfo("You may be able to ignore the above warning.")
+            return (stdout, stderr, 0)
         logWarning(stderr)
         return (stdout, stderr, 1)
     return (stdout, stderr, 0)
@@ -109,8 +113,15 @@ def renameBranch(initial, final, directory):
     gitBranchMove = Popen(
         ["git", "branch", "-m", initial, final], cwd=directory, stdout=PIPE, stderr=PIPE
     )
-    processLogger(f"cwd={directory}: git branch -m {initial} {final}", gitBranchMove)
-    # TODO UPDATE THIS TO ERROR STATE HANDLING
+    loggerReturn = processLogger(
+        f"cwd={directory}: git branch -m {initial} {final}", gitBranchMove
+    )
+    gitBranchMoveStderr = loggerReturn[1]
+    gitBranchMoveExitCode = loggerReturn[2]
+    if gitBranchMoveExitCode == 1:
+        return gitBranchMoveStderr
+    else:
+        return None
 
 
 def pushSettingUpstream(targetName, directory):
@@ -203,24 +214,150 @@ def cloneRepo(username, repo, localDirectory):
         return None
 
 
-# def runGitNew(name):
-#     """Add the `git new` alias!"""
-#     gitNewGcg = Popen(
-#         [
-#             "git",
-#             "config",
-#             "--global",
-#             "alias.new",
-#             f"!git init && git symbolic-ref HEAD refs/heads/{name}",
-#         ],
-#         stdout=PIPE,
-#         stderr=PIPE,
-#     )
-#     gitNewGcgExitCode = processLogger(
-#         f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{name}'",
-#         gitNewGcg,
-#     )[2]
-#     if gitNewGcgExitCode == 0:
-#         print(f"Git alias git new: initalize git repo with HEAD ref refs/heads/{name}")
-#     else:
-#         print("Git alias add failed, see log file.")
+def deleteLocalBranch(branch, directory):
+    """Delete a local branch."""
+    deleteBranch = Popen(
+        ["git", "branch", "-D", branch], cwd={directory}, stdout=PIPE, stderr=PIPE
+    )
+    loggerReturn = processLogger(
+        f"cwd={directory}: git branch -D {branch}", deleteBranch
+    )
+    deleteBranchStderr = loggerReturn[1]
+    deleteBranchExitCode = loggerReturn[2]
+    if deleteBranchExitCode == 1:
+        return deleteBranchStderr
+    else:
+        return None
+
+
+def checkout(branch, directory):
+    """Check out a branch."""
+    checkoutBranch = Popen(
+        ["git", "checkout", branch], cwd={directory}, stdout=PIPE, stderr=PIPE
+    )
+    loggerReturn = processLogger(
+        f"cwd={directory}: git checkout {branch}",
+        checkoutBranch,
+        ignoreStr="Already on",
+        secondIgnoreStr="Switched to",
+    )
+    checkoutBranchStderr = processLogger[1]
+    checkoutBranchExitCode = processLogger[2]
+    if checkoutBranchExitCode == 1:
+        return checkoutBranchStderr
+    else:
+        return None
+
+
+def fetch(directory):
+    gitFetch = Popen(["git", "fetch"], cwd={directory}, stdout=PIPE, stderr=PIPE)
+    loggerReturn = processLogger(f"cwd={directory}: git fetch", gitFetch)
+    gitFetchStderr = processLogger[1]
+    gitFetchExitCode = processLogger[2]
+    if gitFetchExitCode == 1:
+        return gitFetchStderr
+    else:
+        return None
+
+
+def unsetUpstream(directory):
+    gitBranchUU = Popen(
+        ["git", "branch", "--unset-upstream"], cwd={directory}, stdout=PIPE, stderr=PIPE
+    )
+    loggerReturn = processLogger(
+        f"cwd={directory}: git branch --unset-upstream", gitBranchUU
+    )
+    gitBranchUUStderr = processLogger[1]
+    gitBranchUUExitCode = processLogger[2]
+    if gitBranchUUExitCode == 1:
+        return gitBranchUUStderr
+    else:
+        return None
+
+
+def setUpstream(targetName, directory):
+    gitBranchSetUpstream = Popen(
+        ["git", "branch", "-u", f"origin/{targetName}"],
+        cwd={directory},
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    loggerReturn = processLogger(
+        f"cwd={directory}: git branch -u origin/{targetName}",
+        gitBranchSetUpstream,
+        ignoreStr="To",
+    )
+    gitBranchSetUpstreamStderr = processLogger[1]
+    gitBranchSetUpstreamExitCode = processLogger[2]
+    if gitBranchSetUpstreamExitCode == 1:
+        return gitBranchSetUpstreamStderr
+    else:
+        return None
+
+
+def updateSymbolicRef(targetName, directory):
+    updateRef = Popen(
+        [
+            "git",
+            "symbolic-ref",
+            "refs/remotes/origin/HEAD",
+            f"refs/remotes/origin/{targetName}",
+        ],
+        cwd={directory},
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    loggerReturn = processLogger(
+        f"cwd={directory}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{targetName}",
+        updateRef,
+    )
+    updateRefStderr = processLogger[1]
+    updateRefExitCode = processLogger[2]
+    if updateRefExitCode == 1:
+        return updateRefStderr
+    else:
+        return None
+
+
+def rmCloneFolder(username, localDirectory):
+    removeDir = Popen(
+        ["rm", "-dfRv", f"{localDirectory}/master-blaster-{username}/"],
+        cwd={localDirectory},
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    loggerReturn = processLogger(
+        f"cwd={localDirectory}: rm -dfRv {localDirectory}/master-blaster-{username}/",
+        removeDir,
+    )
+    removeDirStderr = processLogger[1]
+    removeDirExitCode = processLogger[2]
+    if removeDirExitCode == 1:
+        return removeDirStderr
+    else:
+        return None
+
+
+def gitNew(targetName):
+    """Add the `git new` alias."""
+    gitNew = Popen(
+        [
+            "git",
+            "config",
+            "--global",
+            "alias.new",
+            f"!git init && git symbolic-ref HEAD refs/heads/{targetName}",
+        ],
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    loggerReturn = processLogger(
+        f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{targetName}'",
+        gitNew,
+    )
+    gitNewStderr = loggerReturn[1]
+    gitNewExitCode = loggerReturn[2]
+    if gitNewExitCode == 0:
+        return gitNewStderr
+    else:
+        return None

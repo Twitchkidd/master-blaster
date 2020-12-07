@@ -4,13 +4,14 @@ from vendor.lib.actions.network import updateDefaultBranch
 from vendor.lib.actions.shell import deleteRemoteBranch
 from vendor.lib.actions.shell import mkdirIfNeedBe
 from vendor.lib.actions.network import cloneRepo
-
-# from vendor.lib.actions.network import mvThirdToTargetAndBlastLocalMaster
-from vendor.lib.actions.network import deleteRemote
-from vendor.lib.actions.shell import deleteLocal
-
-# from vendor.lib.actions.network import deleteLocalAndRemote
-from vendor.lib.actions.shell import localProcess
+from vendor.lib.actions.shell import deleteLocalBranch
+from vendor.lib.actions.shell import checkout
+from vendor.lib.actions.shell import fetch
+from vendor.lib.actions.shell import unsetUpstream
+from vendor.lib.actions.shell import setUpstream
+from vendor.lib.actions.shell import updateSymbolicRef
+from vendor.lib.actions.shell import rmCloneFolder
+from vendor.lib.actions.shell import gitNew
 from vendor.lib.reporting import reportOn
 
 # dispatch #
@@ -19,10 +20,50 @@ from vendor.lib.reporting import reportOn
 # * and repos list, a set of options, and the
 # * testing boolean, and do the appropriate set of actions. * #
 
+clonedRepos = []
+
 
 def mvThirdToTargetLocal(token, repo):
     """Rename third and push target upstream, rename default branch, delete remote third."""
-    renameBranch(repo["default"], repo["targetName"], repo["localPath"])
+    error = renameBranch(repo["default"], repo["targetName"], repo["localPath"])
+    if error:
+        return error
+    error = pushSettingUpstream(repo["targetName"], repo["localPath"])
+    if error:
+        return error
+    error = updateDefaultBranch(token, repo)
+    if error:
+        return error
+    return deleteRemoteBranch(repo["default"], repo["localPath"])
+
+
+def mvThirdToTargetClone(token, repo, localDirectory):
+    """Clone branch, rename third and push target upstream, rename default branch, delete remote third."""
+    error = mkdirIfNeedBe(repo["ownerLogin"], localDirectory)
+    if error:
+        return error
+    error = cloneRepo(repo["ownerLogin"], token, repo, localDirectory)
+    if error:
+        return error
+    clonedRepos.append(repo)
+    newPath = f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
+    error = renameBranch(repo["default"], repo["targetName"], newPath)
+    if error:
+        return error
+    error = pushSettingUpstream(repo["targetName"], newPath)
+    if error:
+        return error
+    error = updateDefaultBranch(token, repo)
+    if error:
+        return error
+    return deleteRemoteBranch(repo["default"], newPath)
+
+
+def mvThirdToTargetAndBlastLocalMaster(token, repo, localDirectory):
+    """Rename third and push target upstream, rename default branch, delete remote third, delete local master."""
+    error = renameBranch(repo["default"], repo["targetName"], repo["localPath"])
+    if error:
+        return error
     error = pushSettingUpstream(repo["targetName"], repo["localPath"])
     if error:
         return error
@@ -30,35 +71,93 @@ def mvThirdToTargetLocal(token, repo):
     if error:
         return error
     error = deleteRemoteBranch(repo["default"], repo["localPath"])
-    return error
-
-
-def mvThirdToTargetClone(username, token, repo, localDirectory):
-    """Clone branch, rename third and push target upstream, rename default branch, delete remote third."""
-    error = mkdirIfNeedBe(username, localDirectory)
     if error:
         return error
-    error = cloneRepo(username, token, repo, localDirectory)
-    if error:
-        return error
-    newPath = f"{localDirectory}/master-blaster-{username}/{repo['name']}/"
-    error = 
+    return deleteLocalBranch("master", repo["localPath"])
 
 
-def mvThirdToTargetAndBlastLocalMaster(repo):
-    """Handle this scenario."""
+def deleteRemoteProcess(token, repo, localDirectory):
+    """Check if there's a local repo, then either clone or in-place push delete master."""
+    if repo["localPath"]:
+        return deleteRemoteBranch("master", repo["localPath"])
+    else:
+        error = mkdirIfNeedBe(repo["ownerLogin"], localDirectory)
+        if error:
+            return error
+        error = cloneRepo(repo["ownerLogin"], token, repo, localDirectory)
+        if error:
+            return error
+        clonedRepos.append(repo)
+        newPath = (
+            f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
+        )
+        return deleteRemoteBranch(repo["default"], newPath)
 
 
 def deleteLocalAndRemote(repo):
-    """Handle this scenario."""
+    """Delete remote and local master branches."""
+    error = deleteRemoteBranch("master", repo["localPath"])
+    if error:
+        return error
+    return deleteLocalBranch("master", repo["localPath"])
 
 
-def remoteProcessLocal(repo):
-    """Handle this scenario."""
+def localProcess(repo):
+    """To sync up a local repo whose remote has been blasted, check out master, move it to target,
+    fetch, unset the upstream, set the upstream, and update the symbolic ref."""
+    error = checkout("master", repo["localPath"])
+    if error:
+        return error
+    error = renameBranch("master", repo["targetName"], repo["localPath"])
+    if error:
+        return error
+    error = fetch(repo["localPath"])
+    if error:
+        return error
+    error = unsetUpstream(repo["localPath"])
+    if error:
+        return error
+    error = setUpstream(repo["targetName"], repo["localPath"])
+    if error:
+        return error
+    return updateSymbolicRef(repo["targetName"], repo["localPath"])
 
 
-def remoteProcessClone(repo):
-    """Handle this scenario."""
+def remoteProcessLocal(token, repo):
+    """Move the branch, push that upstream, change the default branch, and delete remote master."""
+    error = renameBranch("master", repo["targetName"], repo["localPath"])
+    if error:
+        return error
+    error = pushSettingUpstream(repo["targetName"], repo["localPath"])
+    if error:
+        return error
+    error = updateDefaultBranch(token, repo)
+    if error:
+        return error
+    return deleteRemoteBranch("master", repo["localPath"])
+
+
+def remoteProcessClone(token, repo, localDirectory):
+    """Mkdir if need be and clone the repo, then move the branch, push that upstream, change the
+    default branch, and delete remote master."""
+    error = mkdirIfNeedBe(repo["ownerLogin"], localDirectory)
+    if error:
+        return error
+    error = cloneRepo(repo["ownerLogin"], token, repo, localDirectory)
+    if error:
+        return error
+    clonedRepos.append(repo)
+    newPath = f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
+    error = renameBranch("master", repo["targetName"], newPath)
+    if error:
+        return error
+    error = pushSettingUpstream(repo["targetName"], newPath)
+    if error:
+        return error
+    error = updateDefaultBranch(token, repo)
+    if error:
+        return error
+    return deleteRemoteBranch("master", newPath)
 
 
 def run(dataWithOptions):
@@ -131,7 +230,7 @@ def run(dataWithOptions):
 
     if not optionRepos.reposMvThirdToTargetClone.pending:
         for repo in optionRepos.reposMvThirdToTargetClone.repos:
-            error = mvThirdToTargetClone(username, token, repo, localDirectory)
+            error = mvThirdToTargetClone(token, repo, localDirectory)
             if error:
                 optionRepos.reposMvThirdToTargetClone.errors.append([repo, error])
 
@@ -145,13 +244,13 @@ def run(dataWithOptions):
 
     if not optionRepos.reposDeleteRemote.pending:
         for repo in optionRepos.reposDeleteRemote.repos:
-            error = deleteRemote(repo)
+            error = deleteRemoteProcess("master", repo["localPath"])
             if error:
                 optionRepos.reposDeleteRemote.errors.append([repo, error])
 
     if not optionRepos.reposDeleteLocal.pending:
         for repo in optionRepos.reposDeleteLocal.repos:
-            error = deleteLocal(repo)
+            error = deleteLocalBranch("master", repo["localPath"])
             if error:
                 optionRepos.reposDeleteLocal.errors.append([repo, error])
 
@@ -168,14 +267,22 @@ def run(dataWithOptions):
                 optionRepos.reposLocalProcess.errors.append([repo, error])
 
     for repo in reposRemoteProcessLocal:
-        error = remoteProcessLocal(repo)
+        error = remoteProcessLocal(token, repo)
         if error:
             reposRemoteProcessLocal.errors.append([repo, error])
 
     for repo in reposRemoteProcessClone:
-        error = remoteProcessClone(repo)
+        error = remoteProcessClone(token, repo, localDirectory)
         if error:
             reposRemoteProcessClone.errors.append([repo, error])
+
+    reposCloneDeletionError = False
+    if removeClones and len(clonedRepos) > 0:
+        reposCloneDeletionError = rmCloneFolder(username, localDirectory)
+
+    gitNewError = False
+    if gitNew:
+        gitNewError = gitNew
 
     finalRepos = {
         "reposMvThirdToTargetLocal": optionRepos.reposMvThirdToTargetLocal,
@@ -192,4 +299,4 @@ def run(dataWithOptions):
         "reposFolderError": reposFolderError,
     }
 
-    reportOn(finalRepos)
+    reportOn(finalRepos, reposCloneDeletionError, gitNewError)
