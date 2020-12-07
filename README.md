@@ -2,6 +2,12 @@
 
 Rename primary branches of code repositories!
 
+### v1.1.0-rc
+
+Check out the dev branch to see a major refactor to facilitate readability and testing!
+
+Major new plus for users is that it'll be just `pip install master-blaster && master-blaster`, the only minus right now is that the whole program got rewritten in like a week and I broke everything! Let the testing begin!
+
 ### v1.0.6 Run commands!
 
 Ahh! Almost there, at the moment we're just going to have to be okay with the extra `pip install questionary requests`, it's just two packages, no prob.
