@@ -53,8 +53,10 @@ def checkRemoteBranches(token, repos):
     for repo in repos:
         targetBranchUrl = getBranchUrl(repo, repo["targetName"])
         masterBranchUrl = getBranchUrl(repo, "master")
+        print(f"Checking {repo['name']} ...", end="")
         targetBranchResponse = requests.get(targetBranchUrl, headers=headers)
         masterBranchResponse = requests.get(masterBranchUrl, headers=headers)
+        print(" got it!")
         if targetBranchResponse.json().get("message"):
             repo["hasTarget"] = False
         if masterBranchResponse.json().get("message"):
