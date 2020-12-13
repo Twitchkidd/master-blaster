@@ -20,11 +20,11 @@ from pathlib import Path
 import sys
 from vendor.lib.actions.shell import getCurrentBranch
 from vendor.lib.actions.shell import setCurrentBranch
-from vendor.lib.auth import auth
-from vendor.lib.dispatch import run
 from vendor.lib.logging import loggingConfig
-from vendor.lib.options import wizard
 from vendor.lib.reporting import intro
+from vendor.lib.auth import auth
+from vendor.lib.options import wizard
+from vendor.lib.dispatch import run
 from vendor.lib.reporting import denoument
 
 testing = True
@@ -38,8 +38,8 @@ if testing:
 intro()
 
 data = auth(testing)
-
-if not data[2]:
+repos = data[2]
+if not repos:
     sys.exit()
 else:
     dataWithOptions = wizard(data, testing)

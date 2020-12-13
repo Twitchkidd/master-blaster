@@ -22,6 +22,15 @@ from vendor.lib.reporting import reportOn
 
 clonedRepos = []
 
+# * So this really needs to be like:
+# *
+# * try:
+# *     all()
+# *     the()
+# *     stuff()
+# * except Exception as err:
+# *     nowWeGotErr
+
 
 def mvThirdToTargetLocal(token, repo):
     """Rename third and push target upstream, rename default branch, delete remote third."""
@@ -125,6 +134,7 @@ def localProcess(repo):
 
 def remoteProcessLocal(token, repo):
     """Move the branch, push that upstream, change the default branch, and delete remote master."""
+    print(repo)
     error = renameBranch("master", repo["targetName"], repo["localPath"])
     if error:
         return error
@@ -211,70 +221,72 @@ def run(dataWithOptions):
     reposFolderError = {"repos": []}
 
     for repo in repos:
-        if repo["status"] == states.remoteProcessLocal:
-            reposRemoteProcessLocal.repos.append(repo)
-        if repo["status"] == states.remoteProcessClone:
-            reposRemoteProcessClone.repos.append(repo)
-        if repo["status"] == states.alreadyBlasted:
-            reposAlreadyBlasted.repos.append(repo)
-        if repo["status"] == states.pathUnclear:
-            reposPathUnclear.repos.append(repo)
-        if repo["status"] == states.folderError:
-            reposFolderError.repos.append(repo)
+        if repo["status"] == states["remoteProcessLocal"]:
+            reposRemoteProcessLocal["repos"].append(repo)
+        if repo["status"] == states["remoteProcessClone"]:
+            reposRemoteProcessClone["repos"].append(repo)
+        if repo["status"] == states["alreadyBlasted"]:
+            reposAlreadyBlasted["repos"].append(repo)
+        if repo["status"] == states["pathUnclear"]:
+            reposPathUnclear["repos"].append(repo)
+        if repo["status"] == states["folderError"]:
+            reposFolderError["repos"].append(repo)
 
-    if not optionRepos.reposMvThirdToTargetLocal.pending:
-        for repo in optionRepos.reposMvThirdToTargetLocal.repos:
+    if not optionRepos["reposMvThirdToTargetLocal"]["pending"]:
+        for repo in optionRepos["reposMvThirdToTargetLocal"]["repos"]:
             error = mvThirdToTargetLocal(token, repo)
             if error:
-                optionRepos.reposMvThirdToTargetLocal.errors.append([repo, error])
+                optionRepos["reposMvThirdToTargetLocal"]["errors"].append([repo, error])
 
-    if not optionRepos.reposMvThirdToTargetClone.pending:
-        for repo in optionRepos.reposMvThirdToTargetClone.repos:
+    if not optionRepos["reposMvThirdToTargetClone"]["pending"]:
+        for repo in optionRepos["reposMvThirdToTargetClone"]["repos"]:
             error = mvThirdToTargetClone(token, repo, localDirectory)
             if error:
-                optionRepos.reposMvThirdToTargetClone.errors.append([repo, error])
+                optionRepos["reposMvThirdToTargetClone"]["errors"].append([repo, error])
 
-    if not optionRepos.reposMvThirdToTargetAndBlastLocalMaster.pending:
-        for repo in optionRepos.reposMvThirdToTargetAndBlastLocalMaster.repos:
+    if not optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["pending"]:
+        for repo in optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["repos"]:
             error = mvThirdToTargetAndBlastLocalMaster(repo)
             if error:
-                optionRepos.reposMvThirdToTargetAndBlastLocalMaster.errors.append(
+                optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["errors"].append(
                     [repo, error]
                 )
 
-    if not optionRepos.reposDeleteRemote.pending:
-        for repo in optionRepos.reposDeleteRemote.repos:
+    if not optionRepos["reposDeleteRemote"]["pending"]:
+        for repo in optionRepos["reposDeleteRemote"]["repos"]:
             error = deleteRemoteProcess("master", repo["localPath"])
             if error:
-                optionRepos.reposDeleteRemote.errors.append([repo, error])
+                optionRepos["reposDeleteRemote"]["errors"].append([repo, error])
 
-    if not optionRepos.reposDeleteLocal.pending:
-        for repo in optionRepos.reposDeleteLocal.repos:
+    if not optionRepos["reposDeleteLocal"]["pending"]:
+        for repo in optionRepos["reposDeleteLocal"]["repos"]:
             error = deleteLocalBranch("master", repo["localPath"])
             if error:
-                optionRepos.reposDeleteLocal.errors.append([repo, error])
+                optionRepos["reposDeleteLocal"]["errors"].append([repo, error])
 
-    if not optionRepos.reposDeleteLocalAndRemote.pending:
-        for repo in optionRepos.reposDeleteLocalAndRemote.repos:
+    if not optionRepos["reposDeleteLocalAndRemote"]["pending"]:
+        for repo in optionRepos["reposDeleteLocalAndRemote"]["repos"]:
             error = deleteLocalAndRemote(repo)
             if error:
-                optionRepos.reposDeleteLocalAndRemote.errors.append([repo, error])
+                optionRepos["reposDeleteLocalAndRemote"]["errors"].append([repo, error])
 
-    if not optionRepos.reposLocalProcess.pending:
-        for repo in optionRepos.reposLocalProcess.repos:
+    if not optionRepos["reposLocalProcess"]["pending"]:
+        for repo in optionRepos["reposLocalProcess"]["repos"]:
             error = localProcess(repo)
             if error:
-                optionRepos.reposLocalProcess.errors.append([repo, error])
+                optionRepos["reposLocalProcess"]["errors"].append([repo, error])
 
     for repo in reposRemoteProcessLocal:
+        # Must test if there are any!!
+        print(repo)  # repos
         error = remoteProcessLocal(token, repo)
         if error:
-            reposRemoteProcessLocal.errors.append([repo, error])
+            reposRemoteProcessLocal["errors"].append([repo, error])
 
     for repo in reposRemoteProcessClone:
         error = remoteProcessClone(token, repo, localDirectory)
         if error:
-            reposRemoteProcessClone.errors.append([repo, error])
+            reposRemoteProcessClone["errors"].append([repo, error])
 
     clonesRmAttempted = False
     reposCloneDeletionError = False
@@ -287,13 +299,15 @@ def run(dataWithOptions):
         gitNewError = gitNew
 
     finalRepos = {
-        "reposMvThirdToTargetLocal": optionRepos.reposMvThirdToTargetLocal,
-        "reposMvThirdToTargetClone": optionRepos.reposMvThirdToTargetClone,
-        "reposMvThirdToTargetAndBlastLocalMaster": optionRepos.reposMvThirdToTargetAndBlastLocalMaster,
-        "reposDeleteRemote": optionRepos.reposDeleteRemote,
-        "reposDeleteLocal": optionRepos.reposDeleteLocal,
-        "reposDeleteLocalAndRemote": optionRepos.reposDeleteLocalAndRemote,
-        "reposLocalProcess": optionRepos.reposLocalProcess,
+        "reposMvThirdToTargetLocal": optionRepos["reposMvThirdToTargetLocal"],
+        "reposMvThirdToTargetClone": optionRepos["reposMvThirdToTargetClone"],
+        "reposMvThirdToTargetAndBlastLocalMaster": optionRepos[
+            "reposMvThirdToTargetAndBlastLocalMaster"
+        ],
+        "reposDeleteRemote": optionRepos["reposDeleteRemote"],
+        "reposDeleteLocal": optionRepos["reposDeleteLocal"],
+        "reposDeleteLocalAndRemote": optionRepos["reposDeleteLocalAndRemote"],
+        "reposLocalProcess": optionRepos["reposLocalProcess"],
         "reposRemoteProcessLocal": reposRemoteProcessLocal,
         "reposRemoteProcessClone": reposRemoteProcessClone,
         "reposAlreadyBlasted": reposAlreadyBlasted,

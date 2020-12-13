@@ -12,6 +12,7 @@ from vendor.lib.actions.network import getRepos
 def auth(testing):
     """Get GitHub username, get token, validate token, return data,
     which should be a username, token, and repos."""
+    username = ""
     username = getUsername(testing)
 
     token = ""

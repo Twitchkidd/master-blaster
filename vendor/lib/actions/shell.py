@@ -44,34 +44,29 @@ def getLocalRepoUrl(configFile):
 def getLocalRepos(repos, localDirectory):
     if localDirectory == None:
         return repos
-    print(repos)
     repoNames = [repo["name"] for repo in repos]
-    print(repoNames)
     for root, subdirs, files in os.walk(f"{localDirectory}"):
         for subdir in subdirs:
             if any(subdir == repoName for repoName in repoNames):
                 try:
                     with open(f"{root}/{subdir}/.git/config", "r") as configFile:
                         for repo in repos:
-                            print(subdir)
-                            print(repo["name"])
-                            for line in configFile:
-                                print(line)
                             if subdir == repo["name"]:
                                 repo["configUrl"] = getLocalRepoUrl(configFile).lower()
                                 repo["localPath"] = f"{root}/{subdir}"
                                 repo[
                                     "currentBranch"
                                 ] = f"{getCurrentBranch(f'{root}/{subdir}')}"
-                                break
+                                repo["status"] = None
+                                repoNames.remove(subdir)
                 except Exception as err:
                     for repo in repos:
                         if subdir == repo["name"]:
                             repo[
                                 "status"
                             ] = "Local folder that possibly isn't git repo, error opening .git/config"
-                    logWarning(f"Exception in {subdir}: {err}")
-                    pass
+                    # logWarning(f"Exception in {subdir}: {err}")
+                    continue
     return repos
 
 

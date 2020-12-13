@@ -56,7 +56,7 @@ import requests
 from subprocess import Popen, PIPE
 
 
-def getActiveBranchName(path):
+def get_active_branch_name(path):
     # shellActions #
     # * ``` From u/merfi on SO, added a path param ``` * #
     head_dir = Path(path) / ".git" / "HEAD"
@@ -77,7 +77,7 @@ def getActiveBranchName(path):
 currentBranch = ""
 # shellActions #
 if f"{Path.home()}/Code/master-blaster" == f"{Path.cwd()}":
-    currentBranch = getActiveBranchName(f"{Path.cwd()}")
+    currentBranch = get_active_branch_name(f"{Path.cwd()}")
 
 # networkActions #
 # This defaults to v3 of the api.

@@ -29,6 +29,7 @@ def checkBranches(username, token, repos):
             localReposPresent = True
     if localReposPresent:
         repos = checkLocalBranches(repos)
+    return repos
 
 
 def wizard(data, testing):
@@ -59,9 +60,9 @@ def wizard(data, testing):
         repos = applyName(name, repos)
 
     localDirectory = getLocalDirectory(testing)
-    repos = getLocalRepos(repos, localDirectory)
     removeClones = getRemoveClones(testing)
     gitNew = getGitNew(namingMode, perRepo, name, testing)
+    repos = getLocalRepos(repos, localDirectory)
     repos = checkBranches(username, token, repos)
     repos, optionRepos = checkNames(repos)
 

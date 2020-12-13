@@ -30,7 +30,7 @@ def getRepos(username, token):
         if len(response.json()) == 0:
             print("No repos to blast!")
             return None
-        print("Repos received!")
+        print("Repos received!\n")
         reposResponseConfirmed = True
         for repository in response.json():
             repos.append(
