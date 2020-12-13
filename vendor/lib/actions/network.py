@@ -11,8 +11,7 @@ GITHUB_API = "https://api.github.com"
 
 
 def getRepos(username, token):
-    """Get list of repos, validating token, or break the program, and log it."""
-    """You can get a token of None now!!!"""
+    """Get list of repos, or throw an exception if the request fails (probably token.)"""
     repos = []
     url = f"{GITHUB_API}/user/repos"
     headers = {"Authorization": "token " + token}
@@ -21,6 +20,7 @@ def getRepos(username, token):
     response = requests.get(url, params=params, headers=headers)
     # Bad token returns a 401! #
     if response.status_code >= 400:
+        # raise RequestFailure(f"thatString")
         print(
             f"Network error! Possibly the token! Try again please! If this is not your GitHub username, please restart the program: {username}"
         )
@@ -29,7 +29,7 @@ def getRepos(username, token):
     else:
         if len(response.json()) == 0:
             print("No repos to blast!")
-            return None
+            raise TYPE?!
         print("Repos received!\n")
         reposResponseConfirmed = True
         for repository in response.json():

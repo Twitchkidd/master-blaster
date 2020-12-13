@@ -22,23 +22,21 @@ def getCurrentBranch(path):
 def setCurrentBranch(branch):
     """Set the current branch back to what it was, useful for testing."""
     Popen(["git", "checkout", f"{branch}"], stdout=PIPE, stderr=PIPE)
+    # This is surely not what we really want to do, remember
+    # processLogger actually runs the process, horrifyingly
 
 
 def getLocalToken():
     """Read the local file 'repo.txt' for a token, useful for testing."""
-    token = ""
     with open("./repo.txt", "r") as repoF:
-        token = repoF.read(40)
-    return token
+        return repoF.read(40)
 
 
 def getLocalRepoUrl(configFile):
-    url = ""
     for line in configFile:
         if line.find("url =") != -1:
             remoteOriginUrlStart = line.find("url =")
-            url = line[remoteOriginUrlStart + 6 : -1]
-            return url
+            return line[remoteOriginUrlStart + 6 : -1]
 
 
 def getLocalRepos(repos, localDirectory):

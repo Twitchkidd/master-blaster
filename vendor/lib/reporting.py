@@ -45,33 +45,26 @@ def intro():
     print(tokenExplanation)
 
 
-def usernameConfirmationPrompt(usernameInput):
-    return f"Confirm username: {usernameInput}"
-
-
 def getUsername(testing):
     """Get the GitHub username and return it."""
-    username = ""
     usernamePrompt = """
       First, please enter your GitHub username!
   """
 
+    username = ""
     while True:
-        usernameResponse = questionary.text(usernamePrompt).ask()
-        if usernameResponse == "":
+        username = questionary.text(usernamePrompt).ask()
+        if username == "":
             print("GitHub username blank: Please try again!")
             continue
-        if len(usernameResponse) >= 40:
+        if len(username) >= 40:
             print("GitHub usernames are 39 chars or less: please try again!")
             continue
-        usernameConfirmationResponse = questionary.confirm(
-            usernameConfirmationPrompt(usernameResponse)
-        ).ask()
-        if usernameConfirmationResponse == False:
+        usernameConfirmed = questionary.confirm(f"Confirm username: {username}").ask()
+        if usernameConfirmed == False:
             print("Thank you for retrying!")
             continue
-        if usernameConfirmationResponse:
-            username = usernameResponse
+        if usernameConfirmed:
             if not testing:
                 logInfo(f"Username: {username}")
                 break
@@ -87,7 +80,6 @@ def getUsername(testing):
 
 def getToken(testing):
     """Get token from user, validate, return tuple of token and repos."""
-    token = ""
 
     tokenPrompt = """
     -- Token-getting time! --
@@ -109,16 +101,18 @@ def getToken(testing):
     
     """
 
-    tokenConfirmed = False
-    while not tokenConfirmed:
-        customTokenResponse = questionary.password(tokenPrompt).ask()
-        if customTokenResponse == "":
+    token = ""
+    while True:
+        token = questionary.password(tokenPrompt).ask()
+        if token == "":
             print("Please enter the token!")
             continue
         else:
-            token = customTokenResponse
-            tokenConfirmed = True
-            continue
+            break
+
+    # Todo: the testing code should live in its own branch.
+    # * Instead this should be else: return customToken...Response ...
+    # * return token
 
     if testing:
         token = getLocalToken()

@@ -38,12 +38,8 @@ if testing:
 intro()
 
 data = auth(testing)
-repos = data[2]
-if not repos:
-    sys.exit()
-else:
-    dataWithOptions = wizard(data, testing)
-    run(dataWithOptions)
+dataWithOptions = wizard(data, testing)
+run(dataWithOptions)
 
 denoument()
 
