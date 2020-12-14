@@ -1,4 +1,5 @@
 import json
+import urllib
 import requests
 from vendor.lib.logging import logInfo
 from vendor.lib.logging import logWarning
@@ -8,6 +9,34 @@ from vendor.lib.logging import logWarning
 
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
+
+
+class Error(Exception):
+    """Base class for exceptions in this module."""
+
+    pass
+
+
+class RequestError(Error):
+    """Raised when an operation attempts a GitHub API call that
+    gets rejected.
+
+    Attributes:
+        status_code -- the response's status code
+        message -- explanation of what happened
+    """
+
+    def __init__(self, status_code, message):
+        self.status_code = status_code
+        self.message = message
+
+
+def internet_on():
+    try:
+        urllib.urlopen("http://192.168.254.254", timeout=1)
+        return True
+    except urllib.URLError as err:
+        return False
 
 
 def getRepos(username, token):
@@ -20,16 +49,12 @@ def getRepos(username, token):
     response = requests.get(url, params=params, headers=headers)
     # Bad token returns a 401! #
     if response.status_code >= 400:
-        # raise RequestFailure(f"thatString")
-        print(
-            f"Network error! Possibly the token! Try again please! If this is not your GitHub username, please restart the program: {username}"
-        )
-        logWarning(f"Response status: {response.status_code}")
-        return None
+        error_message = f"GitHub API request status code: {response.status_code}"
+        raise RequestError(response.status_code, error_message)
     else:
         if len(response.json()) == 0:
             print("No repos to blast!")
-            raise TYPE?!
+            # raise TYPE?!
         print("Repos received!\n")
         reposResponseConfirmed = True
         for repository in response.json():

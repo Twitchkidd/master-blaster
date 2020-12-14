@@ -1,18 +1,14 @@
 import sys
-
-# Don't do this. ^^^^
-
-
 from vendor.lib.reporting import getUsername
 from vendor.lib.reporting import getToken
 from vendor.lib.actions.network import getRepos
 from vendor.lib.logging import logWarning
+from vendor.lib.actions.network import RequestError
+
 
 # auth #
-# * This file should handle the process of authenticating the user,
-# * including input of the username, and getting and verifying the
-# * token, which should be returned second in a touple with the username,
-# * and the token as None if it failed, from the auth function. * #
+# * Handles authenticating the user with a username and token,
+# * and verifying.
 
 
 def auth(testing):
@@ -22,11 +18,15 @@ def auth(testing):
     username = getUsername(testing)
     token = getToken(testing)
 
-    try:
-        repos = getRepos(username, token)
-        return username, token, repos
-    # except RequestFailure:
-    except Exception as err:
-        logWarning(err)
-        sys.exit()
-        # shouldn't have to sys.exit(EXIT_CODE) if it's uncaught it'll crash
+    if testing:
+        repos = getRepos("Herp", "derp")
+
+    # try:
+    #     if testing:
+    #         repos = getRepos("Herp", "derp")
+    #     repos = getRepos(username, token)
+    #     return username, token, repos
+    # except RequestError as err:
+    #     logWarning(err)
+    #     print("Network error! Try again please!")
+    #     sys.exit(1)
