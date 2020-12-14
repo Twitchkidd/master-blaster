@@ -3,7 +3,9 @@ from vendor.lib.reporting import getUsername
 from vendor.lib.reporting import getToken
 from vendor.lib.actions.network import getRepos
 from vendor.lib.logging import logWarning
+from vendor.lib.actions.network import NetworkError
 from vendor.lib.actions.network import RequestError
+from vendor.lib.actions.network import NoReposError
 
 
 # auth #
@@ -18,15 +20,22 @@ def auth(testing):
     username = getUsername(testing)
     token = getToken(testing)
 
-    if testing:
-        repos = getRepos("Herp", "derp")
-
-    # try:
-    #     if testing:
-    #         repos = getRepos("Herp", "derp")
-    #     repos = getRepos(username, token)
-    #     return username, token, repos
-    # except RequestError as err:
-    #     logWarning(err)
-    #     print("Network error! Try again please!")
-    #     sys.exit(1)
+    try:
+        if testing:
+            repos = getRepos("Herp", "derp")
+        repos = getRepos(username, token)
+        return username, token, repos
+    except NetworkError as err:
+        logWarning(err)
+        print(err.message)
+        sys.exit(1)
+    except RequestError as err:
+        logWarning(err)
+        print(
+            f"Network error! Is {username} your username? Maybe the token? Please try again!"
+        )
+        sys.exit(1)
+    except NoReposError as err:
+        logWarning(err)
+        print(err.message)
+        sys.exit(1)

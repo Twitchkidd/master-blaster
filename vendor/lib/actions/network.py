@@ -31,7 +31,34 @@ class RequestError(Error):
         self.message = message
 
 
+class NetworkError(Error):
+    """Raised when there's no connection detected.
+
+    Attributes:
+        message -- explanation of what happened
+    """
+
+    def __init__(self, message):
+        self.message = message
+
+
+class NoReposError(Error):
+    """Raised when there's no repos to check against.
+
+    Attributes:
+        message -- explanation of what happened
+    """
+
+    def __init__(self, message):
+        self.message = message
+
+
 def internet_on():
+    """Pings Google to see if there's a network connection.
+
+    Occasionally run and rehydrate this test:
+        $ dig google.com +trace
+    """
     try:
         urllib.urlopen("http://192.168.254.254", timeout=1)
         return True
@@ -45,6 +72,9 @@ def getRepos(username, token):
     url = f"{GITHUB_API}/user/repos"
     headers = {"Authorization": "token " + token}
     params = {"per_page": "1000", "type": "owner"}
+    if not internet_on():
+        error_message = "Not seeing an internet connection! Bailing out!"
+        raise NetworkError(error_message)
     print("Checking for repos ...")
     response = requests.get(url, params=params, headers=headers)
     # Bad token returns a 401! #
@@ -53,8 +83,7 @@ def getRepos(username, token):
         raise RequestError(response.status_code, error_message)
     else:
         if len(response.json()) == 0:
-            print("No repos to blast!")
-            # raise TYPE?!
+            raise NoReposError("No repos to blast!")
         print("Repos received!\n")
         reposResponseConfirmed = True
         for repository in response.json():
