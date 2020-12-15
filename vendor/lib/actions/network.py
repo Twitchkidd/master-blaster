@@ -37,8 +37,7 @@ def getRepos(username, token):
     response = requests.get(url, params=params, headers=headers)
     # Bad token returns a 401! #
     if response.status_code >= 400:
-        error_message = f"GitHub API request status code: {response.status_code}"
-        raise RequestError(response.status_code, error_message)
+        raise RequestError(response.status_code)
     else:
         if len(response.json()) == 0:
             raise NoReposError()

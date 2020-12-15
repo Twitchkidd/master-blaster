@@ -7,12 +7,11 @@ class RequestError(Error):
 
     Attributes:
         status_code -- the response's status code
-        message -- explanation of what happened
     """
 
-    def __init__(self, status_code, message):
+    def __init__(self, status_code):
         self.status_code = status_code
-        self.message = message
+        self.message = f"GitHub API request status code: {status_code}"
 
 
 class NetworkError(Error):
