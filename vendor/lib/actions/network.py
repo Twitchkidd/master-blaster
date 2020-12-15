@@ -4,54 +4,12 @@ import urllib.error
 import requests
 from vendor.lib.logging import logInfo
 from vendor.lib.logging import logWarning
-
-# networkActions #
-# * Actions taken over the network. * #
+from vendor.lib.actions.network_exceptions import RequestError
+from vendor.lib.actions.network_exceptions import NetworkError
+from vendor.lib.actions.network_exceptions import NoReposError
 
 # This defaults to v3 of the api.
 GITHUB_API = "https://api.github.com"
-
-
-class Error(Exception):
-    """Base class for exceptions in this module."""
-
-    pass
-
-
-class RequestError(Error):
-    """Raised when an operation attempts a GitHub API call that
-    gets rejected.
-
-    Attributes:
-        status_code -- the response's status code
-        message -- explanation of what happened
-    """
-
-    def __init__(self, status_code, message):
-        self.status_code = status_code
-        self.message = message
-
-
-class NetworkError(Error):
-    """Raised when there's no connection detected.
-
-    Attributes:
-        message -- explanation of what happened
-    """
-
-    def __init__(self, message="Not seeing an internet connection! Bailing out!"):
-        self.message = message
-
-
-class NoReposError(Error):
-    """Raised when there's no repos to check against.
-
-    Attributes:
-        message -- explanation of what happened
-    """
-
-    def __init__(self, message="No repos to blast!"):
-        self.message = message
 
 
 def internet_on():

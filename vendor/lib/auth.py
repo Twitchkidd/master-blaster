@@ -8,11 +8,6 @@ from vendor.lib.actions.network import RequestError
 from vendor.lib.actions.network import NoReposError
 
 
-# auth #
-# * Handles authenticating the user with a username and token,
-# * and verifying.
-
-
 def auth(testing):
     """Get GitHub username, get token, validate token, return data,
     which should be a username, token, and repos."""
