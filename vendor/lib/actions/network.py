@@ -38,7 +38,7 @@ class NetworkError(Error):
         message -- explanation of what happened
     """
 
-    def __init__(self, message):
+    def __init__(self, message="Not seeing an internet connection! Bailing out!"):
         self.message = message
 
 
@@ -49,7 +49,7 @@ class NoReposError(Error):
         message -- explanation of what happened
     """
 
-    def __init__(self, message):
+    def __init__(self, message="No repos to blast!"):
         self.message = message
 
 
@@ -60,9 +60,9 @@ def internet_on():
         $ dig google.com +trace
     """
     try:
-        urllib.urlopen("http://192.168.254.254", timeout=1)
+        urllib.request.urlopen("http://192.168.254.254", timeout=1)
         return True
-    except urllib.URLError as err:
+    except urllib.error.URLError as err:
         return False
 
 
@@ -73,8 +73,7 @@ def getRepos(username, token):
     headers = {"Authorization": "token " + token}
     params = {"per_page": "1000", "type": "owner"}
     if not internet_on():
-        error_message = "Not seeing an internet connection! Bailing out!"
-        raise NetworkError(error_message)
+        raise NetworkError()
     print("Checking for repos ...")
     response = requests.get(url, params=params, headers=headers)
     # Bad token returns a 401! #
@@ -83,7 +82,7 @@ def getRepos(username, token):
         raise RequestError(response.status_code, error_message)
     else:
         if len(response.json()) == 0:
-            raise NoReposError("No repos to blast!")
+            raise NoReposError()
         print("Repos received!\n")
         reposResponseConfirmed = True
         for repository in response.json():

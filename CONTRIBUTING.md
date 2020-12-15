@@ -1,5 +1,19 @@
 # Contributing to `master-blaster`
 
+TODO Tidy this up!
+
+### v1.1.0 Changes!!
+
+Adding tests!
+
+`pip install -U pytest`
+
+and then `pytest`!
+
+---
+
+### Previous CONTRIBUTING
+
 Hi! Let me start this off by at least having the steps for how to run `dev`!
 
 The first thing is if you're in ~/Code/master-blaster, it captures the current branch, because for some reason I was getting put on the main branch when I didn't mean to be. I might have fixed this, but it puts you back right at the end of the program.

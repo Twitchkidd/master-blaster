@@ -21,8 +21,6 @@ def auth(testing):
     token = getToken(testing)
 
     try:
-        if testing:
-            repos = getRepos("Herp", "derp")
         repos = getRepos(username, token)
         return username, token, repos
     except NetworkError as err:
