@@ -7,3 +7,4 @@ repo.txt
 # Should this be here? (Below)
 master_blaster.egg-info/
 info.log
+__pycache__/

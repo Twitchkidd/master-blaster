@@ -1,5 +1,6 @@
 import json
-import urllib
+import urllib.request
+import urllib.error
 import requests
 from vendor.lib.logging import logInfo
 from vendor.lib.logging import logWarning
