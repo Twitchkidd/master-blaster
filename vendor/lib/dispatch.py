@@ -34,16 +34,12 @@ clonedRepos = []
 
 def mvThirdToTargetLocal(token, repo):
     """Rename third and push target upstream, rename default branch, delete remote third."""
-    error = renameBranch(repo["default"], repo["targetName"], repo["localPath"])
-    if error:
-        return error
-    error = pushSettingUpstream(repo["targetName"], repo["localPath"])
-    if error:
-        return error
-    error = updateDefaultBranch(token, repo)
-    if error:
-        return error
-    return deleteRemoteBranch(repo["default"], repo["localPath"])
+    try:
+        renameBranch(repo["default"], repo["targetName"], repo["localPath"])
+        pushSettingUpstream(repo["targetName"], repo["localPath"])
+        updateDefaultBranch(token, repo)
+        deleteRemoteBranch(repo["default"], repo["localPath"])
+    except ...
 
 
 def mvThirdToTargetClone(token, repo, localDirectory):

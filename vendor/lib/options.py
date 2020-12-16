@@ -1,6 +1,5 @@
 from vendor.lib.actions.shell import getLocalRepos
 from vendor.lib.actions.shell import checkLocalBranches
-from vendor.lib.actions.shell import processLogger
 from vendor.lib.actions.network import checkRemoteBranches
 from vendor.lib.reporting import repoTypesBlurb
 from vendor.lib.reporting import getNamingMode

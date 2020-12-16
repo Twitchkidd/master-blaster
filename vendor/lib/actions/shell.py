@@ -3,9 +3,8 @@ from pathlib import Path
 from subprocess import Popen, PIPE
 from vendor.lib.logging import logInfo
 from vendor.lib.logging import logWarning
-
-# shellActions #
-# * Actions taken in the shell environment. * #
+from vendor.lib.actions.shell_exceptions import GetBranchError
+from vendor.lib.actions.shell_exceptions import RenameBranchError
 
 
 def getCurrentBranch(path):
@@ -17,13 +16,7 @@ def getCurrentBranch(path):
     for line in content:
         if line[0:4] == "ref:":
             return line.partition("refs/heads/")[2]
-
-
-def setCurrentBranch(branch):
-    """Set the current branch back to what it was, useful for testing."""
-    Popen(["git", "checkout", f"{branch}"], stdout=PIPE, stderr=PIPE)
-    # This is surely not what we really want to do, remember
-    # processLogger actually runs the process, horrifyingly
+    raise GetBranchError
 
 
 def getLocalToken():
@@ -68,27 +61,28 @@ def getLocalRepos(repos, localDirectory):
     return repos
 
 
-def processLogger(string, prc, ignoreStr="", secondIgnoreStr=""):
-    """This function logs the first argument, *RUNS* the code, capturing
-    stdout and stderr, logging those, possibly checks against the third
-    argument, though not the fourth (?) and returns a thruple of stdout,
-    stderr, and either a 0 for success or a 1 for error."""
+def processRunner(string, process, *args):
+    """Logs the argument to be attempted to run, runs it, returns stdout
+    and stderr."""
     logInfo(string)
-    stdout, stderr = prc.communicate()
+    stdout, stderr = process.communicate()
     if len(stdout) > 0:
         logInfo(stdout)
     if len(stderr) > 0:
-        if ignoreStr != "" and ignoreStr in stderr.decode():
-            logWarning(stderr)
-            logInfo("You may be able to ignore the above warning.")
-            return (stdout, stderr, 0)
-        if secondIgnoreStr != "" and secondIgnoreStr in stderr.decode():
-            logWarning(stderr)
-            logInfo("You may be able to ignore the above warning.")
-            return (stdout, stderr, 0)
+        if len(args) > 0:
+            for ignoreString in args:
+                if ignoreString in stderr.decode():
+                    logWarning(stderr)
+                    logInfo("You may be able to ignore the above warning.")
+                    return stdout, stderr
         logWarning(stderr)
-        return (stdout, stderr, 1)
-    return (stdout, stderr, 0)
+    return stdout, stderr
+
+
+def setCurrentBranch(branch):
+    """Set the current git branch, useful in testing to set it back to original."""
+    setBranch = Popen(["git", "checkout", f"{branch}"], stdout=PIPE, stderr=PIPE)
+    out, err = processRunner(f"cwd={Path.cwd()}: git checkout {branch}", setBranch)
 
 
 def checkLocalBranches(repos):
@@ -98,7 +92,7 @@ def checkLocalBranches(repos):
             gitBranch = Popen(
                 ["git", "branch"], cwd=repo["localPath"], stdout=PIPE, stderr=PIPE
             )
-            gitBranchStdout = processLogger(
+            gitBranchStdout = processRunner(
                 f"cwd={repo['localPath']}: git branch", gitBranch
             )[0]
             repo["localHasMaster"] = "master" in f"{gitBranchStdout}"
@@ -113,15 +107,15 @@ def renameBranch(initial, final, directory):
     gitBranchMove = Popen(
         ["git", "branch", "-m", initial, final], cwd=directory, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = processLogger(
+    loggerReturn = processRunner(
         f"cwd={directory}: git branch -m {initial} {final}", gitBranchMove
     )
     gitBranchMoveStderr = loggerReturn[1]
     gitBranchMoveExitCode = loggerReturn[2]
     if gitBranchMoveExitCode == 1:
-        return gitBranchMoveStderr
-    else:
-        return None
+        raise RenameBranchError(gitBranchMoveStderr)
+        # the next question is what identifying info to pass for the repo
+        # ... also, how do I make this fail?
 
 
 def pushSettingUpstream(targetName, directory):
@@ -132,7 +126,7 @@ def pushSettingUpstream(targetName, directory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processLogger(
+    loggerReturn = processRunner(
         f"cwd={directory}: git push -u origin {targetName}",
         gitPushSetUpstream,
         ignoreStr="To",
@@ -153,7 +147,7 @@ def deleteRemoteBranch(branch, directory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processLogger(
+    loggerReturn = processRunner(
         f"cwd={directory}: git push --delete origin {branch}",
         gitPushDelete,
         ignoreStr="To",
@@ -175,7 +169,7 @@ def mkdirIfNeedBe(username, localDirectory):
             stdout=PIPE,
             stderr=PIPE,
         )
-        loggerReturn = processLogger(
+        loggerReturn = processRunner(
             f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/",
             mkdir,
         )
@@ -202,7 +196,7 @@ def cloneRepo(username, repo, localDirectory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processLogger(
+    loggerReturn = processRunner(
         f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}",
         gitClone,
     )
@@ -219,7 +213,7 @@ def deleteLocalBranch(branch, directory):
     deleteBranch = Popen(
         ["git", "branch", "-D", branch], cwd={directory}, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = processLogger(
+    loggerReturn = processRunner(
         f"cwd={directory}: git branch -D {branch}", deleteBranch
     )
     deleteBranchStderr = loggerReturn[1]
@@ -235,14 +229,14 @@ def checkout(branch, directory):
     checkoutBranch = Popen(
         ["git", "checkout", branch], cwd={directory}, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = processLogger(
+    loggerReturn = processRunner(
         f"cwd={directory}: git checkout {branch}",
         checkoutBranch,
         ignoreStr="Already on",
         secondIgnoreStr="Switched to",
     )
-    checkoutBranchStderr = processLogger[1]
-    checkoutBranchExitCode = processLogger[2]
+    checkoutBranchStderr = processRunner[1]
+    checkoutBranchExitCode = processRunner[2]
     if checkoutBranchExitCode == 1:
         return checkoutBranchStderr
     else:
@@ -251,9 +245,9 @@ def checkout(branch, directory):
 
 def fetch(directory):
     gitFetch = Popen(["git", "fetch"], cwd={directory}, stdout=PIPE, stderr=PIPE)
-    loggerReturn = processLogger(f"cwd={directory}: git fetch", gitFetch)
-    gitFetchStderr = processLogger[1]
-    gitFetchExitCode = processLogger[2]
+    loggerReturn = processRunner(f"cwd={directory}: git fetch", gitFetch)
+    gitFetchStderr = processRunner[1]
+    gitFetchExitCode = processRunner[2]
     if gitFetchExitCode == 1:
         return gitFetchStderr
     else:
@@ -264,11 +258,11 @@ def unsetUpstream(directory):
     gitBranchUU = Popen(
         ["git", "branch", "--unset-upstream"], cwd={directory}, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = processLogger(
+    loggerReturn = processRunner(
         f"cwd={directory}: git branch --unset-upstream", gitBranchUU
     )
-    gitBranchUUStderr = processLogger[1]
-    gitBranchUUExitCode = processLogger[2]
+    gitBranchUUStderr = processRunner[1]
+    gitBranchUUExitCode = processRunner[2]
     if gitBranchUUExitCode == 1:
         return gitBranchUUStderr
     else:
@@ -282,13 +276,13 @@ def setUpstream(targetName, directory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processLogger(
+    loggerReturn = processRunner(
         f"cwd={directory}: git branch -u origin/{targetName}",
         gitBranchSetUpstream,
         ignoreStr="To",
     )
-    gitBranchSetUpstreamStderr = processLogger[1]
-    gitBranchSetUpstreamExitCode = processLogger[2]
+    gitBranchSetUpstreamStderr = processRunner[1]
+    gitBranchSetUpstreamExitCode = processRunner[2]
     if gitBranchSetUpstreamExitCode == 1:
         return gitBranchSetUpstreamStderr
     else:
@@ -307,12 +301,12 @@ def updateSymbolicRef(targetName, directory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processLogger(
+    loggerReturn = processRunner(
         f"cwd={directory}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{targetName}",
         updateRef,
     )
-    updateRefStderr = processLogger[1]
-    updateRefExitCode = processLogger[2]
+    updateRefStderr = processRunner[1]
+    updateRefExitCode = processRunner[2]
     if updateRefExitCode == 1:
         return updateRefStderr
     else:
@@ -326,12 +320,12 @@ def rmCloneFolder(username, localDirectory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processLogger(
+    loggerReturn = processRunner(
         f"cwd={localDirectory}: rm -dfRv {localDirectory}/master-blaster-{username}/",
         removeDir,
     )
-    removeDirStderr = processLogger[1]
-    removeDirExitCode = processLogger[2]
+    removeDirStderr = processRunner[1]
+    removeDirExitCode = processRunner[2]
     if removeDirExitCode == 1:
         return removeDirStderr
     else:
@@ -351,7 +345,7 @@ def gitNew(targetName):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processLogger(
+    loggerReturn = processRunner(
         f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{targetName}'",
         gitNew,
     )
