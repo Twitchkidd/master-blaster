@@ -120,7 +120,7 @@ def check_local_branches(repos):
                 f"cwd={repo['localPath']}: git branch", gitBranch
             )
             if len(stderr) > 0:
-                logging.warning("Fail in git branch.")
+                logging.warning("Fail in git branch!")
                 raise
             repo["localHasMaster"] = "master" in f"{stdout}"
             repo["localHasTarget"] = repo["targetName"] in f"{stdout}"
