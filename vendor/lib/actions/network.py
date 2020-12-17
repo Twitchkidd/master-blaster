@@ -1,9 +1,8 @@
 import json
+import logging
 import urllib.request
 import urllib.error
 import requests
-from vendor.lib.logging import logInfo
-from vendor.lib.logging import logWarning
 from vendor.lib.actions.network_exceptions import RequestError
 from vendor.lib.actions.network_exceptions import NetworkError
 from vendor.lib.actions.network_exceptions import NoReposError
@@ -25,7 +24,7 @@ def internet_on():
         return False
 
 
-def getRepos(username, token):
+def get_repos(username, token):
     """Get list of repos, or throw an exception if the request fails (probably token.)"""
     repos = []
     url = f"{GITHUB_API}/user/repos"
@@ -55,18 +54,22 @@ def getRepos(username, token):
     return repos
 
 
-def getBranchUrl(repo, branch):
+def get_branch_url(repo, branch):
     return f"{GITHUB_API}/repos/{repo['ownerLogin']}/{repo['name']}/branches/{branch}"
 
 
-def checkRemoteBranches(token, repos):
+def check_remote_branches(token, repos):
     headers = {"Authorization": "token " + token}
     for repo in repos:
-        targetBranchUrl = getBranchUrl(repo, repo["targetName"])
-        masterBranchUrl = getBranchUrl(repo, "master")
+        targetBranchUrl = get_branch_url(repo, repo["targetName"])
+        masterBranchUrl = get_branch_url(repo, "master")
         print(f"Checking {repo['name']} ...", end="")
         targetBranchResponse = requests.get(targetBranchUrl, headers=headers)
+        if targetBranchResponse.status_code >= 400:
+            raise RequestError(targetBranchResponse.status_code)
         masterBranchResponse = requests.get(masterBranchUrl, headers=headers)
+        if masterBranchResponse.status_code >= 400:
+            raise RequestError(masterBranchResponse.status_code)
         print(" got it!")
         if targetBranchResponse.json().get("message"):
             repo["hasTarget"] = False
@@ -79,22 +82,22 @@ def checkRemoteBranches(token, repos):
     return repos
 
 
-def constructPatchDefaultUrl(ownerLogin, name):
+def construct_patch_default_url(ownerLogin, name):
     return f"{GITHUB_API}/repos/{ownerLogin}/{name}"
 
 
-def updateDefaultBranch(token, repo):
-    url = constructPatchDefaultUrl(repo["ownerLogin"], repo["name"])
+def update_default_branch(token, repo):
+    url = construct_patch_default_url(repo["ownerLogin"], repo["name"])
     data = json.dumps({"default_branch": f"{repo['targetName']}"})
     headers = {"Authorization": "token " + token}
     patchDefaultResponse = requests.patch(url, data=data, headers=headers)
     if patchDefaultResponse.status_code >= 400:
-        logWarning(
+        logging.warning(
             f"{repo['htmlUrl']} default branch change failed, response status: {patchDefaultResponse.status_code}"
         )
         return f"Default branch change failed, response status: {patchDefaultResponse.status_code}"
     else:
-        logInfo(
+        logging.info(
             f"Default branch for {repo['htmlUrl']} updated to {repo['targetName']}."
         )
         return None

@@ -1,11 +1,8 @@
+import logging
 import os
 from pathlib import Path
 import questionary
-from vendor.lib.logging import logInfo
-from vendor.lib.actions.shell import getLocalToken
-
-# reporting #
-# * Text! * #
+from vendor.lib.actions.shell import get_local_token
 
 
 def intro():
@@ -45,7 +42,7 @@ def intro():
     print(tokenExplanation)
 
 
-def getUsername(testing):
+def get_username(testing):
     """Get the GitHub username and return it."""
     usernamePrompt = """
       First, please enter your GitHub username!
@@ -66,19 +63,19 @@ def getUsername(testing):
             continue
         if usernameConfirmed:
             if not testing:
-                logInfo(f"Username: {username}")
+                logging.info(f"Username: {username}")
                 break
             if testing:
                 break
 
     if testing:
         username = "Twitchkidd"
-        logInfo(f"Username: {username}")
+        logging.info(f"Username: {username}")
 
     return username
 
 
-def getToken(testing):
+def get_token(testing):
     """Get token from user, validate, return tuple of token and repos."""
 
     tokenPrompt = """
@@ -110,35 +107,33 @@ def getToken(testing):
         else:
             break
 
-    # Todo: the testing code should live in its own branch.
-    # * Instead this should be else: return customToken...Response ...
-    # * return token
-
     if testing:
-        token = getLocalToken()
+        localTokenAttempt = get_local_token()
+        if localTokenAttempt != None:
+            token = localTokenAttempt
 
     return token
 
 
-def repoTypesBlurb():
+def repo_types_blurb():
     """Explain all repos, owner, public/private."""
     print(
         "Currently the only supported set of repos is all repos user is owner of, public and private.\n"
     )
 
 
-def getNamingMode(main, custom, perRepo):
+def get_naming_mode(main, custom, perRepo):
     return questionary.select(
         "What would you like to name your primary branches? (Default 'main'.)",
         choices=[main, custom, perRepo],
     ).ask()
 
 
-def customNameConfirmPrompt(inputName):
+def custom_name_confirm_prompt(inputName):
     return f"""{inputName} for all primary branches?"""
 
 
-def getCustomName():
+def get_custom_name():
     """For when the user wants to set all repos primary branches to a custom name."""
 
     customNamePrompt = """
@@ -162,16 +157,16 @@ def getCustomName():
                 nameConfirmed = True
         else:
             confirmCustomNameResponse = questionary.confirm(
-                customNameConfirmPrompt(customNameResponse)
+                custom_name_confirm_prompt(customNameResponse)
             ).ask()
             if confirmCustomNameResponse:
                 name = customNameResponse
                 nameConfirmed = True
-    logInfo(f"Name for primary branches: {name}")
+    logging.info(f"Name for primary branches: {name}")
     return name
 
 
-def getCustomNames(repos):
+def get_custom_names(repos):
     """For when the user wants to set a custom name for each repo primary branch."""
     print(
         """
@@ -191,7 +186,7 @@ def getCustomNames(repos):
                 )
                 if defaultNameResponse:
                     repo["targetName"] = name
-                    logInfo(f"Primary branch name for {repo['htmlUrl']}: {name}")
+                    logging.info(f"Primary branch name for {repo['htmlUrl']}: {name}")
                     targetNameConfirmed = True
             else:
                 customRepoNameConfirmed = questionary.confirm(
@@ -199,14 +194,14 @@ def getCustomNames(repos):
                 )
                 if customRepoNameConfirmed:
                     repo["targetName"] = repoNameResponse
-                    logInfo(
+                    logging.info(
                         f"Primary branch name for {repo['htmlUrl']}: {repoNameResponse}"
                     )
                     targetNameConfirmed = True
     return repos
 
 
-def getLocalDirectory(testing):
+def get_local_directory(testing):
     """Local directories prompt. If yes, which local directory or default? Test that local directory is real."""
     localDirectory = ""
     localDirectoriesPrompt = """
@@ -230,7 +225,7 @@ def getLocalDirectory(testing):
         Default: use '~/' for local directory search?
     """
 
-    def customLocalDirectoryConfirmPrompt(inputDir):
+    def custom_local_directory_confirm_prompt(inputDir):
         return f"""Use '{inputDir}' for local directory search?"""
 
     localDirectoryConfirmed = False
@@ -246,7 +241,7 @@ def getLocalDirectory(testing):
         else:
             if os.path.isdir(customLocalDirectoryResponse):
                 confirmCustomLocalDirectoryResponse = questionary.confirm(
-                    customLocalDirectoryConfirmPrompt(customLocalDirectoryResponse)
+                    custom_local_directory_confirm_prompt(customLocalDirectoryResponse)
                 ).ask()
                 if confirmCustomLocalDirectoryResponse:
                     localDirectory = customLocalDirectoryResponse
@@ -257,22 +252,22 @@ def getLocalDirectory(testing):
                 )
     if testing:
         localDirectory = f"{Path.home()}/Code"
-    logInfo(f"Local directory to search: {localDirectory}")
+    logging.info(f"Local directory to search: {localDirectory}")
     return localDirectory
 
 
-def getRemoveClones(testing):
+def get_remove_clones(testing):
     confirmRemoveClonesPrompt = """
         Remove newly cloned repositories after process complete? Defaults to yes.
     """
     confirmRemoveClones = questionary.confirm(confirmRemoveClonesPrompt).ask()
     if testing:
         confirmRemoveClones = True
-    logInfo(f"Confirm remove clones after: {confirmRemoveClones}")
+    logging.info(f"Confirm remove clones after: {confirmRemoveClones}")
     return confirmRemoveClones
 
 
-def getGitNew(namingMode, perRepo, name, testing):
+def get_git_new(namingMode, perRepo, name, testing):
     if namingMode == perRepo:
         return False
     gitNew = True
@@ -284,241 +279,241 @@ def getGitNew(namingMode, perRepo, name, testing):
     if testing:
         gitNew = True
     if gitNew:
-        logInfo(f"Add git alias `git new`: {name}")
+        logging.info(f"Add git alias `git new`: {name}")
     return gitNew
 
 
-def checkNames(repos):
+def check_names(repos):
     """This tests repos against various states and prompts for any actions that
     can be caught by looking at any naming errors."""
-    # Repo object [ones in brackets are only conditionally present]:
-    #   default
-    #   htmlUrl
-    #   name
-    #   owner-login
-    #   targetName
-    #   [status] # local folder with name, can't read .git/config
-    #   [configUrl]
-    #   [localPath]
-    #   [currentBranch]
-    #   hasMaster
-    #   hasTarget
-    #   [localHasMaster]
-    #   [localHasTarget]
-    #   [[localHasThird]]
+    # >> Repo object [ones in brackets are only conditionally present]:
+    #      default
+    #      htmlUrl
+    #      name
+    #      owner-login
+    #      targetName
+    #      [status] # local folder with name, can't read .git/config
+    #      [configUrl]
+    #      [localPath]
+    #      [currentBranch]
+    #      hasMaster
+    #      hasTarget
+    #      [localHasMaster]
+    #      [localHasTarget]
+    #      [[localHasThird]]
 
-    #   These matter:
-    #   [status] # local folder with name, can't read .git/config
-    #   default
-    #   hasMaster
-    #   hasTarget
-    #   [localHasMaster]
-    #   [localHasTarget]
-    #   [[localHasThird]]
+    # >> These matter:
+    #      [status] # local folder with name, can't read .git/config
+    #      default
+    #      hasMaster
+    #      hasTarget
+    #      [localHasMaster]
+    #      [localHasTarget]
+    #      [[localHasThird]]
 
-    # Clear states:
-    #   "remote process" "local repo"
-    #       localHasMaster
-    #       not localHasTarget
-    #       hasMaster
-    #       not hasTarget
-    #       default is master
-    #   "remote process" "clone repo"
-    #       no localPath
-    #       hasMaster
-    #       not hasTarget
-    #       default is master
-    #   "local process"
-    #       localHasMaster
-    #       not localHasTarget
-    #       hasTarget
-    #       not hasMaster
-    #       default is target
-    #   "delete master" "local repo"
-    #       localHasMaster
-    #       localHasTarget
-    #       hasTarget
-    #       not hasMaster
-    #       default is target
-    #   "delete master" "remote repo"
-    #       [localHasTarget
-    #       not localHasMaster]
-    #       hasTarget
-    #       hasMaster
-    #       default is target
+    # * Clear states:
+    # *   "remote process" "local repo"
+    # *       localHasMaster
+    # *       not localHasTarget
+    # *       hasMaster
+    # *       not hasTarget
+    # *       default is master
+    # *   "remote process" "clone repo"
+    # *       no localPath
+    # *       hasMaster
+    # *       not hasTarget
+    # *       default is master
+    # *   "local process"
+    # *       localHasMaster
+    # *       not localHasTarget
+    # *       hasTarget
+    # *       not hasMaster
+    # *       default is target
+    # *   "delete master" "local repo"
+    # *       localHasMaster
+    # *       localHasTarget
+    # *       hasTarget
+    # *       not hasMaster
+    # *       default is target
+    # *   "delete master" "remote repo"
+    # *       [localHasTarget
+    # *       not localHasMaster]
+    # *       hasTarget
+    # *       hasMaster
+    # *       default is target
 
-    # States:
-    #   [status] present: local folder with name can't read .git/config
-    #     "local repo but not git folder"
-    #
-    #   both hasMaster and hasTarget, default is target: delete master?
-    #   both 1) Delete local and remote?
-    #       hasMaster
-    #       hasTarget
-    #       defaultTarget
-    #       localHasMaster
-    #       localHasTarget
-    #   both 2) Delete remote?
-    #       hasMaster
-    #       hasTarget
-    #       defaultTarget
-    #       not localHasMaster
-    #       localHasTarget
-    #   both 3) Path unclear.
-    #       hasMaster
-    #       hasTarget
-    #       defaultTarget
-    #       localHasMaster
-    #       not localHasTarget
-    #   both 4) Could offer to delete remote, possibly do nothing though because that's weird about local.
-    #       hasMaster
-    #       hasTarget
-    #       defaultTarget
-    #       not localHasMaster
-    #       not localHasTarget
-    #   both 5) Delete remote?
-    #       hasMaster
-    #       hasTarget
-    #       defaultTarget
-    #       not localPath
-    #
-    #   both hasMaster and hasTarget, default is master
-    #       make target default and delete master?
-    #       NO, the path for merging isn't clear in any case.
-    #
-    #   both and default third
-    #       no clear path.
-    #       basically if third is default, except in the clear cases of neither 3), 7), and 9), no clear path.
-    #
-    #   Neither has master nor target, default is third
-    #   neither 1) Status: local has all three, figure this one out yourself, user.
-    #       not hasMaster
-    #       not hasTarget
-    #       default is third
-    #       localHasMaster
-    #       localHasTarget
-    #       localHasThird
-    #   neither 2) Status: do you want to mv target to third? Unclear path.
-    #       not hasMaster
-    #       not hasTarget
-    #       default is third
-    #       not localHasMaster
-    #       localHasTarget
-    #       localHasThird
-    #   neither 3) Status: do you want to mv third to target and blast all the masters? Local repo
-    #       not hasMaster
-    #       not hasTarget
-    #       default is third
-    #       localHasMaster
-    #       not localHasTarget
-    #       localHasThird
-    #   neither 4) Status: unclear path.
-    #       not hasMaster
-    #       not hasTarget
-    #       default is third
-    #       localHasMaster
-    #       localHasTarget
-    #       not localHasThird
-    #   neither 5) Status: unclear path.
-    #       not hasMaster
-    #       not hasTarget
-    #       default is third
-    #       not localHasMaster
-    #       localHasTarget
-    #       not localHasThird
-    #   neither 6) Status: unclear path.
-    #       not hasMaster
-    #       not hasTarget
-    #       default is third
-    #       localHasMaster
-    #       not localHasTarget
-    #       not localHasThird
-    #   neither 7) Status: do you want to mv third to target? Local repo
-    #       not hasMaster
-    #       not hasTarget
-    #       default is third
-    #       not localHasMaster
-    #       not localHasTarget
-    #       localHasThird
-    #   neither 8) Status: unclear path.
-    #       not hasMaster
-    #       not hasTarget
-    #       default is third
-    #       not localHasMaster
-    #       not localHasTarget
-    #       not localHasThird
-    #   neither 9) Status: do you want to mv third to target? Clone repo
-    #       not hasMaster
-    #       not hasTarget
-    #       default is third
-    #       no localPath
-    #
-    #   Has master, no target, master is default
-    #   master and default 1) Path unclear.
-    #       hasMaster
-    #       not hasTarget
-    #       default is master
-    #       localHasMaster
-    #       localHasTarget
-    #   master and default 2) Path unclear.
-    #       hasMaster
-    #       not hasTarget
-    #       default is master
-    #       not localHasMaster
-    #       localHasTarget
-    #   master and default 3) Perfect remote process local repo.
-    #       hasMaster
-    #       not hasTarget
-    #       default is master
-    #       localHasMaster
-    #       not localHasTarget
-    #   master and default 4) Path unclear.
-    #       hasMaster
-    #       not hasTarget
-    #       default is master
-    #       not localHasMaster
-    #       not localHasTarget
-    #   master and default 5) Perfect remote process clone repo.
-    #       hasMaster
-    #       not hasTarget
-    #       default is master
-    #       no localPath
-    #
-    #   Has target, no master, target is default
-    #   target and default 1) Delete local master?
-    #       not hasMaster
-    #       hasTarget
-    #       default is target
-    #       localHasMaster
-    #       localHasTarget
-    #   target and default 2) Already blasted.
-    #       not hasMaster
-    #       hasTarget
-    #       default is target
-    #       not localHasMaster
-    #       localHasTarget
-    #   target and default 3) Perfect case local process.
-    #       not hasMaster
-    #       hasTarget
-    #       default is target
-    #       localHasMaster
-    #       not localHasTarget
-    #   target and default 4) Path unclear.
-    #       not hasMaster
-    #       hasTarget
-    #       default is target
-    #       not localHasMaster
-    #       not localHasTarget
-    #   target and default 5) Already blasted.
-    #       not hasMaster
-    #       hasTarget
-    #       default is target
-    #       no localPath
-    #
-    #   Everything else should error out, neither hasTarget and not hasMaster and default is master
-    #       nor hasMaster and not hasTarget and default is target make sense, and there's no clear path
-    #       for any third default that's not caught above.
-    #
+    # * States:
+    # *   [status] present: local folder with name can't read .git/config
+    # *     "local repo but not git folder"
+    # *
+    # *   both hasMaster and hasTarget, default is target: delete master?
+    # *   both 1) Delete local and remote?
+    # *       hasMaster
+    # *       hasTarget
+    # *       defaultTarget
+    # *       localHasMaster
+    # *       localHasTarget
+    # *   both 2) Delete remote?
+    # *       hasMaster
+    # *       hasTarget
+    # *       defaultTarget
+    # *       not localHasMaster
+    # *       localHasTarget
+    # *   both 3) Path unclear.
+    # *       hasMaster
+    # *       hasTarget
+    # *       defaultTarget
+    # *       localHasMaster
+    # *       not localHasTarget
+    # *   both 4) Could offer to delete remote, possibly do nothing though because that's weird about local.
+    # *       hasMaster
+    # *       hasTarget
+    # *       defaultTarget
+    # *       not localHasMaster
+    # *       not localHasTarget
+    # *   both 5) Delete remote?
+    # *       hasMaster
+    # *       hasTarget
+    # *       defaultTarget
+    # *       not localPath
+    # *
+    # *   both hasMaster and hasTarget, default is master
+    # *       make target default and delete master?
+    # *       NO, the path for merging isn't clear in any case.
+    # *
+    # *   both and default third
+    # *       no clear path.
+    # *       basically if third is default, except in the clear cases of neither 3), 7), and 9), no clear path.
+    # *
+    # *   Neither has master nor target, default is third
+    # *   neither 1) Status: local has all three, figure this one out yourself, user.
+    # *       not hasMaster
+    # *       not hasTarget
+    # *       default is third
+    # *       localHasMaster
+    # *       localHasTarget
+    # *       localHasThird
+    # *   neither 2) Status: do you want to mv target to third? Unclear path.
+    # *       not hasMaster
+    # *       not hasTarget
+    # *       default is third
+    # *       not localHasMaster
+    # *       localHasTarget
+    # *       localHasThird
+    # *   neither 3) Status: do you want to mv third to target and blast all the masters? Local repo
+    # *       not hasMaster
+    # *       not hasTarget
+    # *       default is third
+    # *       localHasMaster
+    # *       not localHasTarget
+    # *       localHasThird
+    # *   neither 4) Status: unclear path.
+    # *       not hasMaster
+    # *       not hasTarget
+    # *       default is third
+    # *       localHasMaster
+    # *       localHasTarget
+    # *       not localHasThird
+    # *   neither 5) Status: unclear path.
+    # *       not hasMaster
+    # *       not hasTarget
+    # *       default is third
+    # *       not localHasMaster
+    # *       localHasTarget
+    # *       not localHasThird
+    # *   neither 6) Status: unclear path.
+    # *       not hasMaster
+    # *       not hasTarget
+    # *       default is third
+    # *       localHasMaster
+    # *       not localHasTarget
+    # *       not localHasThird
+    # *   neither 7) Status: do you want to mv third to target? Local repo
+    # *       not hasMaster
+    # *       not hasTarget
+    # *       default is third
+    # *       not localHasMaster
+    # *       not localHasTarget
+    # *       localHasThird
+    # *   neither 8) Status: unclear path.
+    # *       not hasMaster
+    # *       not hasTarget
+    # *       default is third
+    # *       not localHasMaster
+    # *       not localHasTarget
+    # *       not localHasThird
+    # *   neither 9) Status: do you want to mv third to target? Clone repo
+    # *       not hasMaster
+    # *       not hasTarget
+    # *       default is third
+    # *       no localPath
+    # *
+    # *   Has master, no target, master is default
+    # *   master and default 1) Path unclear.
+    # *       hasMaster
+    # *       not hasTarget
+    # *       default is master
+    # *       localHasMaster
+    # *       localHasTarget
+    # *   master and default 2) Path unclear.
+    # *       hasMaster
+    # *       not hasTarget
+    # *       default is master
+    # *       not localHasMaster
+    # *       localHasTarget
+    # *   master and default 3) Perfect remote process local repo.
+    # *       hasMaster
+    # *       not hasTarget
+    # *       default is master
+    # *       localHasMaster
+    # *       not localHasTarget
+    # *   master and default 4) Path unclear.
+    # *       hasMaster
+    # *       not hasTarget
+    # *       default is master
+    # *       not localHasMaster
+    # *       not localHasTarget
+    # *   master and default 5) Perfect remote process clone repo.
+    # *       hasMaster
+    # *       not hasTarget
+    # *       default is master
+    # *       no localPath
+    # *
+    # *   Has target, no master, target is default
+    # *   target and default 1) Delete local master?
+    # *       not hasMaster
+    # *       hasTarget
+    # *       default is target
+    # *       localHasMaster
+    # *       localHasTarget
+    # *   target and default 2) Already blasted.
+    # *       not hasMaster
+    # *       hasTarget
+    # *       default is target
+    # *       not localHasMaster
+    # *       localHasTarget
+    # *   target and default 3) Perfect case local process.
+    # *       not hasMaster
+    # *       hasTarget
+    # *       default is target
+    # *       localHasMaster
+    # *       not localHasTarget
+    # *   target and default 4) Path unclear.
+    # *       not hasMaster
+    # *       hasTarget
+    # *       default is target
+    # *       not localHasMaster
+    # *       not localHasTarget
+    # *   target and default 5) Already blasted.
+    # *       not hasMaster
+    # *       hasTarget
+    # *       default is target
+    # *       no localPath
+    # *
+    # *   Everything else should error out, neither hasTarget and not hasMaster and default is master
+    # *       nor hasMaster and not hasTarget and default is target make sense, and there's no clear path
+    # *       for any third default that's not caught above.
+    # *
 
     states = {
         "pendingMvThirdToTargetLocal": "Do you want to mv third to target? Local repo",
@@ -541,24 +536,21 @@ def checkNames(repos):
         "pathUnclear": "Path unclear.",
     }
 
-    reposMvThirdToTargetLocal = {"pending": True, "repos": [], "errors": []}
-    reposMvThirdToTargetClone = {"pending": True, "repos": [], "errors": []}
-    reposMvThirdToTargetAndBlastLocalMaster = {
-        "pending": True,
-        "repos": [],
-        "errors": [],
-    }
-    reposDeleteRemote = {"pending": True, "repos": [], "errors": []}
-    reposDeleteLocal = {"pending": True, "repos": [], "errors": []}
-    reposDeleteLocalAndRemote = {"pending": True, "repos": [], "errors": []}
-    reposLocalProcess = {"pending": True, "repos": [], "errors": []}
+    reposMvThirdToTargetLocal = {"pending": True, "repos": []}
+    reposMvThirdToTargetClone = {"pending": True, "repos": []}
+    reposMvThirdToTargetAndBlastLocalMaster = {"pending": True, "repos": []}
+    reposDeleteRemote = {"pending": True, "repos": []}
+    reposDeleteLocal = {"pending": True, "repos": []}
+    reposDeleteLocalAndRemote = {"pending": True, "repos": []}
+    reposLocalProcess = {"pending": True, "repos": []}
 
     for repo in repos:
-        if (
-            repo.get("status")
-            == "Local folder that possibly isn't git repo, error opening .git/config"
-        ):
-            continue
+        if repo.get("status"):
+            if (
+                repo["status"]
+                == "Local folder that possibly isn't git repo, error opening .git/config"
+            ):
+                continue
         if not repo["hasTarget"] and not repo["hasMaster"]:
             if repo.get("localPath"):
                 if (
@@ -567,7 +559,7 @@ def checkNames(repos):
                     and repo["localHasThird"]
                 ):
                     repo["status"] = states["pendingMvThirdToTargetAndBlastLocalMaster"]
-                    reposMvThirdToTargetAndBlastLocalMaster.repos.append(repo)
+                    reposMvThirdToTargetAndBlastLocalMaster["repos"].append(repo)
                     continue
                 if (
                     not repo["localHasMaster"]
@@ -575,11 +567,11 @@ def checkNames(repos):
                     and repo["localHasThird"]
                 ):
                     repo["status"] = states["pendingMvThirdToTargetLocal"]
-                    reposMvThirdToTargetLocal.repos.append(repo)
+                    reposMvThirdToTargetLocal["repos"].append(repo)
                     continue
             else:
                 repo["status"] = states["pendingMvThirdToTargetClone"]
-                reposMvThirdToTargetClone.repos.append(repo)
+                reposMvThirdToTargetClone["repos"].append(repo)
                 continue
         if repo["default"] != repo["targetName"] and repo["default"] != "master":
             repo["status"] = states["pathUnclear"]
@@ -591,16 +583,16 @@ def checkNames(repos):
             if repo.get("localPath"):
                 if repo["localHasTarget"] and repo["localHasMaster"]:
                     repo["status"] = states["pendingDeleteLocalAndRemote"]
-                    reposDeleteLocalAndRemote.repos.append(repo)
+                    reposDeleteLocalAndRemote["repos"].append(repo)
                     continue
                 if not repo["localHasTarget"] and repo["localHasMaster"]:
                     repo["status"] = states["pendingDeleteRemote"]
-                    reposDeleteRemote.repos.append(repo)
+                    reposDeleteRemote["repos"].append(repo)
                     continue
                 repo["status"] = states["pathUnclear"]
                 continue
             repo["status"] = states["pendingDeleteRemote"]
-            reposDeleteRemote.repos.append(repo)
+            reposDeleteRemote["repos"].append(repo)
             continue
         if repo["hasMaster"] and not repo["hasTarget"] and repo["default"] == "master":
             if repo.get("localPath"):
@@ -619,14 +611,14 @@ def checkNames(repos):
             if repo.get("localPath"):
                 if repo["localHasMaster"] and repo["localHasTarget"]:
                     repo["status"] = states["pendingDeleteLocal"]
-                    reposDeleteLocal.repos.append(repo)
+                    reposDeleteLocal["repos"].append(repo)
                     continue
                 if repo["localHasTarget"] and not repo["localHasMaster"]:
                     repo["status"] = states["alreadyBlasted"]
                     continue
                 if not repo["localHasTarget"] and repo["localHasMaster"]:
                     repo["status"] = states["pendingLocalProcess"]
-                    reposLocalProcess.repos.append(repo)
+                    reposLocalProcess["repos"].append(repo)
                 repo["status"] = states["pathUnclear"]
                 continue
             repo["status"] = states["alreadyBlasted"]
@@ -634,11 +626,11 @@ def checkNames(repos):
         repo["status"] = states["pathUnclear"]
 
     for repo in repos:
-        logInfo(f"{repo['name']} initial status determined: {repo['status']}")
+        logging.info(f"{repo['name']} initial status determined: {repo['status']}")
 
     if reposMvThirdToTargetLocal.get("repos"):
-        if len(reposMvThirdToTargetLocal.repos) > 0:
-            if len(reposMvThirdToTargetLocal.repos) > 1:
+        if len(reposMvThirdToTargetLocal["repos"]) > 0:
+            if len(reposMvThirdToTargetLocal["repos"]) > 1:
                 print(
                     "The following repos have a third name for their primary branch, which is present locally."
                 )
@@ -646,49 +638,49 @@ def checkNames(repos):
                 print(
                     "The following repo has a third name for its primary branch, which is present locally."
                 )
-            for repo in reposMvThirdToTargetLocal.repos:
+            for repo in reposMvThirdToTargetLocal["repos"]:
                 print(repo["name"])
             decision = False
-            if len(reposMvThirdToTargetLocal.repos) > 1:
+            if len(reposMvThirdToTargetLocal["repos"]) > 1:
                 decision = questionary.confirm("Do you want to rename these branches?")
             else:
                 decision = questionary.confirm("Do you want to rename this branch?")
             if decision:
-                reposMvThirdToTargetLocal.pending = False
-                for pendingRepo in reposMvThirdToTargetLocal.repos:
+                reposMvThirdToTargetLocal["pending"] = False
+                for pendingRepo in reposMvThirdToTargetLocal["repos"]:
                     for repo in repos:
                         if pendingRepo["name"] == repo["name"]:
                             repo["status"] = states["mvThirdToTargetLocal"]
-                            logInfo(
+                            logging.info(
                                 f"{repo['name']} added to repos with status: {states['mvThirdToTargetLocal']}"
                             )
 
     if reposMvThirdToTargetClone.get("repos"):
-        if len(reposMvThirdToTargetClone.repos) > 0:
-            if len(reposMvThirdToTargetClone.repos) > 1:
+        if len(reposMvThirdToTargetClone["repos"]) > 0:
+            if len(reposMvThirdToTargetClone["repos"]) > 1:
                 print("The following repos have a third name for their primary branch.")
             else:
                 print("The following repo has a third name for its primary branch.")
-            for repo in reposMvThirdToTargetClone.repos:
+            for repo in reposMvThirdToTargetClone["repos"]:
                 print(repo["name"])
             decision = False
-            if len(reposMvThirdToTargetClone.repos) > 1:
+            if len(reposMvThirdToTargetClone["repos"]) > 1:
                 decision = questionary.confirm("Do you want to rename these branches?")
             else:
                 decision = questionary.confirm("Do you want to rename this branch?")
             if decision:
-                reposMvThirdToTargetClone.pending = False
-                for pendingRepo in reposMvThirdToTargetClone.repos:
+                reposMvThirdToTargetClone["pending"] = False
+                for pendingRepo in reposMvThirdToTargetClone["repos"]:
                     for repo in repos:
                         if pendingRepo["name"] == repo["name"]:
                             repo["status"] = states["mvThirdToTargetClone"]
-                            logInfo(
+                            logging.info(
                                 f"{repo['name']} added to repos with status: {states['mvThirdToTargetClone']}"
                             )
 
     if reposMvThirdToTargetAndBlastLocalMaster.get("repos"):
-        if len(reposMvThirdToTargetAndBlastLocalMaster.repos) > 0:
-            if len(reposMvThirdToTargetAndBlastLocalMaster.repos) > 1:
+        if len(reposMvThirdToTargetAndBlastLocalMaster["repos"]) > 0:
+            if len(reposMvThirdToTargetAndBlastLocalMaster["repos"]) > 1:
                 print(
                     "The following repos have a third name for their primary branch, which is present locally, and a locally present master branch."
                 )
@@ -696,109 +688,109 @@ def checkNames(repos):
                 print(
                     "The following repo has a third name for its primary branch, which is present locally, and a locally present master branch."
                 )
-            for repo in reposMvThirdToTargetAndBlastLocalMaster.repos:
+            for repo in reposMvThirdToTargetAndBlastLocalMaster["repos"]:
                 print(repo["name"])
             decision = False
-            if len(reposMvThirdToTargetAndBlastLocalMaster.repos) > 1:
+            if len(reposMvThirdToTargetAndBlastLocalMaster["repos"]) > 1:
                 decision = questionary.confirm("Do you want to rename these branches?")
             else:
                 decision = questionary.confirm("Do you want to rename this branch?")
             if decision:
-                reposMvThirdToTargetAndBlastLocalMaster.pending = False
-                for pendingRepo in reposMvThirdToTargetAndBlastLocalMaster.repos:
+                reposMvThirdToTargetAndBlastLocalMaster["pending"] = False
+                for pendingRepo in reposMvThirdToTargetAndBlastLocalMaster["repos"]:
                     for repo in repos:
                         if pendingRepo["name"] == repo["name"]:
                             repo["status"] = states[
                                 "mvThirdToTargetAndBlastLocalMaster"
                             ]
-                            logInfo(
+                            logging.info(
                                 f"{repo['name']} added to repos with status: {states['mvThirdToTargetAndBlastLocalMaster']}"
                             )
 
     if reposDeleteRemote.get("repos"):
-        if len(reposDeleteRemote.repos) > 0:
-            if len(reposDeleteRemote.repos) > 1:
+        if len(reposDeleteRemote["repos"]) > 0:
+            if len(reposDeleteRemote["repos"]) > 1:
                 print("The following repos have a remote master branch.")
             else:
                 print("The following repo has a remote master branch.")
-            for repo in reposDeleteRemote.repos:
+            for repo in reposDeleteRemote["repos"]:
                 print(repo["name"])
             decision = False
-            if len(reposDeleteRemote.repos) > 1:
+            if len(reposDeleteRemote["repos"]) > 1:
                 decision = questionary.confirm("Do you want to delete these branches?")
             else:
                 decision = questionary.confirm("Do you want to delete this branch?")
             if decision:
-                reposDeleteRemote.pending = False
-                for pendingRepo in reposDeleteRemote.repos:
+                reposDeleteRemote["pending"] = False
+                for pendingRepo in reposDeleteRemote["repos"]:
                     for repo in repos:
                         if pendingRepo["name"] == repo["name"]:
                             repo["status"] = states["deleteRemote"]
-                            logInfo(
+                            logging.info(
                                 f"{repo['name']} added to repos with status: {states['deleteRemote']}"
                             )
 
     if reposDeleteLocal.get("repos"):
-        if len(reposDeleteLocal.repos) > 0:
-            if len(reposDeleteLocal.repos) > 1:
+        if len(reposDeleteLocal["repos"]) > 0:
+            if len(reposDeleteLocal["repos"]) > 1:
                 print("The following repos have a local master branch.")
             else:
                 print("The following repo has a local master branch.")
-            for repo in reposDeleteLocal.repos:
+            for repo in reposDeleteLocal["repos"]:
                 print(repo["name"])
             decision = False
-            if len(reposDeleteLocal.repos) > 1:
+            if len(reposDeleteLocal["repos"]) > 1:
                 decision = questionary.confirm("Do you want to delete these branches?")
             else:
                 decision = questionary.confirm("Do you want to delete this branch?")
             if decision:
-                reposDeleteLocal.pending = False
-                for pendingRepo in reposDeleteLocal.repos:
+                reposDeleteLocal["pending"] = False
+                for pendingRepo in reposDeleteLocal["repos"]:
                     for repo in repos:
                         if pendingRepo["name"] == repo["name"]:
                             repo["status"] = states["deleteLocal"]
-                            logInfo(
+                            logging.info(
                                 f"{repo['name']} added to repos with status: {states['deleteLocal']}"
                             )
 
     if reposDeleteLocalAndRemote.get("repos"):
-        if len(reposDeleteLocalAndRemote.repos) > 0:
-            if len(reposDeleteLocalAndRemote.repos) > 1:
+        if len(reposDeleteLocalAndRemote["repos"]) > 0:
+            if len(reposDeleteLocalAndRemote["repos"]) > 1:
                 print("The following repos have a local and remote master branches.")
             else:
                 print("The following repo has a local and remote master branch.")
-            for repo in reposDeleteLocalAndRemote.repos:
+            for repo in reposDeleteLocalAndRemote["repos"]:
                 print(repo["name"])
             if questionary.confirm("Do you want to delete these branches?"):
                 reposDeleteLocalAndRemote.pending = False
-                for pendingRepo in reposDeleteLocalAndRemote.repos:
+                for pendingRepo in reposDeleteLocalAndRemote["repos"]:
                     for repo in repos:
                         if pendingRepo["name"] == repo["name"]:
                             repo["status"] = states["deleteLocalAndRemote"]
-                            logInfo(
+                            logging.info(
                                 f"{repo['name']} added to repos with status: {states['deleteLocalAndRemote']}"
                             )
 
     if reposLocalProcess.get("repos"):
-        if len(reposLocalProcess.repos) > 0:
-            if len(reposLocalProcess.repos) > 1:
+        if len(reposLocalProcess["repos"]) > 0:
+            if len(reposLocalProcess["repos"]) > 1:
                 print("The following repos have local repos that can be updated.")
             else:
                 print("The following repo has a local repo that can be updated.")
-            for repo in reposLocalProcess.repos:
+            for repo in reposLocalProcess["repos"]:
                 print(repo["name"])
             decision = False
-            if len(reposLocalProcess.repos) > 1:
+            if len(reposLocalProcess["repos"]) > 1:
                 decision = questionary.confirm("Do you want to update these repos?")
             else:
                 decision = questionary.confirm("Do you want to update this repo?")
             if decision:
                 reposLocalProcess.pending = False
-                for pendingRepo in reposLocalProcess.repos:
+                for pendingRepo in reposLocalProcess["repos"]:
                     for repo in repos:
                         if pendingRepo["name"] == repo["name"]:
                             repo["status"] = states["localProcess"]
-                            logInfo(
+                            logging.info(
                                 f"{repo['name']} added to repos with status: {states['localProcess']}"
                             )
 
@@ -814,11 +806,11 @@ def checkNames(repos):
     return repos, optionRepos
 
 
-def printNamesAndErrors(repos):
+def print_names_and_errors(repos):
     """Print out the names of successes, if present, then errors, if present."""
     reposNumber = 0
     if repos.get("repos"):
-        reposNumber = len(repos.repos)
+        reposNumber = len(repos["repos"])
     else:
         reposNumber = len(repos)
     repoErrorsNumber = 0
@@ -827,26 +819,26 @@ def printNamesAndErrors(repos):
     if reposNumber > repoErrorsNumber:
         print(f"Successes: {reposNumber - repoErrorsNumber}\n")
         if repoErrorsNumber > 0:
-            for repo in repos.repos:
+            for repo in repos["repos"]:
                 error = False
-                for errorRepo in repos.errors:
+                for errorRepo in repos["errors"]:
                     if repo["name"] == errorRepo["name"]:
                         error = True
                 if not error:
                     print(f"{repo['name']}\n")
             print(f"Errors: {repoErrorsNumber}\n")
-            for errorRepo in repos.errors:
+            for errorRepo in repos["errors"]:
                 print(f"{errorRepo['name']}\n")
         else:
-            for repo in repos.repos:
+            for repo in repos["repos"]:
                 print(f"{repo['name']}\n")
     else:
         print(f"Errors: {repoErrorsNumber}\n")
-        for errorRepo in repos.errors:
+        for errorRepo in repos["errors"]:
             print(f"{errorRepo['name']}\n")
 
 
-def reportOn(
+def report_on(
     finalRepos, clonesRmAttempted, reposCloneDeletionError, gitNew, gitNewError
 ):
     """What happened?"""
@@ -887,8 +879,8 @@ def reportOn(
     # }
     print("Process complete!\n")
 
-    reposNumber = len(finalRepos.reposRemoteProcessLocal.repos)
-    repoErrorsNumber = len(finalRepos.reposRemoteProcessLocal.errors)
+    reposNumber = len(finalRepos["reposRemoteProcessLocal"]["repos"])
+    repoErrorsNumber = len(finalRepos["reposRemoteProcessLocal"]["errors"])
     if len(reposNumber) > 0:
         if not len(repoErrorsNumber) > 0:
             if len(reposNumber > 1):
@@ -913,10 +905,10 @@ def reportOn(
                 print(
                     f"Attempted to blast {len(reposNumber)} repo from the local repo and it errored!"
                 )
-    printNamesAndErrors(finalRepos.reposRemoteProcessLocal)
+    print_names_and_errors(finalRepos["reposRemoteProcessLocal"])
 
-    reposNumber = len(finalRepos.reposRemoteProcessClone.repos)
-    repoErrorsNumber = len(finalRepos.reposRemoteProcessClone.errors)
+    reposNumber = len(finalRepos["reposRemoteProcessClone"]["repos"])
+    repoErrorsNumber = len(finalRepos["reposRemoteProcessClone"]["errors"])
     if len(reposNumber) > 0:
         if not len(repoErrorsNumber) > 0:
             if len(reposNumber > 1):
@@ -941,10 +933,10 @@ def reportOn(
                 print(
                     f"Attempted to blast {len(reposNumber)} repo by cloning the repo and it errored!"
                 )
-    printNamesAndErrors(finalRepos.reposRemoteProcessClone)
+    print_names_and_errors(finalRepos["reposRemoteProcessClone"])
 
-    reposNumber = len(finalRepos.reposDeleteLocal.repos)
-    repoErrorsNumber = len(finalRepos.reposDeleteLocal.errors)
+    reposNumber = len(finalRepos["reposDeleteLocal"]["repos"])
+    repoErrorsNumber = len(finalRepos["reposDeleteLocal"]["errors"])
     if len(reposNumber) > 0:
         if not len(repoErrorsNumber) > 0:
             if len(reposNumber > 1):
@@ -969,10 +961,10 @@ def reportOn(
                 print(
                     f"Attempted to blast {len(reposNumber)} local master branch and it errored!"
                 )
-    printNamesAndErrors(finalRepos.reposDeleteLocal)
+    print_names_and_errors(finalRepos["reposDeleteLocal"])
 
-    reposNumber = len(finalRepos.reposDeleteRemote.repos)
-    repoErrorsNumber = len(finalRepos.reposDeleteRemote.errors)
+    reposNumber = len(finalRepos["reposDeleteRemote"]["repos"])
+    repoErrorsNumber = len(finalRepos["reposDeleteRemote"]["errors"])
     if len(reposNumber) > 0:
         if not len(repoErrorsNumber) > 0:
             if len(reposNumber > 1):
@@ -999,10 +991,10 @@ def reportOn(
                 print(
                     f"Attempted to blast {len(reposNumber)} master branch by cloning the repo and it errored!"
                 )
-    printNamesAndErrors(finalRepos.reposDeleteRemote)
+    print_names_and_errors(finalRepos["reposDeleteRemote"])
 
-    reposNumber = len(finalRepos.reposDeleteLocalAndRemote.repos)
-    repoErrorsNumber = len(finalRepos.reposDeleteLocalAndRemote.errors)
+    reposNumber = len(finalRepos["reposDeleteLocalAndRemote"]["repos"])
+    repoErrorsNumber = len(finalRepos["reposDeleteLocalAndRemote"]["errors"])
     if len(reposNumber) > 0:
         if not len(repoErrorsNumber) > 0:
             if len(reposNumber > 1):
@@ -1031,10 +1023,10 @@ def reportOn(
                 print(
                     f"Attempted to blast {len(reposNumber)} master branch in the local repo and remotely and it errored!"
                 )
-    printNamesAndErrors(finalRepos.reposDeleteLocalAndRemote)
+    print_names_and_errors(finalRepos["reposDeleteLocalAndRemote"])
 
-    reposNumber = len(finalRepos.reposLocalProcess.repos)
-    repoErrorsNumber = len(finalRepos.reposLocalProcess.errors)
+    reposNumber = len(finalRepos["reposLocalProcess"]["repos"])
+    repoErrorsNumber = len(finalRepos["reposLocalProcess"]["errors"])
     if len(reposNumber) > 0:
         if not len(repoErrorsNumber) > 0:
             if len(reposNumber > 1):
@@ -1059,10 +1051,10 @@ def reportOn(
                 print(
                     f"Attempted to sync {len(reposNumber)} local repo with a blasted remote and it errored!"
                 )
-    printNamesAndErrors(finalRepos.reposLocalProcess)
+    print_names_and_errors(finalRepos["reposLocalProcess"])
 
-    reposNumber = len(finalRepos.reposMvThirdToTargetLocal.repos)
-    repoErrorsNumber = len(finalRepos.reposMvThirdToTargetLocal.errors)
+    reposNumber = len(finalRepos["reposMvThirdToTargetLocal"]["repos"])
+    repoErrorsNumber = len(finalRepos["reposMvThirdToTargetLocal"]["errors"])
     if len(reposNumber) > 0:
         if not len(repoErrorsNumber) > 0:
             if len(reposNumber > 1):
@@ -1087,10 +1079,10 @@ def reportOn(
                 print(
                     f"Attempted to rename {len(reposNumber)} branches from the local repo and it errored!"
                 )
-    printNamesAndErrors(finalRepos.reposMvThirdToTargetLocal)
+    print_names_and_errors(finalRepos["reposMvThirdToTargetLocal"])
 
-    reposNumber = len(finalRepos.reposMvThirdToTargetClone.repos)
-    repoErrorsNumber = len(finalRepos.reposMvThirdToTargetClone.errors)
+    reposNumber = len(finalRepos["reposMvThirdToTargetClone"]["repos"])
+    repoErrorsNumber = len(finalRepos["reposMvThirdToTargetClone"]["errors"])
     if len(reposNumber) > 0:
         if not len(repoErrorsNumber) > 0:
             if len(reposNumber > 1):
@@ -1115,10 +1107,12 @@ def reportOn(
                 print(
                     f"Attempted to rename {len(reposNumber)} branch by cloning the repo and it errored!"
                 )
-    printNamesAndErrors(finalRepos.reposMvThirdToTargetClone)
+    print_names_and_errors(finalRepos["reposMvThirdToTargetClone"])
 
-    reposNumber = len(finalRepos.reposMvThirdToTargetAndBlastLocalMaster.repos)
-    repoErrorsNumber = len(finalRepos.reposMvThirdToTargetAndBlastLocalMaster.errors)
+    reposNumber = len(finalRepos["reposMvThirdToTargetAndBlastLocalMaster"]["repos"])
+    repoErrorsNumber = len(
+        finalRepos["reposMvThirdToTargetAndBlastLocalMaster"]["errors"]
+    )
     if len(reposNumber) > 0:
         if not len(repoErrorsNumber) > 0:
             if len(reposNumber > 1):
@@ -1147,9 +1141,9 @@ def reportOn(
                 print(
                     f"Attempted to rename {len(reposNumber)} branch from a local repo and delete the local master branch and it errored!"
                 )
-    printNamesAndErrors(finalRepos.reposMvThirdToTargetAndBlastLocalMaster)
+    print_names_and_errors(finalRepos["reposMvThirdToTargetAndBlastLocalMaster"])
 
-    reposNumber = len(finalRepos.reposPathUnclear)
+    reposNumber = len(finalRepos["reposPathUnclear"])
     if len(reposNumber) > 0:
         if len(reposNumber > 1):
             print(
@@ -1159,9 +1153,9 @@ def reportOn(
             print(
                 f"{len(reposNumber)} repo wasn't acted on because the path for action was unclear!"
             )
-    printNamesAndErrors(finalRepos.reposPathUnclear)
+    print_names_and_errors(finalRepos["reposPathUnclear"])
 
-    reposNumber = len(finalRepos.reposFolderError)
+    reposNumber = len(finalRepos["reposFolderError"])
     if len(reposNumber) > 0:
         if len(reposNumber > 1):
             print(
@@ -1171,15 +1165,15 @@ def reportOn(
             print(
                 f"{len(reposNumber)} repo wasn't acted on because there was a local folder that possibly isn't git repo, error opening .git/config!"
             )
-    printNamesAndErrors(finalRepos.reposFolderError)
+    print_names_and_errors(finalRepos["reposFolderError"])
 
-    reposNumber = len(finalRepos.reposAlreadyBlasted)
+    reposNumber = len(finalRepos["reposAlreadyBlasted"])
     if len(reposNumber) > 0:
         if len(reposNumber > 1):
             print(f"{len(reposNumber)} repos were already blasted!")
         else:
             print(f"{len(reposNumber)} repo was already blasted!")
-    printNamesAndErrors(finalRepos.reposAlreadyBlasted)
+    print_names_and_errors(finalRepos["reposAlreadyBlasted"])
 
     if clonesRmAttempted:
         if reposCloneDeletionError:

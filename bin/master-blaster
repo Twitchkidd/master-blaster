@@ -17,10 +17,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from pathlib import Path
+import logging
 import sys
-from vendor.lib.actions.shell import getCurrentBranch
-from vendor.lib.actions.shell import setCurrentBranch
-from vendor.lib.logging import loggingConfig
+from vendor.lib.actions.shell import get_current_branch
+from vendor.lib.actions.shell import set_current_branch
+from vendor.lib.logging import logging_config
 from vendor.lib.reporting import intro
 from vendor.lib.auth import auth
 from vendor.lib.options import wizard
@@ -29,31 +30,35 @@ from vendor.lib.reporting import denoument
 from vendor.lib.actions.shell_exceptions import GetBranchError
 from vendor.lib.actions.shell_exceptions import SetBranchError
 
-testing = True
+try:
+    testing = True
 
-loggingConfig(testing)
+    logging_config(testing)
 
-currentBranch = ""
-if testing:
-    try:
-        currentBranch = getCurrentBranch(Path.cwd())
-    except GetBranchError as err:
-        print(err.message)
-        sys.exit()
+    currentBranch = ""
+    if testing:
+        try:
+            currentBranch = get_current_branch(Path.cwd())
+        except GetBranchError as err:
+            print(err.message)
+            sys.exit()
 
-intro()
+    intro()
 
-data = auth(testing)
-dataWithOptions = wizard(data, testing)
-run(dataWithOptions)
+    data = auth(testing)
+    dataWithOptions = wizard(data, testing)
+    run(dataWithOptions)
 
-denoument()
+    denoument()
 
-if testing:
-    try:
-        setCurrentBranch(currentBranch)
-    except SetBranchError as err:
-        print(err.message)
-        pass
+    if testing:
+        try:
+            set_current_branch(currentBranch)
+        except SetBranchError as err:
+            print(err.message)
+            pass
+
+except Exception:
+    logging.warning("Error!", exc_info=True)
 
 sys.exit()

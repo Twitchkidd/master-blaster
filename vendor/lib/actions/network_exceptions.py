@@ -10,19 +10,18 @@ class RequestError(Error):
     """
 
     def __init__(self, status_code):
-        self.status_code = status_code
-        self.message = f"GitHub API request status code: {status_code}"
+        self.message = f"ERROR: GitHub API request status code: {status_code}"
 
 
 class NetworkError(Error):
     """Raised when there's no connection detected.
 
     Attributes:
-        message -- explanation of what happened
+        None.
     """
 
-    def __init__(self, message="Not seeing an internet connection! Bailing out!"):
-        self.message = message
+    def __init__(self):
+        self.message = "ERROR: Not seeing an internet connection! Bailing out!"
 
 
 class NoReposError(Error):
@@ -32,5 +31,5 @@ class NoReposError(Error):
         message -- explanation of what happened
     """
 
-    def __init__(self, message="No repos to blast!"):
-        self.message = message
+    def __init__(self):
+        self.message = "Ending program: No repos to blast!"

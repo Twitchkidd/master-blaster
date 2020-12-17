@@ -1,40 +1,47 @@
+import logging
 import os
 from pathlib import Path
 from subprocess import Popen, PIPE
-from vendor.lib.logging import logInfo
-from vendor.lib.logging import logWarning
 from vendor.lib.actions.shell_exceptions import GetBranchError
+from vendor.lib.actions.shell_exceptions import SetBranchError
 from vendor.lib.actions.shell_exceptions import RenameBranchError
 
 
-def getCurrentBranch(path):
-    """Grab the current git branch, useful for testing."""
-    # * ``` From u/merfi on SO ``` * #
+def get_current_branch(path):
+    """Grab the current git branch, useful for testing.
+
+    Credit:
+        Mostly from u/merfi on SO, added path param, exception.
+    """
     head_dir = Path(path) / ".git" / "HEAD"
     with head_dir.open("r") as f:
         content = f.read().splitlines()
     for line in content:
         if line[0:4] == "ref:":
             return line.partition("refs/heads/")[2]
-    raise GetBranchError
+    raise GetBranchError()
 
 
-def getLocalToken():
+def get_local_token():
     """Read the local file 'repo.txt' for a token, useful for testing."""
-    with open("./repo.txt", "r") as repoF:
-        return repoF.read(40)
+    try:
+        with open("./repo.txt", "r") as repoF:
+            return repoF.read(40)
+    except FileNotFoundError:
+        logging.info(
+            "You can store your token at ./repo.txt and master-blaster will remember it while testing."
+        )
+        pass
 
 
-def getLocalRepoUrl(configFile):
+def get_local_repo_url(configFile):
     for line in configFile:
         if line.find("url =") != -1:
             remoteOriginUrlStart = line.find("url =")
             return line[remoteOriginUrlStart + 6 : -1]
 
 
-def getLocalRepos(repos, localDirectory):
-    if localDirectory == None:
-        return repos
+def get_local_repos(repos, localDirectory):
     repoNames = [repo["name"] for repo in repos]
     for root, subdirs, files in os.walk(f"{localDirectory}"):
         for subdir in subdirs:
@@ -43,11 +50,13 @@ def getLocalRepos(repos, localDirectory):
                     with open(f"{root}/{subdir}/.git/config", "r") as configFile:
                         for repo in repos:
                             if subdir == repo["name"]:
-                                repo["configUrl"] = getLocalRepoUrl(configFile).lower()
+                                repo["configUrl"] = get_local_repo_url(
+                                    configFile
+                                ).lower()
                                 repo["localPath"] = f"{root}/{subdir}"
                                 repo[
                                     "currentBranch"
-                                ] = f"{getCurrentBranch(f'{root}/{subdir}')}"
+                                ] = f"{get_current_branch(f'{root}/{subdir}')}"
                                 repo["status"] = None
                                 repoNames.remove(subdir)
                 except Exception as err:
@@ -56,69 +65,87 @@ def getLocalRepos(repos, localDirectory):
                             repo[
                                 "status"
                             ] = "Local folder that possibly isn't git repo, error opening .git/config"
-                    # logWarning(f"Exception in {subdir}: {err}")
+                            repo["localPath"] = f"{root}/{subdir}"
                     continue
+    for repo in repos:
+        try:
+            if (
+                repo["status"]
+                == "Local folder that possibly isn't git repo, error opening .git/config"
+            ):
+                logging.warning(
+                    f"Error with {repo['name']}: Local folder(s) found without .git/config files, path unclear. Last checked directory: {repo['localPath']}"
+                )
+        except KeyError:
+            pass
     return repos
 
 
-def processRunner(string, process, *args):
-    """Logs the argument to be attempted to run, runs it, returns stdout
-    and stderr."""
-    logInfo(string)
+def process_runner(string, process, *args):
+    """Logs the argument to be attempted to run, runs it, logs and returns
+    stdout and stderr."""
+    logging.info(string)
     stdout, stderr = process.communicate()
     if len(stdout) > 0:
-        logInfo(stdout)
+        logging.info(stdout)
     if len(stderr) > 0:
         if len(args) > 0:
             for ignoreString in args:
                 if ignoreString in stderr.decode():
-                    logWarning(stderr)
-                    logInfo("You may be able to ignore the above warning.")
+                    logging.warning(stderr)
+                    logging.info("You may be able to ignore the above warning.")
                     return stdout, stderr
-        logWarning(stderr)
+        logging.warning(stderr)
     return stdout, stderr
 
 
-def setCurrentBranch(branch):
+def set_current_branch(branch):
     """Set the current git branch, useful in testing to set it back to original."""
     setBranch = Popen(["git", "checkout", f"{branch}"], stdout=PIPE, stderr=PIPE)
-    out, err = processRunner(f"cwd={Path.cwd()}: git checkout {branch}", setBranch)
+    stdout, stderr = process_runner(
+        f"cwd={Path.cwd()}: git checkout {branch}", setBranch, "Already"
+    )
+    if len(stderr) > 0 and not "Already" in stderr.decode():
+        raise SetBranchError(stderr.decode())
 
 
-def checkLocalBranches(repos):
+def check_local_branches(repos):
     """Determine presence of target/master branches, and what the default is."""
     for repo in repos:
         if repo.get("localPath"):
             gitBranch = Popen(
                 ["git", "branch"], cwd=repo["localPath"], stdout=PIPE, stderr=PIPE
             )
-            gitBranchStdout = processRunner(
+            stdout, stderr = process_runner(
                 f"cwd={repo['localPath']}: git branch", gitBranch
-            )[0]
-            repo["localHasMaster"] = "master" in f"{gitBranchStdout}"
-            repo["localHasTarget"] = repo["targetName"] in f"{gitBranchStdout}"
+            )
+            if len(stderr) > 0:
+                logging.warning("Fail in git branch.")
+                raise
+            repo["localHasMaster"] = "master" in f"{stdout}"
+            repo["localHasTarget"] = repo["targetName"] in f"{stdout}"
             if not repo["hasTarget"] and not repo["hasMaster"]:
-                repo["localHasThird"] = repo["default"] in f"{gitBranchStdout}"
+                repo["localHasThird"] = repo["default"] in f"{stdout}"
     return repos
 
 
-def renameBranch(initial, final, directory):
+def rename_branch(initial, final, directory):
     """Renames a branch of a repo, locally."""
     gitBranchMove = Popen(
         ["git", "branch", "-m", initial, final], cwd=directory, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = processRunner(
+    loggerReturn = process_runner(
         f"cwd={directory}: git branch -m {initial} {final}", gitBranchMove
     )
     gitBranchMoveStderr = loggerReturn[1]
     gitBranchMoveExitCode = loggerReturn[2]
     if gitBranchMoveExitCode == 1:
-        raise RenameBranchError(gitBranchMoveStderr)
+        raise RenameBranchError(gitBranchMoveStderr.decode())
         # the next question is what identifying info to pass for the repo
         # ... also, how do I make this fail?
 
 
-def pushSettingUpstream(targetName, directory):
+def push_setting_upstream(targetName, directory):
     """Pushes to remote, setting the upstream (remote tracking branch.)"""
     gitPushSetUpstream = Popen(
         ["git", "push", "-u", "origin", targetName],
@@ -126,7 +153,7 @@ def pushSettingUpstream(targetName, directory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processRunner(
+    loggerReturn = process_runner(
         f"cwd={directory}: git push -u origin {targetName}",
         gitPushSetUpstream,
         ignoreStr="To",
@@ -139,7 +166,7 @@ def pushSettingUpstream(targetName, directory):
         return None
 
 
-def deleteRemoteBranch(branch, directory):
+def delete_remote_branch(branch, directory):
     """Delete the old branch on the remote."""
     gitPushDelete = Popen(
         ["git", "push", "--delete", "origin", branch],
@@ -147,7 +174,7 @@ def deleteRemoteBranch(branch, directory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processRunner(
+    loggerReturn = process_runner(
         f"cwd={directory}: git push --delete origin {branch}",
         gitPushDelete,
         ignoreStr="To",
@@ -160,7 +187,7 @@ def deleteRemoteBranch(branch, directory):
         return None
 
 
-def mkdirIfNeedBe(username, localDirectory):
+def mkdir_if_need_be(username, localDirectory):
     """/master-blaster-{username} is used as a temp dir."""
     if not os.path.isdir(f"{localDirectory}/master-blaster-{username}/"):
         mkdir = Popen(
@@ -169,7 +196,7 @@ def mkdirIfNeedBe(username, localDirectory):
             stdout=PIPE,
             stderr=PIPE,
         )
-        loggerReturn = processRunner(
+        loggerReturn = process_runner(
             f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/",
             mkdir,
         )
@@ -183,7 +210,7 @@ def mkdirIfNeedBe(username, localDirectory):
         return None
 
 
-def cloneRepo(username, repo, localDirectory):
+def clone_repo(username, repo, localDirectory):
     """Clone the repo into the right place!"""
     gitClone = Popen(
         [
@@ -196,7 +223,7 @@ def cloneRepo(username, repo, localDirectory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processRunner(
+    loggerReturn = process_runner(
         f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}",
         gitClone,
     )
@@ -208,12 +235,12 @@ def cloneRepo(username, repo, localDirectory):
         return None
 
 
-def deleteLocalBranch(branch, directory):
+def delete_local_branch(branch, directory):
     """Delete a local branch."""
     deleteBranch = Popen(
         ["git", "branch", "-D", branch], cwd={directory}, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = processRunner(
+    loggerReturn = process_runner(
         f"cwd={directory}: git branch -D {branch}", deleteBranch
     )
     deleteBranchStderr = loggerReturn[1]
@@ -229,14 +256,14 @@ def checkout(branch, directory):
     checkoutBranch = Popen(
         ["git", "checkout", branch], cwd={directory}, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = processRunner(
+    loggerReturn = process_runner(
         f"cwd={directory}: git checkout {branch}",
         checkoutBranch,
         ignoreStr="Already on",
         secondIgnoreStr="Switched to",
     )
-    checkoutBranchStderr = processRunner[1]
-    checkoutBranchExitCode = processRunner[2]
+    checkoutBranchStderr = process_runner[1]
+    checkoutBranchExitCode = process_runner[2]
     if checkoutBranchExitCode == 1:
         return checkoutBranchStderr
     else:
@@ -245,51 +272,51 @@ def checkout(branch, directory):
 
 def fetch(directory):
     gitFetch = Popen(["git", "fetch"], cwd={directory}, stdout=PIPE, stderr=PIPE)
-    loggerReturn = processRunner(f"cwd={directory}: git fetch", gitFetch)
-    gitFetchStderr = processRunner[1]
-    gitFetchExitCode = processRunner[2]
+    loggerReturn = process_runner(f"cwd={directory}: git fetch", gitFetch)
+    gitFetchStderr = process_runner[1]
+    gitFetchExitCode = process_runner[2]
     if gitFetchExitCode == 1:
         return gitFetchStderr
     else:
         return None
 
 
-def unsetUpstream(directory):
+def unset_upstream(directory):
     gitBranchUU = Popen(
         ["git", "branch", "--unset-upstream"], cwd={directory}, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = processRunner(
+    loggerReturn = process_runner(
         f"cwd={directory}: git branch --unset-upstream", gitBranchUU
     )
-    gitBranchUUStderr = processRunner[1]
-    gitBranchUUExitCode = processRunner[2]
+    gitBranchUUStderr = process_runner[1]
+    gitBranchUUExitCode = process_runner[2]
     if gitBranchUUExitCode == 1:
         return gitBranchUUStderr
     else:
         return None
 
 
-def setUpstream(targetName, directory):
+def set_upstream(targetName, directory):
     gitBranchSetUpstream = Popen(
         ["git", "branch", "-u", f"origin/{targetName}"],
         cwd={directory},
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processRunner(
+    loggerReturn = process_runner(
         f"cwd={directory}: git branch -u origin/{targetName}",
         gitBranchSetUpstream,
         ignoreStr="To",
     )
-    gitBranchSetUpstreamStderr = processRunner[1]
-    gitBranchSetUpstreamExitCode = processRunner[2]
+    gitBranchSetUpstreamStderr = process_runner[1]
+    gitBranchSetUpstreamExitCode = process_runner[2]
     if gitBranchSetUpstreamExitCode == 1:
         return gitBranchSetUpstreamStderr
     else:
         return None
 
 
-def updateSymbolicRef(targetName, directory):
+def update_symbolic_ref(targetName, directory):
     updateRef = Popen(
         [
             "git",
@@ -301,38 +328,38 @@ def updateSymbolicRef(targetName, directory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processRunner(
+    loggerReturn = process_runner(
         f"cwd={directory}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{targetName}",
         updateRef,
     )
-    updateRefStderr = processRunner[1]
-    updateRefExitCode = processRunner[2]
+    updateRefStderr = process_runner[1]
+    updateRefExitCode = process_runner[2]
     if updateRefExitCode == 1:
         return updateRefStderr
     else:
         return None
 
 
-def rmCloneFolder(username, localDirectory):
+def rm_clone_folder(username, localDirectory):
     removeDir = Popen(
         ["rm", "-dfRv", f"{localDirectory}/master-blaster-{username}/"],
         cwd={localDirectory},
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processRunner(
+    loggerReturn = process_runner(
         f"cwd={localDirectory}: rm -dfRv {localDirectory}/master-blaster-{username}/",
         removeDir,
     )
-    removeDirStderr = processRunner[1]
-    removeDirExitCode = processRunner[2]
+    removeDirStderr = process_runner[1]
+    removeDirExitCode = process_runner[2]
     if removeDirExitCode == 1:
         return removeDirStderr
     else:
         return None
 
 
-def gitNew(targetName):
+def git_new(targetName):
     """Add the `git new` alias."""
     gitNew = Popen(
         [
@@ -345,7 +372,7 @@ def gitNew(targetName):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = processRunner(
+    loggerReturn = process_runner(
         f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{targetName}'",
         gitNew,
     )

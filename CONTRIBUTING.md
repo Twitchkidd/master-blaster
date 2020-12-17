@@ -12,6 +12,8 @@ and then `pytest`!
 
 ---
 
+Functions snake, variables camel!
+
 ### Previous CONTRIBUTING
 
 Hi! Let me start this off by at least having the steps for how to run `dev`!

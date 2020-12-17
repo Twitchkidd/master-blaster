@@ -1,20 +1,19 @@
-import logging
 from vendor.lib.utils import Error
 
 
 class GetBranchError(Error):
-    """Raised when a branch can't be gotten.
+    """Raised when a branch can't be gotten, should only be seen in testing.
 
     Attributes:
         None.
     """
 
     def __init__(self):
-        self.message = f"ERROR: Failed to get branch. Possible fix change directory into master-blaster root. {error_message}"
+        self.message = f"ERROR: Failed to get branch. Possible fix: change to master-blaster directory."
 
 
 class SetBranchError(Error):
-    """Raised when a branch can't be set.
+    """Raised when a branch can't be set. Should (not) be seen in testing.
 
     Attributes:
         error_message -- the stderr from the process

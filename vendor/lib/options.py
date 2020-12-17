@@ -1,33 +1,31 @@
-from vendor.lib.actions.shell import getLocalRepos
-from vendor.lib.actions.shell import checkLocalBranches
-from vendor.lib.actions.network import checkRemoteBranches
-from vendor.lib.reporting import repoTypesBlurb
-from vendor.lib.reporting import getNamingMode
-from vendor.lib.reporting import getCustomName
-from vendor.lib.reporting import getCustomNames
-from vendor.lib.reporting import getLocalDirectory
-from vendor.lib.reporting import getRemoveClones
-from vendor.lib.reporting import getGitNew
-from vendor.lib.reporting import checkNames
-
-# options: When the user gets a personal access token, get the options. #
+from vendor.lib.reporting import repo_types_blurb
+from vendor.lib.reporting import get_naming_mode
+from vendor.lib.reporting import get_custom_name
+from vendor.lib.reporting import get_custom_names
+from vendor.lib.reporting import get_local_directory
+from vendor.lib.reporting import get_remove_clones
+from vendor.lib.reporting import get_git_new
+from vendor.lib.actions.shell import get_local_repos
+from vendor.lib.actions.network import check_remote_branches
+from vendor.lib.actions.shell import check_local_branches
+from vendor.lib.reporting import check_names
 
 
-def applyName(name, repos):
+def apply_name(name, repos):
     for repo in repos:
         repo["targetName"] = name
     return repos
 
 
-def checkBranches(username, token, repos):
+def check_branches(username, token, repos):
     """Catch and categorize naming errors locally and on remote repos."""
-    repos = checkRemoteBranches(token, repos)
+    repos = check_remote_branches(token, repos)
     localReposPresent = False
     for repo in repos:
         if repo.get("localPath"):
             localReposPresent = True
     if localReposPresent:
-        repos = checkLocalBranches(repos)
+        repos = check_local_branches(repos)
     return repos
 
 
@@ -36,7 +34,7 @@ def wizard(data, testing):
     starting local directory, removal of cloned repos, and git new alias."""
     username, token, repos = data
 
-    repoTypesBlurb()
+    repo_types_blurb()
 
     namingMode = ""
     name = ""
@@ -45,24 +43,25 @@ def wizard(data, testing):
     custom = "Choose name for all primary branches renamed to. "
     perRepo = "Choose a name for the primary branch for each repo."
 
-    namingMode = getNamingMode(main, custom, perRepo)
+    namingMode = get_naming_mode(main, custom, perRepo)
 
     if namingMode == main:
         name = "main"
 
     if namingMode == custom:
-        name = getCustomName()
+        name = get_custom_name()
 
     if namingMode == perRepo:
-        repos = getCustomNames(repos)
+        repos = get_custom_names(repos)
     else:
-        repos = applyName(name, repos)
+        repos = apply_name(name, repos)
 
-    localDirectory = getLocalDirectory(testing)
-    removeClones = getRemoveClones(testing)
-    gitNew = getGitNew(namingMode, perRepo, name, testing)
-    repos = getLocalRepos(repos, localDirectory)
-    repos = checkBranches(username, token, repos)
-    repos, optionRepos = checkNames(repos)
+    localDirectory = get_local_directory(testing)
+    removeClones = get_remove_clones(testing)
+    gitNew = get_git_new(namingMode, perRepo, name, testing)
+    if localDirectory:
+        repos = get_local_repos(repos, localDirectory)
+    repos = check_branches(username, token, repos)
+    repos, optionRepos = check_names(repos)
 
     return username, token, repos, optionRepos, localDirectory, removeClones, gitNew

@@ -1,7 +1,7 @@
 import logging
 
 
-def loggingConfig(testing):
+def logging_config(testing):
     """Set write over instead of append to file if testing,
     and report logfile location."""
     if testing:
