@@ -28,7 +28,7 @@ class NoReposError(Error):
     """Raised when there's no repos to check against.
 
     Attributes:
-        message -- explanation of what happened
+        None.
     """
 
     def __init__(self):

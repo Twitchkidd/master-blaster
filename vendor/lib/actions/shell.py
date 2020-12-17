@@ -5,6 +5,10 @@ from subprocess import Popen, PIPE
 from vendor.lib.actions.shell_exceptions import GetBranchError
 from vendor.lib.actions.shell_exceptions import SetBranchError
 from vendor.lib.actions.shell_exceptions import RenameBranchError
+from vendor.lib.actions.shell_exceptions import PushBranchRenameError
+from vendor.lib.actions.shell_exceptions import DeleteRemoteError
+from vendor.lib.actions.shell_exceptions import MakeDirectoryError
+from vendor.lib.actions.shell_exceptions import CloneRepoError
 
 
 def get_current_branch(path):
@@ -105,7 +109,7 @@ def set_current_branch(branch):
     stdout, stderr = process_runner(
         f"cwd={Path.cwd()}: git checkout {branch}", setBranch, "Already"
     )
-    if len(stderr) > 0 and not "Already" in stderr.decode():
+    if len(stderr) > 0 and not "Already" in stderr:
         raise SetBranchError(stderr.decode())
 
 
@@ -134,36 +138,26 @@ def rename_branch(initial, final, directory):
     gitBranchMove = Popen(
         ["git", "branch", "-m", initial, final], cwd=directory, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = process_runner(
+    stdout, stderr = process_runner(
         f"cwd={directory}: git branch -m {initial} {final}", gitBranchMove
     )
-    gitBranchMoveStderr = loggerReturn[1]
-    gitBranchMoveExitCode = loggerReturn[2]
-    if gitBranchMoveExitCode == 1:
-        raise RenameBranchError(gitBranchMoveStderr.decode())
-        # the next question is what identifying info to pass for the repo
-        # ... also, how do I make this fail?
+    if len(stderr) > 0:
+        raise RenameBranchError(directory, stderr.decode())
 
 
 def push_setting_upstream(targetName, directory):
-    """Pushes to remote, setting the upstream (remote tracking branch.)"""
+    """Pushes to remote, setting the remote tracking branch."""
     gitPushSetUpstream = Popen(
         ["git", "push", "-u", "origin", targetName],
         cwd={directory},
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = process_runner(
-        f"cwd={directory}: git push -u origin {targetName}",
-        gitPushSetUpstream,
-        ignoreStr="To",
+    stdout, stderr = process_runner(
+        f"cwd={directory}: git push -u origin {targetName}", gitPushSetUpstream
     )
-    gitPushSetUpstreamStderr = loggerReturn[1]
-    gitPushSetUpstreamExitCode = loggerReturn[2]
-    if gitPushSetUpstreamExitCode == 1:
-        return gitPushSetUpstreamStderr
-    else:
-        return None
+    if len(stderr) > 0 and not "To" in stderr:
+        raise PushBranchRenameError(directory, stderr.decode)
 
 
 def delete_remote_branch(branch, directory):
@@ -174,17 +168,11 @@ def delete_remote_branch(branch, directory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = process_runner(
-        f"cwd={directory}: git push --delete origin {branch}",
-        gitPushDelete,
-        ignoreStr="To",
+    stdout, stderr = process_runner(
+        f"cwd={directory}: git push --delete origin {branch}", gitPushDelete
     )
-    gitPushDeleteStderr = loggerReturn[1]
-    gitPushDeleteExitCode = loggerReturn[2]
-    if gitPushDeleteExitCode == 1:
-        return gitPushDeleteStderr
-    else:
-        return None
+    if len(stderr) > 0 and not "To" in stderr:
+        raise DeleteRemoteError(branch, directory, stderr.decode())
 
 
 def mkdir_if_need_be(username, localDirectory):
@@ -196,18 +184,12 @@ def mkdir_if_need_be(username, localDirectory):
             stdout=PIPE,
             stderr=PIPE,
         )
-        loggerReturn = process_runner(
+        stdout, stderr = process_runner(
             f"cwd={localDirectory}: mkdir -pv {localDirectory}/master-blaster-{username}/",
             mkdir,
         )
-        mkdirStderr = loggerReturn[1]
-        mkdirExitCode = loggerReturn[2]
-        if mkdirExitCode == 1:
-            return mkdirStderr
-        else:
-            return None
-    else:
-        return None
+        if len(stderr) > 0:
+            raise MakeDirectoryError(localDirectory, stderr.decode())
 
 
 def clone_repo(username, repo, localDirectory):
@@ -223,16 +205,12 @@ def clone_repo(username, repo, localDirectory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = process_runner(
+    stdout, stderr = process_runner(
         f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}",
         gitClone,
     )
-    gitCloneStderr = loggerReturn[1]
-    gitCloneExitCode = loggerReturn[2]
-    if gitCloneExitCode == 1:
-        return gitCloneStderr
-    else:
-        return None
+    if len(stderr) > 0:
+        raise CloneRepoError(stderr.decode())
 
 
 def delete_local_branch(branch, directory):
@@ -240,11 +218,11 @@ def delete_local_branch(branch, directory):
     deleteBranch = Popen(
         ["git", "branch", "-D", branch], cwd={directory}, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = process_runner(
+    stdout, stderr = process_runner(
         f"cwd={directory}: git branch -D {branch}", deleteBranch
     )
-    deleteBranchStderr = loggerReturn[1]
-    deleteBranchExitCode = loggerReturn[2]
+    deleteBranchStderr = stdout, stderr[1]
+    deleteBranchExitCode = stdout, stderr[2]
     if deleteBranchExitCode == 1:
         return deleteBranchStderr
     else:
@@ -256,7 +234,7 @@ def checkout(branch, directory):
     checkoutBranch = Popen(
         ["git", "checkout", branch], cwd={directory}, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = process_runner(
+    stdout, stderr = process_runner(
         f"cwd={directory}: git checkout {branch}",
         checkoutBranch,
         ignoreStr="Already on",
@@ -272,7 +250,7 @@ def checkout(branch, directory):
 
 def fetch(directory):
     gitFetch = Popen(["git", "fetch"], cwd={directory}, stdout=PIPE, stderr=PIPE)
-    loggerReturn = process_runner(f"cwd={directory}: git fetch", gitFetch)
+    stdout, stderr = process_runner(f"cwd={directory}: git fetch", gitFetch)
     gitFetchStderr = process_runner[1]
     gitFetchExitCode = process_runner[2]
     if gitFetchExitCode == 1:
@@ -285,7 +263,7 @@ def unset_upstream(directory):
     gitBranchUU = Popen(
         ["git", "branch", "--unset-upstream"], cwd={directory}, stdout=PIPE, stderr=PIPE
     )
-    loggerReturn = process_runner(
+    stdout, stderr = process_runner(
         f"cwd={directory}: git branch --unset-upstream", gitBranchUU
     )
     gitBranchUUStderr = process_runner[1]
@@ -303,7 +281,7 @@ def set_upstream(targetName, directory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = process_runner(
+    stdout, stderr = process_runner(
         f"cwd={directory}: git branch -u origin/{targetName}",
         gitBranchSetUpstream,
         ignoreStr="To",
@@ -328,7 +306,7 @@ def update_symbolic_ref(targetName, directory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = process_runner(
+    stdout, stderr = process_runner(
         f"cwd={directory}: git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{targetName}",
         updateRef,
     )
@@ -347,7 +325,7 @@ def rm_clone_folder(username, localDirectory):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = process_runner(
+    stdout, stderr = process_runner(
         f"cwd={localDirectory}: rm -dfRv {localDirectory}/master-blaster-{username}/",
         removeDir,
     )
@@ -372,12 +350,12 @@ def git_new(targetName):
         stdout=PIPE,
         stderr=PIPE,
     )
-    loggerReturn = process_runner(
+    stdout, stderr = process_runner(
         f"git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{targetName}'",
         gitNew,
     )
-    gitNewStderr = loggerReturn[1]
-    gitNewExitCode = loggerReturn[2]
+    gitNewStderr = stdout, stderr[1]
+    gitNewExitCode = stdout, stderr[2]
     if gitNewExitCode == 0:
         return gitNewStderr
     else:
