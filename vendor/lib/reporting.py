@@ -536,13 +536,13 @@ def check_names(repos):
         "pathUnclear": "Path unclear.",
     }
 
-    reposMvThirdToTargetLocal = {"pending": True, "repos": []}
-    reposMvThirdToTargetClone = {"pending": True, "repos": []}
-    reposMvThirdToTargetAndBlastLocalMaster = {"pending": True, "repos": []}
-    reposDeleteRemote = {"pending": True, "repos": []}
-    reposDeleteLocal = {"pending": True, "repos": []}
-    reposDeleteLocalAndRemote = {"pending": True, "repos": []}
-    reposLocalProcess = {"pending": True, "repos": []}
+    reposMvThirdToTargetLocal = {"repos": []}
+    reposMvThirdToTargetClone = {"repos": []}
+    reposMvThirdToTargetAndBlastLocalMaster = {"repos": []}
+    reposDeleteRemote = {"repos": []}
+    reposDeleteLocal = {"repos": []}
+    reposDeleteLocalAndRemote = {"repos": []}
+    reposLocalProcess = {"repos": []}
 
     for repo in repos:
         try:
@@ -631,171 +631,213 @@ def check_names(repos):
     for repo in repos:
         logging.info(f"{repo['name']} initial status determined: {repo['status']}")
 
-    if reposMvThirdToTargetLocal.get("repos"):
-        if len(reposMvThirdToTargetLocal["repos"]) > 0:
-            if len(reposMvThirdToTargetLocal["repos"]) > 1:
-                print(
-                    "The following repos have a third name for their primary branch, which is present locally."
-                )
-            else:
-                print(
-                    "The following repo has a third name for its primary branch, which is present locally."
-                )
-            for repo in reposMvThirdToTargetLocal["repos"]:
-                print(repo["name"])
-            decision = False
-            if len(reposMvThirdToTargetLocal["repos"]) > 1:
-                decision = questionary.confirm("Do you want to rename these branches?")
-            else:
-                decision = questionary.confirm("Do you want to rename this branch?")
-            if decision:
-                reposMvThirdToTargetLocal["pending"] = False
-                for pendingRepo in reposMvThirdToTargetLocal["repos"]:
-                    for repo in repos:
-                        if pendingRepo["name"] == repo["name"]:
-                            repo["status"] = states["mvThirdToTargetLocal"]
-                            logging.info(
-                                f"{repo['name']} added to repos with status: {states['mvThirdToTargetLocal']}"
-                            )
+    if len(reposMvThirdToTargetLocal["repos"]) > 0:
+        if len(reposMvThirdToTargetLocal["repos"]) > 1:
+            print(
+                "The following repos have a third name for their primary branch, which is present locally."
+            )
+        else:
+            print(
+                "The following repo has a third name for its primary branch, which is present locally."
+            )
+        for repo in reposMvThirdToTargetLocal["repos"]:
+            print(repo["name"])
+        decision = False
+        if len(reposMvThirdToTargetLocal["repos"]) > 1:
+            decision = questionary.confirm("Do you want to rename these branches?")
+        else:
+            decision = questionary.confirm("Do you want to rename this branch?")
+        if decision:
+            for pendingRepo in reposMvThirdToTargetLocal["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["mvThirdToTargetLocal"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['mvThirdToTargetLocal']}"
+                        )
+        else:
+            for pendingRepo in reposDeleteRemote["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["pendingMvThirdToTargetLocal"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['pendingMvThirdToTargetLocal']}"
+                        )
 
-    if reposMvThirdToTargetClone.get("repos"):
-        if len(reposMvThirdToTargetClone["repos"]) > 0:
-            if len(reposMvThirdToTargetClone["repos"]) > 1:
-                print("The following repos have a third name for their primary branch.")
-            else:
-                print("The following repo has a third name for its primary branch.")
-            for repo in reposMvThirdToTargetClone["repos"]:
-                print(repo["name"])
-            decision = False
-            if len(reposMvThirdToTargetClone["repos"]) > 1:
-                decision = questionary.confirm("Do you want to rename these branches?")
-            else:
-                decision = questionary.confirm("Do you want to rename this branch?")
-            if decision:
-                reposMvThirdToTargetClone["pending"] = False
-                for pendingRepo in reposMvThirdToTargetClone["repos"]:
-                    for repo in repos:
-                        if pendingRepo["name"] == repo["name"]:
-                            repo["status"] = states["mvThirdToTargetClone"]
-                            logging.info(
-                                f"{repo['name']} added to repos with status: {states['mvThirdToTargetClone']}"
-                            )
+    if len(reposMvThirdToTargetClone["repos"]) > 0:
+        if len(reposMvThirdToTargetClone["repos"]) > 1:
+            print("The following repos have a third name for their primary branch.")
+        else:
+            print("The following repo has a third name for its primary branch.")
+        for repo in reposMvThirdToTargetClone["repos"]:
+            print(repo["name"])
+        decision = False
+        if len(reposMvThirdToTargetClone["repos"]) > 1:
+            decision = questionary.confirm("Do you want to rename these branches?")
+        else:
+            decision = questionary.confirm("Do you want to rename this branch?")
+        if decision:
+            for pendingRepo in reposMvThirdToTargetClone["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["mvThirdToTargetClone"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['mvThirdToTargetClone']}"
+                        )
+        else:
+            for pendingRepo in reposDeleteRemote["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["pendingMvThirdToTargetClone"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['pendingMvThirdToTargetClone']}"
+                        )
 
-    if reposMvThirdToTargetAndBlastLocalMaster.get("repos"):
-        if len(reposMvThirdToTargetAndBlastLocalMaster["repos"]) > 0:
-            if len(reposMvThirdToTargetAndBlastLocalMaster["repos"]) > 1:
-                print(
-                    "The following repos have a third name for their primary branch, which is present locally, and a locally present master branch."
-                )
-            else:
-                print(
-                    "The following repo has a third name for its primary branch, which is present locally, and a locally present master branch."
-                )
-            for repo in reposMvThirdToTargetAndBlastLocalMaster["repos"]:
-                print(repo["name"])
-            decision = False
-            if len(reposMvThirdToTargetAndBlastLocalMaster["repos"]) > 1:
-                decision = questionary.confirm("Do you want to rename these branches?")
-            else:
-                decision = questionary.confirm("Do you want to rename this branch?")
-            if decision:
-                reposMvThirdToTargetAndBlastLocalMaster["pending"] = False
-                for pendingRepo in reposMvThirdToTargetAndBlastLocalMaster["repos"]:
-                    for repo in repos:
-                        if pendingRepo["name"] == repo["name"]:
-                            repo["status"] = states[
-                                "mvThirdToTargetAndBlastLocalMaster"
-                            ]
-                            logging.info(
-                                f"{repo['name']} added to repos with status: {states['mvThirdToTargetAndBlastLocalMaster']}"
-                            )
+    if len(reposMvThirdToTargetAndBlastLocalMaster["repos"]) > 0:
+        if len(reposMvThirdToTargetAndBlastLocalMaster["repos"]) > 1:
+            print(
+                "The following repos have a third name for their primary branch, which is present locally, and a locally present master branch."
+            )
+        else:
+            print(
+                "The following repo has a third name for its primary branch, which is present locally, and a locally present master branch."
+            )
+        for repo in reposMvThirdToTargetAndBlastLocalMaster["repos"]:
+            print(repo["name"])
+        decision = False
+        if len(reposMvThirdToTargetAndBlastLocalMaster["repos"]) > 1:
+            decision = questionary.confirm("Do you want to rename these branches?")
+        else:
+            decision = questionary.confirm("Do you want to rename this branch?")
+        if decision:
+            for pendingRepo in reposMvThirdToTargetAndBlastLocalMaster["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["mvThirdToTargetAndBlastLocalMaster"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['mvThirdToTargetAndBlastLocalMaster']}"
+                        )
+        else:
+            for pendingRepo in reposDeleteRemote["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states[
+                            "pendingMvThirdToTargetAndBlastLocalMaster"
+                        ]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['pendingMvThirdToTargetAndBlastLocalMaster']}"
+                        )
 
-    if reposDeleteRemote.get("repos"):
-        if len(reposDeleteRemote["repos"]) > 0:
-            if len(reposDeleteRemote["repos"]) > 1:
-                print("The following repos have a remote master branch.")
-            else:
-                print("The following repo has a remote master branch.")
-            for repo in reposDeleteRemote["repos"]:
-                print(repo["name"])
-            decision = False
-            if len(reposDeleteRemote["repos"]) > 1:
-                decision = questionary.confirm("Do you want to delete these branches?")
-            else:
-                decision = questionary.confirm("Do you want to delete this branch?")
-            if decision:
-                reposDeleteRemote["pending"] = False
-                for pendingRepo in reposDeleteRemote["repos"]:
-                    for repo in repos:
-                        if pendingRepo["name"] == repo["name"]:
-                            repo["status"] = states["deleteRemote"]
-                            logging.info(
-                                f"{repo['name']} added to repos with status: {states['deleteRemote']}"
-                            )
+    if len(reposDeleteRemote["repos"]) > 0:
+        if len(reposDeleteRemote["repos"]) > 1:
+            print("The following repos have a remote master branch.")
+        else:
+            print("The following repo has a remote master branch.")
+        for repo in reposDeleteRemote["repos"]:
+            print(repo["name"])
+        decision = False
+        if len(reposDeleteRemote["repos"]) > 1:
+            decision = questionary.confirm("Do you want to delete these branches?")
+        else:
+            decision = questionary.confirm("Do you want to delete this branch?")
+        if decision:
+            for pendingRepo in reposDeleteRemote["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["deleteRemote"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['deleteRemote']}"
+                        )
+        else:
+            for pendingRepo in reposDeleteRemote["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["pendingDeleteRemote"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['pendingDeleteRemote']}"
+                        )
 
-    if reposDeleteLocal.get("repos"):
-        if len(reposDeleteLocal["repos"]) > 0:
-            if len(reposDeleteLocal["repos"]) > 1:
-                print("The following repos have a local master branch.")
-            else:
-                print("The following repo has a local master branch.")
-            for repo in reposDeleteLocal["repos"]:
-                print(repo["name"])
-            decision = False
-            if len(reposDeleteLocal["repos"]) > 1:
-                decision = questionary.confirm("Do you want to delete these branches?")
-            else:
-                decision = questionary.confirm("Do you want to delete this branch?")
-            if decision:
-                reposDeleteLocal["pending"] = False
-                for pendingRepo in reposDeleteLocal["repos"]:
-                    for repo in repos:
-                        if pendingRepo["name"] == repo["name"]:
-                            repo["status"] = states["deleteLocal"]
-                            logging.info(
-                                f"{repo['name']} added to repos with status: {states['deleteLocal']}"
-                            )
+    if len(reposDeleteLocal["repos"]) > 0:
+        if len(reposDeleteLocal["repos"]) > 1:
+            print("The following repos have a local master branch.")
+        else:
+            print("The following repo has a local master branch.")
+        for repo in reposDeleteLocal["repos"]:
+            print(repo["name"])
+        decision = False
+        if len(reposDeleteLocal["repos"]) > 1:
+            decision = questionary.confirm("Do you want to delete these branches?")
+        else:
+            decision = questionary.confirm("Do you want to delete this branch?")
+        if decision:
+            for pendingRepo in reposDeleteLocal["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["deleteLocal"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['deleteLocal']}"
+                        )
+        else:
+            for pendingRepo in reposDeleteRemote["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["pendingDeleteLocal"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['pendingDeleteLocal']}"
+                        )
 
-    if reposDeleteLocalAndRemote.get("repos"):
-        if len(reposDeleteLocalAndRemote["repos"]) > 0:
-            if len(reposDeleteLocalAndRemote["repos"]) > 1:
-                print("The following repos have a local and remote master branches.")
-            else:
-                print("The following repo has a local and remote master branch.")
-            for repo in reposDeleteLocalAndRemote["repos"]:
-                print(repo["name"])
-            if questionary.confirm("Do you want to delete these branches?"):
-                reposDeleteLocalAndRemote.pending = False
-                for pendingRepo in reposDeleteLocalAndRemote["repos"]:
-                    for repo in repos:
-                        if pendingRepo["name"] == repo["name"]:
-                            repo["status"] = states["deleteLocalAndRemote"]
-                            logging.info(
-                                f"{repo['name']} added to repos with status: {states['deleteLocalAndRemote']}"
-                            )
+    if len(reposDeleteLocalAndRemote["repos"]) > 0:
+        if len(reposDeleteLocalAndRemote["repos"]) > 1:
+            print("The following repos have a local and remote master branches.")
+        else:
+            print("The following repo has a local and remote master branch.")
+        for repo in reposDeleteLocalAndRemote["repos"]:
+            print(repo["name"])
+        if questionary.confirm("Do you want to delete these branches?"):
+            for pendingRepo in reposDeleteLocalAndRemote["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["deleteLocalAndRemote"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['deleteLocalAndRemote']}"
+                        )
+        else:
+            for pendingRepo in reposDeleteRemote["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["pendingDeleteLocalAndRemote"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['pendingDeleteLocalAndRemote']}"
+                        )
 
-    if reposLocalProcess.get("repos"):
-        if len(reposLocalProcess["repos"]) > 0:
-            if len(reposLocalProcess["repos"]) > 1:
-                print("The following repos have local repos that can be updated.")
-            else:
-                print("The following repo has a local repo that can be updated.")
-            for repo in reposLocalProcess["repos"]:
-                print(repo["name"])
-            decision = False
-            if len(reposLocalProcess["repos"]) > 1:
-                decision = questionary.confirm("Do you want to update these repos?")
-            else:
-                decision = questionary.confirm("Do you want to update this repo?")
-            if decision:
-                reposLocalProcess.pending = False
-                for pendingRepo in reposLocalProcess["repos"]:
-                    for repo in repos:
-                        if pendingRepo["name"] == repo["name"]:
-                            repo["status"] = states["localProcess"]
-                            logging.info(
-                                f"{repo['name']} added to repos with status: {states['localProcess']}"
-                            )
+    if len(reposLocalProcess["repos"]) > 0:
+        if len(reposLocalProcess["repos"]) > 1:
+            print("The following repos have local repos that can be updated.")
+        else:
+            print("The following repo has a local repo that can be updated.")
+        for repo in reposLocalProcess["repos"]:
+            print(repo["name"])
+        decision = False
+        if len(reposLocalProcess["repos"]) > 1:
+            decision = questionary.confirm("Do you want to update these repos?")
+        else:
+            decision = questionary.confirm("Do you want to update this repo?")
+        if decision:
+            for pendingRepo in reposLocalProcess["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["localProcess"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['localProcess']}"
+                        )
+        else:
+            for pendingRepo in reposDeleteRemote["repos"]:
+                for repo in repos:
+                    if pendingRepo["name"] == repo["name"]:
+                        repo["status"] = states["pendingLocalProcess"]
+                        logging.info(
+                            f"{repo['name']} added to repos with status: {states['pendingLocalProcess']}"
+                        )
 
     optionRepos = {
         "reposMvThirdToTargetLocal": reposMvThirdToTargetLocal,

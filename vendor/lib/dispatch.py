@@ -14,22 +14,7 @@ from vendor.lib.actions.shell import rm_clone_folder
 from vendor.lib.actions.shell import git_new
 from vendor.lib.reporting import report_on
 
-# dispatch #
-# * Run actions through dispatch.
-# * The run function should take a token, username,
-# * and repos list, a set of options, and the
-# * testing boolean, and do the appropriate set of actions. * #
-
 clonedRepos = []
-
-# * So this really needs to be like:
-# *
-# * try:
-# *     all()
-# *     the()
-# *     stuff()
-# * except Exception as err:
-# *     nowWeGotErr
 
 
 def mv_third_to_target_local(token, repo):
@@ -41,6 +26,7 @@ def mv_third_to_target_local(token, repo):
         delete_remote_branch(repo["default"], repo["localPath"])
     except Exception:
         pass
+    # ! THIS IS BAD
 
 
 def mv_third_to_target_clone(token, repo, localDirectory):
@@ -65,7 +51,7 @@ def mv_third_to_target_clone(token, repo, localDirectory):
     return delete_remote_branch(repo["default"], newPath)
 
 
-def mvThirdToTargetAndBlastLocalMaster(token, repo, localDirectory):
+def mv_third_to_target_and_blast_local_master(token, repo, localDirectory):
     """Rename third and push target upstream, rename default branch, delete remote third, delete local master."""
     error = rename_branch(repo["default"], repo["targetName"], repo["localPath"])
     if error:
@@ -82,7 +68,7 @@ def mvThirdToTargetAndBlastLocalMaster(token, repo, localDirectory):
     return delete_local_branch("master", repo["localPath"])
 
 
-def deleteRemoteProcess(token, repo, localDirectory):
+def delete_remote_process(token, repo, localDirectory):
     """Check if there's a local repo, then either clone or in-place push delete master."""
     if repo["localPath"]:
         return delete_remote_branch("master", repo["localPath"])
@@ -100,7 +86,7 @@ def deleteRemoteProcess(token, repo, localDirectory):
         return delete_remote_branch(repo["default"], newPath)
 
 
-def deleteLocalAndRemote(repo):
+def delete_local_and_remote(repo):
     """Delete remote and local master branches."""
     error = delete_remote_branch("master", repo["localPath"])
     if error:
@@ -108,7 +94,7 @@ def deleteLocalAndRemote(repo):
     return delete_local_branch("master", repo["localPath"])
 
 
-def localProcess(repo):
+def local_process(repo):
     """To sync up a local repo whose remote has been blasted, check out master, move it to target,
     fetch, unset the upstream, set the upstream, and update the symbolic ref."""
     error = checkout("master", repo["localPath"])
@@ -129,7 +115,7 @@ def localProcess(repo):
     return update_symbolic_ref(repo["targetName"], repo["localPath"])
 
 
-def remoteProcessLocal(token, repo):
+def remote_process_local(token, repo):
     """Move the branch, push that upstream, change the default branch, and delete remote master."""
     print(repo)
     error = rename_branch("master", repo["targetName"], repo["localPath"])
@@ -144,7 +130,7 @@ def remoteProcessLocal(token, repo):
     return delete_remote_branch("master", repo["localPath"])
 
 
-def remoteProcessClone(token, repo, localDirectory):
+def remote_process_clone(token, repo, localDirectory):
     """Mkdir if need be and clone the repo, then move the branch, push that upstream, change the
     default branch, and delete remote master."""
     error = mkdir_if_need_be(repo["ownerLogin"], localDirectory)
@@ -232,61 +218,61 @@ def run(dataWithOptions):
         if repo["status"] == states["folderError"]:
             reposFolderError["repos"].append(repo)
 
-    if not optionRepos["reposMvThirdToTargetLocal"]["pending"]:
+    if len(optionRepos["reposMvThirdToTargetLocal"]["repos"]) > 0:
         for repo in optionRepos["reposMvThirdToTargetLocal"]["repos"]:
             error = mv_third_to_target_local(token, repo)
             if error:
                 optionRepos["reposMvThirdToTargetLocal"]["errors"].append([repo, error])
 
-    if not optionRepos["reposMvThirdToTargetClone"]["pending"]:
+    if len(optionRepos["reposMvThirdToTargetClone"]["repos"]) > 0:
         for repo in optionRepos["reposMvThirdToTargetClone"]["repos"]:
             error = mv_third_to_target_clone(token, repo, localDirectory)
             if error:
                 optionRepos["reposMvThirdToTargetClone"]["errors"].append([repo, error])
 
-    if not optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["pending"]:
+    if len(optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["repos"]) > 0:
         for repo in optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["repos"]:
-            error = mvThirdToTargetAndBlastLocalMaster(repo)
+            error = mv_third_to_target_and_blast_local_master(repo)
             if error:
                 optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["errors"].append(
                     [repo, error]
                 )
 
-    if not optionRepos["reposDeleteRemote"]["pending"]:
+    if len(optionRepos["reposDeleteRemote"]["repos"]) > 0:
         for repo in optionRepos["reposDeleteRemote"]["repos"]:
-            error = deleteRemoteProcess("master", repo["localPath"])
+            error = delete_remote_process("master", repo["localPath"])
             if error:
                 optionRepos["reposDeleteRemote"]["errors"].append([repo, error])
 
-    if not optionRepos["reposDeleteLocal"]["pending"]:
+    if len(optionRepos["reposDeleteLocal"]["repos"]) > 0:
         for repo in optionRepos["reposDeleteLocal"]["repos"]:
             error = delete_local_branch("master", repo["localPath"])
             if error:
                 optionRepos["reposDeleteLocal"]["errors"].append([repo, error])
 
-    if not optionRepos["reposDeleteLocalAndRemote"]["pending"]:
+    if len(optionRepos["reposDeleteLocalAndRemote"]["repos"]) > 0:
         for repo in optionRepos["reposDeleteLocalAndRemote"]["repos"]:
-            error = deleteLocalAndRemote(repo)
+            error = delete_local_and_remote(repo)
             if error:
                 optionRepos["reposDeleteLocalAndRemote"]["errors"].append([repo, error])
 
-    if not optionRepos["reposLocalProcess"]["pending"]:
+    if len(optionRepos["reposLocalProcess"]["repos"]) > 0:
         for repo in optionRepos["reposLocalProcess"]["repos"]:
-            error = localProcess(repo)
+            error = local_process(repo)
             if error:
                 optionRepos["reposLocalProcess"]["errors"].append([repo, error])
 
-    for repo in reposRemoteProcessLocal:
-        # Must test if there are any!!
-        print(repo)  # repos
-        error = remoteProcessLocal(token, repo)
-        if error:
-            reposRemoteProcessLocal["errors"].append([repo, error])
+    if len(reposRemoteProcessLocal) > 0:
+        for repo in reposRemoteProcessLocal:
+            error = remote_process_local(token, repo)
+            if error:
+                reposRemoteProcessLocal["errors"].append([repo, error])
 
-    for repo in reposRemoteProcessClone:
-        error = remoteProcessClone(token, repo, localDirectory)
-        if error:
-            reposRemoteProcessClone["errors"].append([repo, error])
+    if len(reposRemoteProcessClone) > 0:
+        for repo in reposRemoteProcessClone:
+            error = remote_process_clone(token, repo, localDirectory)
+            if error:
+                reposRemoteProcessClone["errors"].append([repo, error])
 
     clonesRmAttempted = False
     reposCloneDeletionError = False
