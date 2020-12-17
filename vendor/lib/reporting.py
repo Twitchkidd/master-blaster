@@ -554,12 +554,6 @@ def check_names(repos):
         except KeyError:
             repo["status"] = ""
 
-        # if repo.get("status"):
-        #     if (
-        #         repo["status"]
-        #         == "Local folder that possibly isn't git repo, error opening .git/config"
-        #     ):
-        #         continue
         if not repo["hasTarget"] and not repo["hasMaster"]:
             if repo.get("localPath"):
                 if (
