@@ -545,12 +545,21 @@ def check_names(repos):
     reposLocalProcess = {"pending": True, "repos": []}
 
     for repo in repos:
-        if repo.get("status"):
+        try:
             if (
                 repo["status"]
                 == "Local folder that possibly isn't git repo, error opening .git/config"
             ):
                 continue
+        except KeyError:
+            repo["status"] = ""
+
+        # if repo.get("status"):
+        #     if (
+        #         repo["status"]
+        #         == "Local folder that possibly isn't git repo, error opening .git/config"
+        #     ):
+        #         continue
         if not repo["hasTarget"] and not repo["hasMaster"]:
             if repo.get("localPath"):
                 if (
