@@ -579,15 +579,15 @@ def run(dataWithOptions):
         "folderError": "Local folder that possibly isn't git repo, error opening .git/config",
     }
 
-    # * optionRepos = {
-    # *    "reposMvThirdToTargetLocal": reposMvThirdToTargetLocal,
-    # *    "reposMvThirdToTargetClone": reposMvThirdToTargetClone,
-    # *    "reposMvThirdToTargetAndBlastLocalMaster": reposMvThirdToTargetAndBlastLocalMaster,
-    # *    "reposDeleteRemote": reposDeleteRemote,
-    # *    "reposDeleteLocal": reposDeleteLocal,
-    # *    "reposDeleteLocalAndRemote": reposDeleteLocalAndRemote,
-    # *    "reposLocalProcess": reposLocalProcess,
-    # *}
+    #  optionRepos = {
+    #     "reposMvThirdToTargetLocal": reposMvThirdToTargetLocal,
+    #     "reposMvThirdToTargetClone": reposMvThirdToTargetClone,
+    #     "reposMvThirdToTargetAndBlastLocalMaster": reposMvThirdToTargetAndBlastLocalMaster,
+    #     "reposDeleteRemote": reposDeleteRemote,
+    #     "reposDeleteLocal": reposDeleteLocal,
+    #     "reposDeleteLocalAndRemote": reposDeleteLocalAndRemote,
+    #     "reposLocalProcess": reposLocalProcess,
+    # }
 
     reposRemoteProcessLocal = {"repos": [], "errors": []}
     reposRemoteProcessClone = {"repos": [], "errors": []}
@@ -595,7 +595,7 @@ def run(dataWithOptions):
     reposPathUnclear = {"repos": []}
     reposFolderError = {"repos": []}
 
-    for optionRepo in optionRepos:
+    for name, optionRepo in optionRepos.items():
         optionRepo["errors"] = []
 
     for repo in repos:
@@ -693,7 +693,7 @@ def run(dataWithOptions):
     gitNewError = False
     if gitNew:
         try:
-            git_new(repo[0]["targetName"])
+            git_new(repos[0]["targetName"])
         except GitNewError as err:
             logging.warning(err)
             gitNewError = True

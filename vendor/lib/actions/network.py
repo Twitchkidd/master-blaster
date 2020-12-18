@@ -65,10 +65,16 @@ def check_remote_branches(token, repos):
         masterBranchUrl = get_branch_url(repo, "master")
         print(f"Checking {repo['name']} ...", end="")
         targetBranchResponse = requests.get(targetBranchUrl, headers=headers)
-        if targetBranchResponse.status_code >= 400:
+        if (
+            targetBranchResponse.status_code != 404
+            and targetBranchResponse.status_code >= 400
+        ):
             raise RequestError(targetBranchResponse.status_code)
         masterBranchResponse = requests.get(masterBranchUrl, headers=headers)
-        if masterBranchResponse.status_code >= 400:
+        if (
+            masterBranchResponse.status_code != 404
+            and masterBranchResponse.status_code >= 400
+        ):
             raise RequestError(masterBranchResponse.status_code)
         print(" got it!")
         if targetBranchResponse.json().get("message"):

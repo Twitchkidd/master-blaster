@@ -2,7 +2,6 @@ import logging
 import os
 from pathlib import Path
 from subprocess import Popen, PIPE
-from vendor.lib.actions.shell_exceptions import GetBranchError
 from vendor.lib.actions.shell_exceptions import SetBranchError
 from vendor.lib.actions.shell_exceptions import RenameBranchError
 from vendor.lib.actions.shell_exceptions import PushBranchRenameError
