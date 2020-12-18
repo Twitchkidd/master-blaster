@@ -17,10 +17,5 @@ def logging_config(testing):
             level=logging.INFO,
             format="%(asctime)s %(levelname)s %(message)s",
         )
-    print(
-        """
-        Log file to be found at ./info.log!
-    """
-    )
     logging.info("master-blaster v1.1.0")
     logging.info("Creating a log file!!")

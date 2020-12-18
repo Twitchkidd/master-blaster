@@ -24,7 +24,7 @@ from vendor.lib.actions.shell import set_branch
 from vendor.lib.logging import logging_config
 from vendor.lib.reporting import intro
 from vendor.lib.auth import auth
-from vendor.lib.options import wizard
+from vendor.lib.options import get_options
 from vendor.lib.dispatch import run
 from vendor.lib.reporting import denoument
 from vendor.lib.actions.shell_exceptions import SetBranchError
@@ -41,7 +41,7 @@ try:
     intro()
 
     data = auth(testing)
-    dataWithOptions = wizard(data, testing)
+    dataWithOptions = get_options(data, testing)
     run(dataWithOptions)
 
     denoument()

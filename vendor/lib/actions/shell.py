@@ -54,12 +54,12 @@ def get_current_branch(path):
 def set_branch(branch, directory):
     """Set the git branch."""
     setBranch = Popen(
-        ["git", "checkout", f"{branch}"], cwd={directory}, stdout=PIPE, stderr=PIPE
+        ["git", "checkout", branch], cwd=directory, stdout=PIPE, stderr=PIPE
     )
     stdout, stderr = process_runner(
         f"cwd={directory}: git checkout {branch}", setBranch, "Already"
     )
-    if len(stderr) > 0 and not "Already" in stderr:
+    if len(stderr) > 0 and not "Already" in stderr.decode():
         raise SetBranchError(stderr.decode())
 
 
@@ -133,8 +133,8 @@ def check_local_branches(repos):
                 f"cwd={repo['localPath']}: git branch", gitBranch
             )
             if len(stderr) > 0:
-                logging.warning("Fail in git branch!")
-                raise
+                # TODO Catch this?
+                logging.warning("Error in git branch?!?!")
             repo["localHasMaster"] = "master" in f"{stdout}"
             repo["localHasTarget"] = repo["targetName"] in f"{stdout}"
             if not repo["hasTarget"] and not repo["hasMaster"]:
@@ -158,7 +158,7 @@ def push_setting_upstream(targetName, directory):
     """Pushes to remote, setting the remote tracking branch."""
     gitPushSetUpstream = Popen(
         ["git", "push", "-u", "origin", targetName],
-        cwd={directory},
+        cwd=directory,
         stdout=PIPE,
         stderr=PIPE,
     )
@@ -225,7 +225,7 @@ def clone_repo(username, repo, localDirectory):
 def delete_local_branch(branch, directory):
     """Delete a local branch."""
     deleteBranch = Popen(
-        ["git", "branch", "-D", branch], cwd={directory}, stdout=PIPE, stderr=PIPE
+        ["git", "branch", "-D", branch], cwd=directory, stdout=PIPE, stderr=PIPE
     )
     stdout, stderr = process_runner(
         f"cwd={directory}: git branch -D {branch}", deleteBranch
@@ -237,7 +237,7 @@ def delete_local_branch(branch, directory):
 def checkout(branch, directory):
     """Check out a branch."""
     checkoutBranch = Popen(
-        ["git", "checkout", branch], cwd={directory}, stdout=PIPE, stderr=PIPE
+        ["git", "checkout", branch], cwd=directory, stdout=PIPE, stderr=PIPE
     )
     stdout, stderr = process_runner(
         f"cwd={directory}: git checkout {branch}",
@@ -250,7 +250,7 @@ def checkout(branch, directory):
 
 
 def fetch(directory):
-    gitFetch = Popen(["git", "fetch"], cwd={directory}, stdout=PIPE, stderr=PIPE)
+    gitFetch = Popen(["git", "fetch"], cwd=directory, stdout=PIPE, stderr=PIPE)
     stdout, stderr = process_runner(f"cwd={directory}: git fetch", gitFetch)
     if len(stderr) > 0:
         raise FetchError(directory, stderr.decode())
@@ -258,7 +258,7 @@ def fetch(directory):
 
 def unset_upstream(directory):
     gitBranchUU = Popen(
-        ["git", "branch", "--unset-upstream"], cwd={directory}, stdout=PIPE, stderr=PIPE
+        ["git", "branch", "--unset-upstream"], cwd=directory, stdout=PIPE, stderr=PIPE
     )
     stdout, stderr = process_runner(
         f"cwd={directory}: git branch --unset-upstream", gitBranchUU
@@ -291,7 +291,7 @@ def update_symbolic_ref(targetName, directory):
             "refs/remotes/origin/HEAD",
             f"refs/remotes/origin/{targetName}",
         ],
-        cwd={directory},
+        cwd=directory,
         stdout=PIPE,
         stderr=PIPE,
     )
@@ -306,7 +306,7 @@ def update_symbolic_ref(targetName, directory):
 def rm_clone_folder(username, localDirectory):
     removeDir = Popen(
         ["rm", "-dfRv", f"{localDirectory}/master-blaster-{username}/"],
-        cwd={localDirectory},
+        cwd=localDirectory,
         stdout=PIPE,
         stderr=PIPE,
     )

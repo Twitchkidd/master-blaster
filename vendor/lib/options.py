@@ -29,7 +29,7 @@ def check_branches(username, token, repos):
     return repos
 
 
-def wizard(data, testing):
+def get_options(data, testing):
     """Gather naming mode, name or names, catch errors, use local directories,
     starting local directory, removal of cloned repos, and git new alias."""
     username, token, repos = data
@@ -59,6 +59,7 @@ def wizard(data, testing):
     localDirectory = get_local_directory(testing)
     removeClones = get_remove_clones(testing)
     gitNew = get_git_new(namingMode, perRepo, name, testing)
+    print("Checking repos ...")
     if localDirectory:
         repos = get_local_repos(repos, localDirectory)
     repos = check_branches(username, token, repos)
