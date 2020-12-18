@@ -1221,14 +1221,14 @@ def report_on(
     print_names_and_errors(finalRepos["reposAlreadyBlasted"])
 
     if clonesRmAttempted:
-        if reposCloneDeletionError:
-            print("There was an error deleting the cloned repos!")
+        if reposCloneDeletionError != "":
+            print(f"There was an error deleting the cloned repos!")
         else:
             print("Cloned repos deleted!")
 
     if gitNew:
         if gitNewError:
-            print("There was an error creating the git alias!")
+            print(f"Error adding the git alias `git new` failed! You can run `git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{finalRepos['reposRemoteProcessLocal']['repos'][0]['targetname']}` to try again!")
         else:
             print("Git alias `git new` created!")
 

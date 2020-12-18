@@ -1,17 +1,6 @@
 from vendor.lib.utils import Error
 
 
-class GetBranchError(Error):
-    """Raised when a branch can't be gotten, should only be seen in testing.
-
-    Attributes:
-        None.
-    """
-
-    def __init__(self):
-        self.message = f"ERROR: Failed to get branch. Possible fix: change to master-blaster directory."
-
-
 class SetBranchError(Error):
     """Raised when a branch can't be set. Should (not) be seen in testing.
 
@@ -127,7 +116,7 @@ class CheckoutError(Error):
 
 
 class FetchError(Error):
-    """Raised when a remote can't be fetched from.
+    """Raised when remote refs fail to be fetched.
 
     Attributes:
         directory -- the directory the process was run from
@@ -136,3 +125,66 @@ class FetchError(Error):
 
     def __init__(self, directory, errorMessage):
         self.message = f"ERROR: Failed git fetch from {directory}! {errorMessage}"
+
+
+class UnsetUpstreamError(Error):
+    """Raised when removing the upstream information fails.
+
+    Attributes:
+        directory -- the directory the process was run from
+        errorMessage -- the stderr from the process
+    """
+
+    def __init__(self, directory, errorMessage):
+        self.message = f"ERROR: Failed to remove upstream information from {directory}! {errorMessage}"
+
+
+class SetUpstreamError(Error):
+    """Raised when setting the upstream information fails.
+
+    Attributes:
+        directory -- the directory the process was run from
+        errorMessage -- the stderr from the process
+    """
+
+    def __init__(self, directory, errorMessage):
+        self.message = f"ERROR: Failed to set upstream information from {directory}! {errorMessage}"
+
+
+class UpdateRefError(Error):
+    """Raised when updating the symbolic ref fails.
+
+    Attributes:
+        directory -- the directory the process was run from
+        errorMessage -- the stderr from the process
+    """
+
+    def __init__(self, directory, errorMessage):
+        self.message = (
+            f"ERROR: Failed to update symbolic ref from {directory}! {errorMessage}"
+        )
+
+
+class RemoveClonesError(Error):
+    """Raised when removing the cloned repos fails.
+
+    Attributes:
+        directory -- the directory the process was run from
+        errorMessage -- the stderr from the process
+    """
+
+    def __init__(self, directory, errorMessage):
+        self.message = (
+            f"ERROR: Failed to remove cloned repos from {directory}! {errorMessage}"
+        )
+
+
+class GitNewError(Error):
+    """Raised when adding the git alias fails.
+
+    Attributes:
+        errorMessage -- the stderr from the process
+    """
+
+    def __init__(self, errorMessage):
+        self.message = f"ERROR: Failed to add git alias! {errorMessage}"
