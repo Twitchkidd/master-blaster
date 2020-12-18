@@ -96,3 +96,43 @@ class CloneRepoError(Error):
 
     def __init__(self, errorMessage):
         self.message = f"ERROR: Failed to clone repo! {errorMessage}"
+
+
+class DeleteLocalError(Error):
+    """Raised when a local branch can't be deleted.
+
+    Attributes:
+        branch -- what branch we were trying to delete
+        directory -- the directory the process was run from
+        errorMessage -- the stderr from the process
+    """
+
+    def __init__(self, branch, directory, errorMessage):
+        self.message = (
+            f"ERROR: Failed to delete {branch} branch from {directory}! {errorMessage}"
+        )
+
+
+class CheckoutError(Error):
+    """Raised when a local branch can't be deleted.
+
+    Attributes:
+        branch -- what branch we were trying to check out
+        directory -- the directory the process was run from
+        errorMessage -- the stderr from the process
+    """
+
+    def __init__(self, branch, directory, errorMessage):
+        self.message = f"ERROR: Failed to checkout {branch} branch from {directory}! {errorMessage}"
+
+
+class FetchError(Error):
+    """Raised when a remote can't be fetched from.
+
+    Attributes:
+        directory -- the directory the process was run from
+        errorMessage -- the stderr from the process
+    """
+
+    def __init__(self, directory, errorMessage):
+        self.message = f"ERROR: Failed git fetch from {directory}! {errorMessage}"

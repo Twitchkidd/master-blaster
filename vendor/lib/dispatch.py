@@ -21,6 +21,9 @@ from vendor.lib.actions.shell_exceptions import UpdateDefaultError
 from vendor.lib.actions.shell_exceptions import DeleteRemoteError
 from vendor.lib.actions.shell_exceptions import MakeDirectoryError
 from vendor.lib.actions.shell_exceptions import CloneRepoError
+from vendor.lib.actions.shell_exceptions import DeleteLocalError
+from vendor.lib.actions.shell_exceptions import CheckoutError
+from vendor.lib.actions.shell_exceptions import FetchError
 
 clonedRepos = []
 
@@ -122,19 +125,122 @@ def mv_third_to_target_clone(token, repo, localDirectory):
         raise ProcessError(
             process, repo["name"], f"Unable to clone {repo['name']}! {err}"
         )
-    # ! HERE
+    except RenameBranchError as err:
+        logging.warning(err)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Cloned repo and tried to rename branch locally, but couldn't!",
+        )
+    except PushBranchRenameError as err:
+        logging.warning(err)
+        try:
+            rename_branch(repo["targetName"], repo["default"], newPath)
+        except RenameBranchError as err:
+            logging.warning(err)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Cloned repo and renamed locally, but couldn't push change to remote, so we tried to rename the branch back, but couldn't!",
+            )
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Cloned repo and renamed locally, but couldn't push change to remote, so we renamed the branch back",
+        )
+    except UpdateDefaultError as err:
+        logging.warning(err)
+        try:
+            rename_branch(repo["targetName"], repo["default"], newPath)
+            push_setting_upstream(repo["default"], newPath)
+        except RenameBranchError as err:
+            logging.warning(err)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Cloned repo, renamed locally, pushed change to remote, but couldn't change the default branch, so we tried to change the name back, but couldn't!",
+            )
+        except PushBranchRenameError as err:
+            logging.warning(err)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Cloned repo, renamed locally, pushed change to remote, but couldn't change the default branch, so we changed the name back, but couldn't push it to the remote!",
+            )
+    except DeleteRemoteError as err:
+        logging.warning(err)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Cloned repo, renamed locally, pushed change to remote, changed the default branch, but couldn't delete {repo['default']} branch on the remote!",
+        )
 
 
 def mv_third_to_target_and_blast_local_master(token, repo, localDirectory):
     """Rename third and push target upstream, rename default branch, delete remote third, delete local master."""
+    process = "'rename third to target and blast local master process'"
     try:
         rename_branch(repo["default"], repo["targetName"], repo["localPath"])
         push_setting_upstream(repo["targetName"], repo["localPath"])
         update_default_branch(token, repo)
         delete_remote_branch(repo["default"], repo["localPath"])
         delete_local_branch("master", repo["localPath"])
-    except Exception:
-        pass  # ! HERE
+    except RenameBranchError as err:
+        logging.warning(err)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Tried to rename branch locally, but couldn't!",
+        )
+    except PushBranchRenameError as err:
+        logging.warning(err)
+        try:
+            rename_branch(repo["targetName"], repo["default"], repo["localPath"])
+        except RenameBranchError as err:
+            logging.warning(err)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Renamed locally, but couldn't push change to remote, so we tried to rename the branch back, but couldn't!",
+            )
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Renamed locally, but couldn't push change to remote, so we renamed the branch back",
+        )
+    except UpdateDefaultError as err:
+        logging.warning(err)
+        try:
+            rename_branch(repo["targetName"], repo["default"], repo["localPath"])
+            push_setting_upstream(repo["default"], repo["localPath"])
+        except RenameBranchError as err:
+            logging.warning(err)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Renamed locally, pushed change to remote, but couldn't change the default branch, so we tried to change the name back, but couldn't!",
+            )
+        except PushBranchRenameError as err:
+            logging.warning(err)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Renamed locally, pushed change to remote, but couldn't change the default branch, so we changed the name back, but couldn't push it to the remote!",
+            )
+    except DeleteRemoteError as err:
+        logging.warning(err)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Renamed locally, pushed change to remote, changed the default branch, but couldn't delete {repo['default']} branch on the remote!",
+        )
+    except DeleteLocalError as err:
+        logging.warning(err)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Renamed locally, pushed change to remote, changed the default branch, deleted {repo['default']} remotely, but failed to delete master locally!",
+        )
 
 
 def delete_remote_process(token, repo, localDirectory):
@@ -145,12 +251,12 @@ def delete_remote_process(token, repo, localDirectory):
         except DeleteRemoteError as err:
             logging.warning(err)
             raise ProcessError(
-                "'delete remote branch from local repo process'",
+                "'blast remote master from local repo process'",
                 repo["localPath"],
-                f"Unable to delete remote branch of {repo['name']}! {err}",
+                f"Unable to blast remote master for {repo['name']}! {err}",
             )
     else:
-        process = "somthing"  # ! HERE
+        process = "'clone and blast remote master process'"
         try:
             mkdir_if_need_be(repo["ownerLogin"], localDirectory)
             clone_repo(repo["ownerLogin"], token, repo, localDirectory)
@@ -159,8 +265,25 @@ def delete_remote_process(token, repo, localDirectory):
                 f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
             )
             delete_remote_branch(repo["default"], newPath)
-        except Exception:
-            pass  # ! HERE
+        except MakeDirectoryError as err:
+            logging.warning(err)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Unable to make directory to clone {repo['name']} into! {err}",
+            )
+        except CloneRepoError as err:
+            logging.warning(err)
+            raise ProcessError(
+                process, repo["name"], f"Unable to clone {repo['name']}! {err}"
+            )
+        except DeleteRemoteError as err:
+            logging.warning(err)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Cloned repo, but couldn't blast master branch on the remote! {err}",
+            )
 
 
 def delete_local_and_remote(repo):
@@ -169,14 +292,26 @@ def delete_local_and_remote(repo):
     try:
         delete_remote_branch("master", repo["localPath"])
         delete_local_branch("master", repo["localPath"])
-    except Exception:
-        pass  # ! HERE
+    except DeleteRemoteError as err:
+        logging.warning(err)
+        raise ProcessError(
+            process, repo["name"], f"Couldn't blast master on the remote! {err}"
+        )
+    except DeleteLocalError as err:
+        logging.warning(err)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Master blasted on the remote, but failed to blast master locally! {err}",
+        )
 
 
 def local_process(repo):
     """To sync up a local repo whose remote has been blasted, check out master, move it to target,
     fetch, unset the upstream, set the upstream, and update the symbolic ref."""
-    process = "Something"  # ! HERE
+    process = (
+        "'sync up local repo with remote repo which has already been blasted process'"
+    )
     try:
         checkout("master", repo["localPath"])
         rename_branch("master", repo["targetName"], repo["localPath"])
@@ -184,8 +319,21 @@ def local_process(repo):
         unset_upstream(repo["localPath"])
         set_upstream(repo["targetName"], repo["localPath"])
         update_symbolic_ref(repo["targetName"], repo["localPath"])
-    except Exception:
-        pass  # ! HERE
+    except CheckoutError as err:
+        logging.warning(err)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Failed to checkout master from {repo['localPath']}! {err}",
+        )
+    except RenameBranchError as err:
+        logging.warning(err)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Tried to rename branch locally, but couldn't!",
+        )
+    # ! HERE
 
 
 def remote_process_local(token, repo):

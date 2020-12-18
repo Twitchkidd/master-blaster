@@ -9,6 +9,9 @@ from vendor.lib.actions.shell_exceptions import PushBranchRenameError
 from vendor.lib.actions.shell_exceptions import DeleteRemoteError
 from vendor.lib.actions.shell_exceptions import MakeDirectoryError
 from vendor.lib.actions.shell_exceptions import CloneRepoError
+from vendor.lib.actions.shell_exceptions import DeleteLocalError
+from vendor.lib.actions.shell_exceptions import CheckoutError
+from vendor.lib.actions.shell_exceptions import FetchError
 
 
 def get_current_branch(path):
@@ -221,12 +224,8 @@ def delete_local_branch(branch, directory):
     stdout, stderr = process_runner(
         f"cwd={directory}: git branch -D {branch}", deleteBranch
     )
-    deleteBranchStderr = stdout, stderr[1]
-    deleteBranchExitCode = stdout, stderr[2]
-    if deleteBranchExitCode == 1:
-        return deleteBranchStderr
-    else:
-        return None
+    if len(stderr) > 0:
+        raise DeleteLocalError(branch, directory, stderr.decode())
 
 
 def checkout(branch, directory):
@@ -235,17 +234,10 @@ def checkout(branch, directory):
         ["git", "checkout", branch], cwd={directory}, stdout=PIPE, stderr=PIPE
     )
     stdout, stderr = process_runner(
-        f"cwd={directory}: git checkout {branch}",
-        checkoutBranch,
-        ignoreStr="Already on",
-        secondIgnoreStr="Switched to",
+        f"cwd={directory}: git checkout {branch}", checkoutBranch
     )
-    checkoutBranchStderr = process_runner[1]
-    checkoutBranchExitCode = process_runner[2]
-    if checkoutBranchExitCode == 1:
-        return checkoutBranchStderr
-    else:
-        return None
+    if len(stderr) > 0 and not "Already on" in stderr and not "Switched to" in stderr:
+        raise CheckoutError(directory, stderr.decode())
 
 
 def fetch(directory):
