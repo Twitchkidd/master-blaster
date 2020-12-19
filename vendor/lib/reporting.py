@@ -305,7 +305,7 @@ def check_names(repos):
     #      name
     #      owner-login
     #      targetName
-    #      [status] # local folder with name, can't read .git/config
+    #      [status] # errors, at this point
     #      [configUrl]
     #      [localPath]
     #      [currentBranch]
@@ -316,7 +316,7 @@ def check_names(repos):
     #      [[localHasThird]]
 
     # >> These matter:
-    #      [status] # local folder with name, can't read .git/config
+    #      [status] # errors, at this point
     #      default
     #      hasMaster
     #      hasTarget
@@ -357,7 +357,8 @@ def check_names(repos):
 
     # * States:
     # *   [status] present: local folder with name can't read .git/config
-    # *     "local repo but not git folder"
+    # *     "local repo but not git folder" or git branch failed when
+    # *     checking local repos, which hopefully we don't see, but hey.
     # *
     # *   both hasMaster and hasTarget, default is target: delete master?
     # *   both 1) Delete local and remote?
@@ -546,6 +547,8 @@ def check_names(repos):
         "pendingLocalProcess": "Perfect case local process.",
         "localProcess": "Local process is a go.",
         "alreadyBlasted": "Already blasted.",
+        "folderError": "Local folder that possibly isn't git repo, error opening .git/config",
+        "gitBranchError": "There was an error running git branch when checking the local repo, so action stopped on that repo.",
         "pathUnclear": "Path unclear.",
     }
 
@@ -562,6 +565,8 @@ def check_names(repos):
             if (
                 repo["status"]
                 == "Local folder that possibly isn't git repo, error opening .git/config"
+                or repo["status"]
+                == "There was an error running git branch when checking the local repo, so action stopped on that repo."
             ):
                 continue
         except KeyError:

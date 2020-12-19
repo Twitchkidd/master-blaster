@@ -133,8 +133,10 @@ def check_local_branches(repos):
                 f"cwd={repo['localPath']}: git branch", gitBranch
             )
             if len(stderr) > 0:
-                # TODO Catch this?
-                logging.warning("Error in git branch?!?!")
+                logging.warning(f"Error in git branch! {repo['localPath']}")
+                repo[
+                    "status"
+                ] = "There was an error running git branch when checking the local repo, so action stopped on that repo."
             repo["localHasMaster"] = "master" in f"{stdout}"
             repo["localHasTarget"] = repo["targetName"] in f"{stdout}"
             if not repo["hasTarget"] and not repo["hasMaster"]:
