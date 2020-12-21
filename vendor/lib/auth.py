@@ -3,7 +3,7 @@ import sys
 from vendor.lib.reporting import get_username
 from vendor.lib.reporting import get_token
 from vendor.lib.actions.network import get_repos
-from vendor.lib.actions.network import NetworkError
+from vendor.lib.actions.network import NetworkConnectivityError
 from vendor.lib.actions.network import RequestError
 from vendor.lib.actions.network import NoReposError
 
@@ -16,7 +16,7 @@ def auth(testing):
         token = get_token(testing)
         repos = get_repos(username, token)
         return username, token, repos
-    except NetworkError as err:
+    except NetworkConnectivityError as err:
         logging.warning(err)
         print(err.message)
         sys.exit(1)

@@ -4,7 +4,7 @@ import urllib.request
 import urllib.error
 import requests
 from vendor.lib.actions.network_exceptions import RequestError
-from vendor.lib.actions.network_exceptions import NetworkError
+from vendor.lib.actions.network_exceptions import NetworkConnectivityError
 from vendor.lib.actions.network_exceptions import NoReposError
 
 # This defaults to v3 of the api.
@@ -31,7 +31,7 @@ def get_repos(username, token):
     headers = {"Authorization": "token " + token}
     params = {"per_page": "1000", "type": "owner"}
     if not internet_on():
-        raise NetworkError()
+        raise NetworkConnectivityError()
     print("Checking for repos ...")
     response = requests.get(url, params=params, headers=headers)
     # Bad token returns a 401! #

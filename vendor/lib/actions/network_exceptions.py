@@ -13,7 +13,7 @@ class RequestError(Error):
         self.message = f"ERROR: GitHub API request status code: {status_code}"
 
 
-class NetworkError(Error):
+class NetworkConnectivityError(Error):
     """Raised when there's no connection detected.
 
     Attributes:

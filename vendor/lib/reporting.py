@@ -72,7 +72,7 @@ def get_username(testing):
                 break
 
     if testing:
-        username = "Twitchkidd"
+        username = "montymcblaster88"
         logging.info(f"Username: {username}")
 
     return username
@@ -547,7 +547,7 @@ def check_names(repos):
         "pendingLocalProcess": "Perfect case local process.",
         "localProcess": "Local process is a go.",
         "alreadyBlasted": "Already blasted.",
-        "folderError": "Local folder that possibly isn't git repo, error opening .git/config",
+        "folderError": "Local folder that possibly isn't git repo, error opening .git/config from local directory.",
         "gitBranchError": "There was an error running git branch when checking the local repo, so action stopped on that repo.",
         "pathUnclear": "Path unclear.",
     }
@@ -930,6 +930,7 @@ def report_on(
     #     "localProcess": "Local process is a go.",
     #     "alreadyBlasted": "Already blasted.",
     #     "pathUnclear": "Path unclear.",
+    #     "gitBranchError": "There was an error running git branch when checking the local repo, so action stopped on that repo.",
     #     "folderError": "Local folder that possibly isn't git repo, error opening .git/config",
     # }
     # finalRepos = {
@@ -1283,9 +1284,9 @@ def report_on(
                 f"Error adding the git alias `git new` failed! You can run `git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{finalRepos['reposRemoteProcessLocal']['repos'][0]['targetname']}` to try again!\n"
             )
         else:
-            print("Git alias `git new` created! (Or recreated!)\n")
+            print("Git alias `git new` set.\n")
 
 
 def denoument():
-    print("Thank you for using master-blaster!")
-    print("Check the log file at ./info.log for details!\n")
+    print("Check the log file at ./info.log for details.\n")
+    print("Thank you for using master-blaster!\n")

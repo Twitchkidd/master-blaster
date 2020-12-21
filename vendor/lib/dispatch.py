@@ -579,15 +579,15 @@ def run(dataWithOptions):
         "folderError": "Local folder that possibly isn't git repo, error opening .git/config",
     }
 
-    #  optionRepos = {
-    #     "reposMvThirdToTargetLocal": reposMvThirdToTargetLocal,
-    #     "reposMvThirdToTargetClone": reposMvThirdToTargetClone,
-    #     "reposMvThirdToTargetAndBlastLocalMaster": reposMvThirdToTargetAndBlastLocalMaster,
-    #     "reposDeleteRemote": reposDeleteRemote,
-    #     "reposDeleteLocal": reposDeleteLocal,
-    #     "reposDeleteLocalAndRemote": reposDeleteLocalAndRemote,
-    #     "reposLocalProcess": reposLocalProcess,
-    # }
+    # *  optionRepos = {
+    # *     "reposMvThirdToTargetLocal": reposMvThirdToTargetLocal,
+    # *     "reposMvThirdToTargetClone": reposMvThirdToTargetClone,
+    # *     "reposMvThirdToTargetAndBlastLocalMaster": reposMvThirdToTargetAndBlastLocalMaster,
+    # *     "reposDeleteRemote": reposDeleteRemote,
+    # *     "reposDeleteLocal": reposDeleteLocal,
+    # *     "reposDeleteLocalAndRemote": reposDeleteLocalAndRemote,
+    # *     "reposLocalProcess": reposLocalProcess,
+    # * }
 
     reposRemoteProcessLocal = {"repos": [], "errors": []}
     reposRemoteProcessClone = {"repos": [], "errors": []}

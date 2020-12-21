@@ -105,14 +105,14 @@ def get_local_repos(repos, localDirectory):
                         if subdir == repo["name"]:
                             repo[
                                 "status"
-                            ] = "Local folder that possibly isn't git repo, error opening .git/config"
+                            ] = "Local folder that possibly isn't git repo, error opening .git/config from local directory."
                             repo["localPath"] = f"{root}/{subdir}"
                     continue
     for repo in repos:
         try:
             if (
                 repo["status"]
-                == "Local folder that possibly isn't git repo, error opening .git/config"
+                == "Local folder that possibly isn't git repo, error opening .git/config from local directory."
             ):
                 logging.warning(
                     f"Error with {repo['name']}: Local folder(s) found without .git/config files, path unclear. Last checked directory: {repo['localPath']}"
