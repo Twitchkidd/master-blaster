@@ -116,11 +116,10 @@ def get_local_repos(repos, localDirectory):
                                         raise MultipleRemotesError()
                                 except MultipleRemotesError as err:
                                     logging.warning(err)
-                                    repo["status"] = "Multiple remotes found in config."
+                                    repo[
+                                        "status"
+                                    ] = "Multiple remotes found in git config file."
                                     break
-                                repo["configUrl"] = get_local_repo_url(
-                                    configFile
-                                ).lower()
                                 repo["localPath"] = f"{root}/{subdir}"
                                 repo[
                                     "currentBranch"

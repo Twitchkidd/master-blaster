@@ -306,7 +306,6 @@ def check_names(repos):
     #      owner-login
     #      targetName
     #      [status] # errors, at this point
-    #      [configUrl]
     #      [localPath]
     #      [currentBranch]
     #      hasMaster
