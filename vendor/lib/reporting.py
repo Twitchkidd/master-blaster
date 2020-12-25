@@ -546,6 +546,7 @@ def check_names(repos):
         "pendingLocalProcess": "Perfect case local process.",
         "localProcess": "Local process is a go.",
         "alreadyBlasted": "Already blasted.",
+        "multipleRemotes": "Multiple remotes found in git config file.",
         "folderError": "Local folder that possibly isn't git repo, error opening .git/config from local directory.",
         "gitBranchError": "There was an error running git branch when checking the local repo, so action stopped on that repo.",
         "pathUnclear": "Path unclear.",
@@ -566,6 +567,7 @@ def check_names(repos):
                 == "Local folder that possibly isn't git repo, error opening .git/config"
                 or repo["status"]
                 == "There was an error running git branch when checking the local repo, so action stopped on that repo."
+                or repo["status"] == "Multiple remotes found in git config file."
             ):
                 continue
         except KeyError:
@@ -910,42 +912,6 @@ def report_on(
     finalRepos, clonesRmAttempted, reposCloneDeletionError, gitNew, gitNewError
 ):
     """What happened?"""
-    # states = {
-    #     "pendingMvThirdToTargetLocal": "Do you want to mv third to target? Local repo",
-    #     "mvThirdToTargetLocal": "Move third to target, local repo.",
-    #     "pendingMvThirdToTargetClone": "Do you want to mv third to target? Clone repo",
-    #     "mvThirdToTargetClone": "Move third to target, clone repo.",
-    #     "pendingMvThirdToTargetAndBlastLocalMaster": "Do you want to mv third to target and blast the local master? Local repo.",
-    #     "mvThirdToTargetAndBlastLocalMaster": "Move third to target and blast the local master, local repo.",
-    #     "pendingDeleteRemote": "Delete remote?",
-    #     "deleteRemote": "Delete remote.",
-    #     "pendingDeleteLocal": "Delete local?",
-    #     "deleteLocal": "Delete local.",
-    #     "pendingDeleteLocalAndRemote": "Delete local and remote?",
-    #     "deleteLocalAndRemote": "Delete local and remote.",
-    #     "remoteProcessLocal": "Perfect remote process local repo.",
-    #     "remoteProcessClone": "Perfect remote process clone repo.",
-    #     "pendingLocalProcess": "Perfect case local process.",
-    #     "localProcess": "Local process is a go.",
-    #     "alreadyBlasted": "Already blasted.",
-    #     "pathUnclear": "Path unclear.",
-    #     "gitBranchError": "There was an error running git branch when checking the local repo, so action stopped on that repo.",
-    #     "folderError": "Local folder that possibly isn't git repo, error opening .git/config",
-    # }
-    # finalRepos = {
-    #     "reposRemoteProcessLocal": reposRemoteProcessLocal,
-    #     "reposRemoteProcessClone": reposRemoteProcessClone,
-    #     "reposDeleteLocal": optionRepos.reposDeleteLocal,
-    #     "reposDeleteRemote": optionRepos.reposDeleteRemote,
-    #     "reposDeleteLocalAndRemote": optionRepos.reposDeleteLocalAndRemote,
-    #     "reposLocalProcess": optionRepos.reposLocalProcess,
-    #     "reposMvThirdToTargetLocal": optionRepos.reposMvThirdToTargetLocal,
-    #     "reposMvThirdToTargetClone": optionRepos.reposMvThirdToTargetClone,
-    #     "reposMvThirdToTargetAndBlastLocalMaster": optionRepos.reposMvThirdToTargetAndBlastLocalMaster,
-    #     "reposPathUnclear": reposPathUnclear,
-    #     "reposFolderError": reposFolderError,
-    #     "reposAlreadyBlasted": reposAlreadyBlasted,
-    # }
     print("\nProcess complete!\n")
 
     reposNumber = len(finalRepos["reposRemoteProcessLocal"]["repos"])
@@ -1236,18 +1202,27 @@ def report_on(
             errorsPossiblyPresent=True,
         )
 
-    reposNumber = len(finalRepos["reposPathUnclear"]["repos"])
+    reposNumber = len(finalRepos["reposAlreadyBlasted"]["repos"])
+    if reposNumber > 0:
+        if reposNumber > 1:
+            print(f"{reposNumber} repos were already blasted!\n")
+        else:
+            print(f"{reposNumber} repo was already blasted!\n")
+    if reposNumber > 0:
+        print_names_and_errors(finalRepos["reposAlreadyBlasted"])
+
+    reposNumber = len(finalRepos["reposMultipleRemotes"]["repos"])
     if reposNumber > 0:
         if reposNumber > 1:
             print(
-                f"{reposNumber} repos weren't acted on because the path for action was unclear!\n"
+                f"{reposNumber} repos weren't acted on because there were multiple remotes in the\n.git/config file! That's out of scope for this version of `master-blaster`.\n"
             )
         else:
             print(
-                f"{reposNumber} repo wasn't acted on because the path for action was unclear!\n"
+                f"{reposNumber} repo wasn't acted on because there were multiple remotes in the\n.git/config file! That's out of scope for this version of `master-blaster`.\n"
             )
     if reposNumber > 0:
-        print_names_and_errors(finalRepos["reposPathUnclear"])
+        print_names_and_errors(finalRepos["reposMultipleRemotes"])
 
     reposNumber = len(finalRepos["reposFolderError"]["repos"])
     if reposNumber > 0:
@@ -1262,14 +1237,31 @@ def report_on(
     if reposNumber > 0:
         print_names_and_errors(finalRepos["reposFolderError"])
 
-    reposNumber = len(finalRepos["reposAlreadyBlasted"]["repos"])
+    reposNumber = len(finalRepos["reposGitBranchError"]["repos"])
     if reposNumber > 0:
         if reposNumber > 1:
-            print(f"{reposNumber} repos were already blasted!\n")
+            print(
+                f"{reposNumber} repos weren't acted on because there was an error running\n`git branch` on them!\n"
+            )
         else:
-            print(f"{reposNumber} repo was already blasted!\n")
+            print(
+                f"{reposNumber} repo wasn't acted on because there was an error running\n`git branch` on it!\n"
+            )
     if reposNumber > 0:
-        print_names_and_errors(finalRepos["reposAlreadyBlasted"])
+        print_names_and_errors(finalRepos["reposGitBranchError"])
+
+    reposNumber = len(finalRepos["reposPathUnclear"]["repos"])
+    if reposNumber > 0:
+        if reposNumber > 1:
+            print(
+                f"{reposNumber} repos weren't acted on because the path for action was unclear!\n"
+            )
+        else:
+            print(
+                f"{reposNumber} repo wasn't acted on because the path for action was unclear!\n"
+            )
+    if reposNumber > 0:
+        print_names_and_errors(finalRepos["reposPathUnclear"])
 
     if clonesRmAttempted:
         if reposCloneDeletionError != "":

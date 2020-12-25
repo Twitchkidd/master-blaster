@@ -1,5 +1,6 @@
 import logging
 from vendor.lib.utils import Error
+from vendor.lib.actions.shell import check_for_multiple_remotes
 from vendor.lib.actions.shell import rename_branch
 from vendor.lib.actions.shell import push_setting_upstream
 from vendor.lib.actions.network import update_default_branch
@@ -17,6 +18,7 @@ from vendor.lib.actions.shell import git_new
 from vendor.lib.reporting import report_on
 from vendor.lib.actions.shell import get_current_branch
 from vendor.lib.actions.shell import set_branch
+from vendor.lib.actions.shell_exceptions import MultipleRemotesError
 from vendor.lib.actions.shell_exceptions import RenameBranchError
 from vendor.lib.actions.shell_exceptions import PushBranchRenameError
 from vendor.lib.actions.shell_exceptions import UpdateDefaultError
@@ -119,6 +121,9 @@ def mv_third_to_target_clone(token, repo, localDirectory):
         newPath = (
             f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
         )
+        with open(f"{newPath}.git/config", "r") as configFile:
+            if check_for_multiple_remotes(configFile):
+                raise MultipleRemotesError()
         rename_branch(repo["default"], repo["targetName"], newPath)
         push_setting_upstream(repo["targetName"], newPath)
         update_default_branch(token, repo)
@@ -133,6 +138,10 @@ def mv_third_to_target_clone(token, repo, localDirectory):
     except CloneRepoError as err:
         logging.warning(err)
         raise ProcessError(process, repo["name"], f"Unable to clone repo! {err}")
+    except MultipleRemotesError as err:
+        logging.warning(err)
+        repo["status"] = "Multiple remotes found in git config file."
+        raise ProcessError(process, repo["name"], err)
     except RenameBranchError as err:
         logging.warning(err)
         raise ProcessError(
@@ -273,6 +282,9 @@ def delete_remote_process(token, repo, localDirectory):
             newPath = (
                 f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
             )
+            with open(f"{newPath}.git/config", "r") as configFile:
+                if check_for_multiple_remotes(configFile):
+                    raise MultipleRemotesError()
             delete_remote_branch(repo["default"], newPath)
         except MakeDirectoryError as err:
             logging.warning(err)
@@ -284,6 +296,10 @@ def delete_remote_process(token, repo, localDirectory):
         except CloneRepoError as err:
             logging.warning(err)
             raise ProcessError(process, repo["name"], f"Unable to clone repo! {err}")
+        except MultipleRemotesError as err:
+            logging.warning(err)
+            repo["status"] = "Multiple remotes found in git config file."
+            raise ProcessError(process, repo["name"], err)
         except DeleteRemoteError as err:
             logging.warning(err)
             raise ProcessError(
@@ -481,6 +497,9 @@ def remote_process_clone(token, repo, localDirectory):
         newPath = (
             f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
         )
+        with open(f"{newPath}.git/config", "r") as configFile:
+            if check_for_multiple_remotes(configFile):
+                raise MultipleRemotesError()
         rename_branch("master", repo["targetName"], newPath)
         push_setting_upstream(repo["targetName"], newPath)
         update_default_branch(token, repo)
@@ -495,6 +514,10 @@ def remote_process_clone(token, repo, localDirectory):
     except CloneRepoError as err:
         logging.warning(err)
         raise ProcessError(process, repo["name"], f"Unable to clone repo! {err}")
+    except MultipleRemotesError as err:
+        logging.warning(err)
+        repo["status"] = "Multiple remotes found in git config file."
+        raise ProcessError(process, repo["name"], err)
     except RenameBranchError as err:
         logging.warning(err)
         raise ProcessError(
@@ -575,8 +598,10 @@ def run(dataWithOptions):
         "pendingLocalProcess": "Perfect case local process.",
         "localProcess": "Local process is a go.",
         "alreadyBlasted": "Already blasted.",
-        "pathUnclear": "Path unclear.",
+        "multipleRemotes": "Multiple remotes found in git config file.",
         "folderError": "Local folder that possibly isn't git repo, error opening .git/config",
+        "gitBranchError": "There was an error running git branch when checking the local repo, so action stopped on that repo.",
+        "pathUnclear": "Path unclear.",
     }
 
     # *  optionRepos = {
@@ -592,8 +617,10 @@ def run(dataWithOptions):
     reposRemoteProcessLocal = {"repos": [], "errors": []}
     reposRemoteProcessClone = {"repos": [], "errors": []}
     reposAlreadyBlasted = {"repos": []}
-    reposPathUnclear = {"repos": []}
+    reposMultipleRemotes = {"repos": []}
     reposFolderError = {"repos": []}
+    reposGitBranchError = {"repos": []}
+    reposPathUnclear = {"repos": []}
 
     for name, optionRepo in optionRepos.items():
         optionRepo["errors"] = []
@@ -605,10 +632,12 @@ def run(dataWithOptions):
             reposRemoteProcessClone["repos"].append(repo)
         if repo["status"] == states["alreadyBlasted"]:
             reposAlreadyBlasted["repos"].append(repo)
-        if repo["status"] == states["pathUnclear"]:
-            reposPathUnclear["repos"].append(repo)
         if repo["status"] == states["folderError"]:
             reposFolderError["repos"].append(repo)
+        if repo["status"] == states["gitBranchError"]:
+            reposGitBranchError["repos"].append(repo)
+        if repo["status"] == states["pathUnclear"]:
+            reposPathUnclear["repos"].append(repo)
 
     if len(optionRepos["reposMvThirdToTargetLocal"]["repos"]) > 0:
         for repo in optionRepos["reposMvThirdToTargetLocal"]["repos"]:
@@ -681,6 +710,10 @@ def run(dataWithOptions):
             except ProcessError as err:
                 reposRemoteProcessClone["errors"].append([repo, err.message])
 
+    for repo in repos:
+        if repo["status"] == states["multipleRemotes"]:
+            reposMultipleRemotes["repos"].append(repo)
+
     clonesRmAttempted = False
     reposCloneDeletionError = ""
     if removeClones and len(clonedRepos) > 0:
@@ -715,8 +748,10 @@ def run(dataWithOptions):
         "reposRemoteProcessLocal": reposRemoteProcessLocal,
         "reposRemoteProcessClone": reposRemoteProcessClone,
         "reposAlreadyBlasted": reposAlreadyBlasted,
-        "reposPathUnclear": reposPathUnclear,
+        "reposMultipleRemotes": reposMultipleRemotes,
         "reposFolderError": reposFolderError,
+        "reposGitBranchError": reposGitBranchError,
+        "reposPathUnclear": reposPathUnclear,
     }
 
     report_on(

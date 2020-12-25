@@ -88,7 +88,7 @@ def url_contains_username(repo, configFile):
     return repo["ownerLogin"].lower() in url.lower()
 
 
-def multiple_remotes(configFile):
+def check_for_multiple_remotes(configFile):
     found = False
     for line in configFile:
         if line.find("[remote"):
@@ -112,7 +112,7 @@ def get_local_repos(repos, localDirectory):
                                 if not url_contains_username(repo, configFile):
                                     continue
                                 try:
-                                    if multiple_remotes(configFile):
+                                    if check_for_multiple_remotes(configFile):
                                         raise MultipleRemotesError()
                                 except MultipleRemotesError as err:
                                     logging.warning(err)
@@ -260,6 +260,8 @@ def clone_repo(username, repo, localDirectory):
     )
     if len(stderr) > 0:
         raise CloneRepoError(stderr.decode())
+
+def check_for_multiple_remotes(repo):
 
 
 def delete_local_branch(branch, directory):
