@@ -14,6 +14,17 @@ class SetBranchError(Error):
         )
 
 
+class MultipleRemotesError(Error):
+    """Raised when there are multiple remotes for a repo.
+
+    Attributes:
+        None
+    """
+
+    def __init__(self):
+        self.message = "ERROR: Multiple remotes for this repo! Too complex for this version of `master-blaster`."
+
+
 class RenameBranchError(Error):
     """Raised when a branch can't be renamed.
 

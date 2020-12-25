@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from subprocess import Popen, PIPE
 from vendor.lib.actions.shell_exceptions import SetBranchError
+from vendor.lib.actions.shell_exceptions import MultipleRemotesError
 from vendor.lib.actions.shell_exceptions import RenameBranchError
 from vendor.lib.actions.shell_exceptions import PushBranchRenameError
 from vendor.lib.actions.shell_exceptions import DeleteRemoteError
@@ -82,6 +83,23 @@ def get_local_repo_url(configFile):
             return line[remoteOriginUrlStart + 6 : -1]
 
 
+def url_contains_username(repo, configFile):
+    url = get_local_repo_url(configFile)
+    return repo["ownerLogin"].lower() in url.lower()
+
+
+def multiple_remotes(configFile):
+    found = False
+    for line in configFile:
+        if line.find("[remote"):
+            if found == True:
+                return True
+            found = True
+    if not found:
+        raise Exception
+    return False
+
+
 def get_local_repos(repos, localDirectory):
     repoNames = [repo["name"] for repo in repos]
     for root, subdirs, files in os.walk(f"{localDirectory}"):
@@ -91,6 +109,15 @@ def get_local_repos(repos, localDirectory):
                     with open(f"{root}/{subdir}/.git/config", "r") as configFile:
                         for repo in repos:
                             if subdir == repo["name"]:
+                                if not url_contains_username(repo, configFile):
+                                    continue
+                                try:
+                                    if multiple_remotes(configFile):
+                                        raise MultipleRemotesError()
+                                except MultipleRemotesError as err:
+                                    logging.warning(err)
+                                    repo["status"] = "Multiple remotes found in config."
+                                    break
                                 repo["configUrl"] = get_local_repo_url(
                                     configFile
                                 ).lower()
@@ -167,7 +194,7 @@ def push_setting_upstream(targetName, directory):
     stdout, stderr = process_runner(
         f"cwd={directory}: git push -u origin {targetName}", gitPushSetUpstream, "To"
     )
-    if len(stderr) > 0 and not "To" in stderr:
+    if len(stderr) > 0 and not "To" in stderr.decode():
         raise PushBranchRenameError(directory, stderr.decode)
 
 
@@ -182,7 +209,7 @@ def delete_remote_branch(branch, directory):
     stdout, stderr = process_runner(
         f"cwd={directory}: git push --delete origin {branch}", gitPushDelete, "To"
     )
-    if len(stderr) > 0 and not "To" in stderr:
+    if len(stderr) > 0 and not "To" in stderr.decode():
         raise DeleteRemoteError(branch, directory, stderr.decode())
 
 
@@ -247,7 +274,11 @@ def checkout(branch, directory):
         "Already on",
         "Switched to",
     )
-    if len(stderr) > 0 and not "Already on" in stderr and not "Switched to" in stderr:
+    if (
+        len(stderr) > 0
+        and not "Already on" in stderr
+        and not "Switched to" in stderr.decode()
+    ):
         raise CheckoutError(directory, stderr.decode())
 
 
@@ -281,7 +312,7 @@ def set_upstream(targetName, directory):
         gitBranchSetUpstream,
         "To",
     )
-    if len(stderr) > 0 and not "To" in stderr:
+    if len(stderr) > 0 and not "To" in stderr.decode():
         raise SetUpstreamError(directory, stderr.decode())
 
 
