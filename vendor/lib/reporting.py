@@ -303,7 +303,7 @@ def check_names(repos):
     #      default
     #      htmlUrl
     #      name
-    #      owner-login
+    #      ownerLogin
     #      targetName
     #      [status] # errors, at this point
     #      [localPath]

@@ -61,6 +61,15 @@ def get_branch_url(repo, branch):
 def check_remote_branches(token, repos):
     headers = {"Authorization": "token " + token}
     for repo in repos:
+        try:
+            if (
+                repo["status"]
+                == "Local folder that possibly isn't git repo, error opening .git/config from local directory."
+                or repo["status"] == "Multiple remotes found in git config file."
+            ):
+                continue
+        except KeyError:
+            pass
         targetBranchUrl = get_branch_url(repo, repo["targetName"])
         masterBranchUrl = get_branch_url(repo, "master")
         print(f"Checking {repo['name']} ...", end="")

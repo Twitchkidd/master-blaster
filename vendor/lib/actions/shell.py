@@ -119,6 +119,9 @@ def get_local_repos(repos, localDirectory):
                                     repo[
                                         "status"
                                     ] = "Multiple remotes found in git config file."
+                                    print(
+                                        f"Multiple remotes found in git config file for {repo['name']} so the program is not making any changes."
+                                    )
                                     break
                                 repo["localPath"] = f"{root}/{subdir}"
                                 repo[
@@ -152,6 +155,15 @@ def check_local_branches(repos):
     """Determine presence of target/master branches, and what the default is."""
     for repo in repos:
         if repo.get("localPath"):
+            try:
+                if (
+                    repo["status"]
+                    == "Local folder that possibly isn't git repo, error opening .git/config from local directory."
+                    or repo["status"] == "Multiple remotes found in git config file."
+                ):
+                    continue
+            except KeyError:
+                pass
             gitBranch = Popen(
                 ["git", "branch"], cwd=repo["localPath"], stdout=PIPE, stderr=PIPE
             )
@@ -236,14 +248,14 @@ def clone_repo(username, repo, localDirectory):
             "git",
             "clone",
             f"{repo['htmlUrl']}.git",
-            f"./{repo['owner-login']}/{repo['name']}",
+            f"./{repo['ownerLogin']}/{repo['name']}",
         ],
         cwd=f"{localDirectory}/master-blaster-{username}/",
         stdout=PIPE,
         stderr=PIPE,
     )
     stdout, stderr = process_runner(
-        f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['owner-login']}/{repo['name']}",
+        f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['ownerLogin']}/{repo['name']}",
         gitClone,
     )
     if len(stderr) > 0:
