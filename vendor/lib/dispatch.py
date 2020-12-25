@@ -116,7 +116,7 @@ def mv_third_to_target_clone(token, repo, localDirectory):
     process = "'rename third to target with a cloned repo process'"
     try:
         mkdir_if_need_be(repo["ownerLogin"], localDirectory)
-        clone_repo(repo["ownerLogin"], token, repo, localDirectory)
+        clone_repo(repo["ownerLogin"], repo, localDirectory)
         clonedRepos.append(repo)
         newPath = (
             f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"

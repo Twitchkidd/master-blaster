@@ -95,8 +95,6 @@ def check_for_multiple_remotes(configFile):
             if found == True:
                 return True
             found = True
-    if not found:
-        raise Exception
     return False
 
 
@@ -111,24 +109,21 @@ def get_local_repos(repos, localDirectory):
                             if subdir == repo["name"]:
                                 if not url_contains_username(repo, configFile):
                                     continue
-                                try:
-                                    if check_for_multiple_remotes(configFile):
-                                        raise MultipleRemotesError()
-                                except MultipleRemotesError as err:
-                                    logging.warning(err)
-                                    repo[
-                                        "status"
-                                    ] = "Multiple remotes found in git config file."
-                                    print(
-                                        f"Multiple remotes found in git config file for {repo['name']} so the program is not making any changes."
-                                    )
-                                    break
+                                if check_for_multiple_remotes(configFile):
+                                    raise MultipleRemotesError()
                                 repo["localPath"] = f"{root}/{subdir}"
                                 repo[
                                     "currentBranch"
                                 ] = f"{get_current_branch(f'{root}/{subdir}')}"
                                 repo["status"] = None
                                 repoNames.remove(subdir)
+                except MultipleRemotesError as err:
+                    logging.warning(err)
+                    repo["status"] = "Multiple remotes found in git config file."
+                    print(
+                        f"Multiple remotes found in git config file for {repo['name']} so the program is not making any changes."
+                    )
+                    break
                 except Exception as err:
                     for repo in repos:
                         if subdir == repo["name"]:
@@ -260,8 +255,6 @@ def clone_repo(username, repo, localDirectory):
     )
     if len(stderr) > 0:
         raise CloneRepoError(stderr.decode())
-
-def check_for_multiple_remotes(repo):
 
 
 def delete_local_branch(branch, directory):

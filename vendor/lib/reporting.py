@@ -262,7 +262,7 @@ def get_local_directory(testing):
                     f"Error! Directory not showing as valid: {customLocalDirectoryResponse}"
                 )
     if testing:
-        localDirectory = f"{Path.home()}/Code"
+        localDirectory = f"{Path.home()}/Code/monty"
     logging.info(f"Local directory to search: {localDirectory}")
     return localDirectory
 
@@ -663,9 +663,11 @@ def check_names(repos):
             print(repo["name"])
         decision = False
         if len(reposMvThirdToTargetLocal["repos"]) > 1:
-            decision = questionary.confirm("Do you want to rename these branches?")
+            decision = questionary.confirm(
+                "Do you want to rename these branches?"
+            ).ask()
         else:
-            decision = questionary.confirm("Do you want to rename this branch?")
+            decision = questionary.confirm("Do you want to rename this branch?").ask()
         if decision:
             for pendingRepo in reposMvThirdToTargetLocal["repos"]:
                 for repo in repos:
@@ -692,9 +694,11 @@ def check_names(repos):
             print(repo["name"])
         decision = False
         if len(reposMvThirdToTargetClone["repos"]) > 1:
-            decision = questionary.confirm("Do you want to rename these branches?")
+            decision = questionary.confirm(
+                "Do you want to rename these branches?"
+            ).ask()
         else:
-            decision = questionary.confirm("Do you want to rename this branch?")
+            decision = questionary.confirm("Do you want to rename this branch?").ask()
         if decision:
             for pendingRepo in reposMvThirdToTargetClone["repos"]:
                 for repo in repos:
@@ -725,9 +729,11 @@ def check_names(repos):
             print(repo["name"])
         decision = False
         if len(reposMvThirdToTargetAndBlastLocalMaster["repos"]) > 1:
-            decision = questionary.confirm("Do you want to rename these branches?")
+            decision = questionary.confirm(
+                "Do you want to rename these branches?"
+            ).ask()
         else:
-            decision = questionary.confirm("Do you want to rename this branch?")
+            decision = questionary.confirm("Do you want to rename this branch?").ask()
         if decision:
             for pendingRepo in reposMvThirdToTargetAndBlastLocalMaster["repos"]:
                 for repo in repos:
@@ -756,9 +762,11 @@ def check_names(repos):
             print(repo["name"])
         decision = False
         if len(reposDeleteRemote["repos"]) > 1:
-            decision = questionary.confirm("Do you want to delete these branches?")
+            decision = questionary.confirm(
+                "Do you want to delete these branches?"
+            ).ask()
         else:
-            decision = questionary.confirm("Do you want to delete this branch?")
+            decision = questionary.confirm("Do you want to delete this branch?").ask()
         if decision:
             for pendingRepo in reposDeleteRemote["repos"]:
                 for repo in repos:
@@ -785,9 +793,11 @@ def check_names(repos):
             print(repo["name"])
         decision = False
         if len(reposDeleteLocal["repos"]) > 1:
-            decision = questionary.confirm("Do you want to delete these branches?")
+            decision = questionary.confirm(
+                "Do you want to delete these branches?"
+            ).ask()
         else:
-            decision = questionary.confirm("Do you want to delete this branch?")
+            decision = questionary.confirm("Do you want to delete this branch?").ask()
         if decision:
             for pendingRepo in reposDeleteLocal["repos"]:
                 for repo in repos:
@@ -812,7 +822,7 @@ def check_names(repos):
             print("The following repo has a local and remote master branch.")
         for repo in reposDeleteLocalAndRemote["repos"]:
             print(repo["name"])
-        if questionary.confirm("Do you want to delete these branches?"):
+        if questionary.confirm("Do you want to delete these branches?").ask():
             for pendingRepo in reposDeleteLocalAndRemote["repos"]:
                 for repo in repos:
                     if pendingRepo["name"] == repo["name"]:
@@ -838,9 +848,9 @@ def check_names(repos):
             print(repo["name"])
         decision = False
         if len(reposLocalProcess["repos"]) > 1:
-            decision = questionary.confirm("Do you want to update these repos?")
+            decision = questionary.confirm("Do you want to update these repos?").ask()
         else:
-            decision = questionary.confirm("Do you want to update this repo?")
+            decision = questionary.confirm("Do you want to update this repo?").ask()
         if decision:
             for pendingRepo in reposLocalProcess["repos"]:
                 for repo in repos:
