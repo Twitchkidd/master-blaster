@@ -536,7 +536,8 @@ def check_names(repos):
         "pendingMvThirdToTargetAndBlastLocalMaster": "Do you want to mv third to target and blast the local master? Local repo.",
         "mvThirdToTargetAndBlastLocalMaster": "Move third to target and blast the local master, local repo.",
         "pendingDeleteRemote": "Delete remote?",
-        "deleteRemote": "Delete remote.",
+        "deleteRemoteLocal": "Delete remote from local repo.",
+        "deleteRemoteClone": "Delete remote from cloned repo.",
         "pendingDeleteLocal": "Delete local?",
         "deleteLocal": "Delete local.",
         "pendingDeleteLocalAndRemote": "Delete local and remote?",
@@ -771,10 +772,17 @@ def check_names(repos):
             for pendingRepo in reposDeleteRemote["repos"]:
                 for repo in repos:
                     if pendingRepo["name"] == repo["name"]:
-                        repo["status"] = states["deleteRemote"]
-                        logging.info(
-                            f"{repo['name']} added to repos with status: {states['deleteRemote']}"
-                        )
+                        try:
+                            isLocal = repo["localPath"]
+                            repo["status"] = states["deleteRemoteLocal"]
+                            logging.info(
+                                f"{repo['name']} added to repos with status: {states['deleteRemoteLocal']}"
+                            )
+                        except KeyError:
+                            repo["status"] = states["deleteRemoteClone"]
+                            logging.info(
+                                f"{repo['name']} added to repos with status: {states['deleteRemoteClone']}"
+                            )
         else:
             for pendingRepo in reposDeleteRemote["repos"]:
                 for repo in repos:

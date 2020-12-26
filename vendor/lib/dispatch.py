@@ -261,52 +261,54 @@ def mv_third_to_target_and_blast_local_master(token, repo, localDirectory):
         )
 
 
-def delete_remote_process(token, repo, localDirectory):
-    """Check if there's a local repo, then either clone or in-place push delete master."""
-    if repo["localPath"]:
-        try:
-            delete_remote_branch("master", repo["localPath"])
-        except DeleteRemoteError as err:
-            logging.warning(err)
-            raise ProcessError(
-                "'blast remote master from local repo process'",
-                repo["localPath"],
-                f"Unable to blast remote master for {repo['name']}! {err}",
-            )
-    else:
-        process = "'clone and blast remote master process'"
-        try:
-            mkdir_if_need_be(repo["ownerLogin"], localDirectory)
-            clone_repo(repo["ownerLogin"], token, repo, localDirectory)
-            clonedRepos.append(repo)
-            newPath = (
-                f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
-            )
-            with open(f"{newPath}.git/config", "r") as configFile:
-                if check_for_multiple_remotes(configFile):
-                    raise MultipleRemotesError()
-            delete_remote_branch(repo["default"], newPath)
-        except MakeDirectoryError as err:
-            logging.warning(err)
-            raise ProcessError(
-                process,
-                repo["name"],
-                f"Unable to make directory to clone repo into! {err}",
-            )
-        except CloneRepoError as err:
-            logging.warning(err)
-            raise ProcessError(process, repo["name"], f"Unable to clone repo! {err}")
-        except MultipleRemotesError as err:
-            logging.warning(err)
-            repo["status"] = "Multiple remotes found in git config file."
-            raise ProcessError(process, repo["name"], err)
-        except DeleteRemoteError as err:
-            logging.warning(err)
-            raise ProcessError(
-                process,
-                repo["name"],
-                f"Successfully cloned repo, but got an error blasting master branch on the remote! {err}",
-            )
+def delete_remote_local(repo):
+    """Delete a stray master branch on the remote from a local repo."""
+    try:
+        delete_remote_branch("master", repo["localPath"])
+    except DeleteRemoteError as err:
+        logging.warning(err)
+        raise ProcessError(
+            "'blast remote master from local repo process'",
+            repo["localPath"],
+            f"Unable to blast remote master for {repo['name']}! {err}",
+        )
+
+
+def delete_remote_clone(token, repo, localDirectory):
+    """Delete a stray master branch on the remote from a cloned repo."""
+    process = "'clone and blast remote master process'"
+    try:
+        mkdir_if_need_be(repo["ownerLogin"], localDirectory)
+        clone_repo(repo["ownerLogin"], repo, localDirectory)
+        clonedRepos.append(repo)
+        newPath = (
+            f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
+        )
+        with open(f"{newPath}.git/config", "r") as configFile:
+            if check_for_multiple_remotes(configFile):
+                raise MultipleRemotesError()
+        delete_remote_branch(repo["default"], newPath)
+    except MakeDirectoryError as err:
+        logging.warning(err)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Unable to make directory to clone repo into! {err}",
+        )
+    except CloneRepoError as err:
+        logging.warning(err)
+        raise ProcessError(process, repo["name"], f"Unable to clone repo! {err}")
+    except MultipleRemotesError as err:
+        logging.warning(err)
+        repo["status"] = "Multiple remotes found in git config file."
+        raise ProcessError(process, repo["name"], err)
+    except DeleteRemoteError as err:
+        logging.warning(err)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Successfully cloned repo, but got an error blasting master branch on the remote! {err}",
+        )
 
 
 def delete_local_and_remote(repo):
@@ -492,7 +494,7 @@ def remote_process_clone(token, repo, localDirectory):
     process = "'blast master on remote from cloned repo process'"
     try:
         mkdir_if_need_be(repo["ownerLogin"], localDirectory)
-        clone_repo(repo["ownerLogin"], token, repo, localDirectory)
+        clone_repo(repo["ownerLogin"], repo, localDirectory)
         clonedRepos.append(repo)
         newPath = (
             f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
@@ -588,7 +590,8 @@ def run(dataWithOptions):
         "pendingMvThirdToTargetAndBlastLocalMaster": "Do you want to mv third to target and blast the local master? Local repo.",
         "mvThirdToTargetAndBlastLocalMaster": "Move third to target and blast the local master, local repo.",
         "pendingDeleteRemote": "Delete remote?",
-        "deleteRemote": "Delete remote.",
+        "deleteRemoteLocal": "Delete remote from local repo.",
+        "deleteRemoteClone": "Delete remote from cloned repo.",
         "pendingDeleteLocal": "Delete local?",
         "deleteLocal": "Delete local.",
         "pendingDeleteLocalAndRemote": "Delete local and remote?",
@@ -660,16 +663,23 @@ def run(dataWithOptions):
     if len(optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["repos"]) > 0:
         for repo in optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["repos"]:
             try:
-                mv_third_to_target_and_blast_local_master(repo)
+                mv_third_to_target_and_blast_local_master(token, repo, localDirectory)
             except ProcessError as err:
                 optionRepos["reposMvThirdToTargetAndBlastLocalMaster"][
                     "errors"
                 ].appendd([repo, err.message])
 
-    if len(optionRepos["reposDeleteRemote"]["repos"]) > 0:
-        for repo in optionRepos["reposDeleteRemote"]["repos"]:
+    if len(optionRepos["reposDeleteRemoteLocal"]["repos"]) > 0:
+        for repo in optionRepos["reposDeleteRemoteLocal"]["repos"]:
             try:
-                delete_remote_process("master", repo["localPath"])
+                delete_remote_local("master", repo["localPath"])
+            except ProcessError as err:
+                optionRepos["reposDeleteRemote"]["errors"].append([repo, err.message])
+
+    if len(optionRepos["reposDeleteRemoteClone"]["repos"]) > 0:
+        for repo in optionRepos["reposDeleteRemoteClone"]["repos"]:
+            try:
+                delete_remote_clone("master", repo["localPath"])
             except ProcessError as err:
                 optionRepos["reposDeleteRemote"]["errors"].append([repo, err.message])
 

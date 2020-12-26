@@ -91,7 +91,8 @@ def url_contains_username(repo, configFile):
 def check_for_multiple_remotes(configFile):
     found = False
     for line in configFile:
-        if line.find("[remote"):
+        if "[remote" in line:
+            print(line)
             if found == True:
                 return True
             found = True
