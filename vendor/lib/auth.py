@@ -1,11 +1,9 @@
-import logging
-import sys
-from vendor.lib.reporting import get_username
-from vendor.lib.reporting import get_token
+import logging, sys
+from vendor.lib.reporting import get_username, get_token
 from vendor.lib.actions.network import get_repos
-from vendor.lib.actions.network import NetworkConnectivityError
-from vendor.lib.actions.network import RequestError
-from vendor.lib.actions.network import NoReposError
+from vendor.lib.actions.network_exceptions import NetworkConnectivityError
+from vendor.lib.actions.network_exceptions import RequestError
+from vendor.lib.actions.network_exceptions import NoReposError
 
 
 def auth(testing):

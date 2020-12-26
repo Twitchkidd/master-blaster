@@ -17,10 +17,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from pathlib import Path
-import logging
-import sys
-from vendor.lib.actions.shell import get_current_branch
-from vendor.lib.actions.shell import set_branch
+import logging, sys
+from vendor.lib.actions.shell import get_current_branch, set_branch
 from vendor.lib.logging import logging_config
 from vendor.lib.reporting import intro
 from vendor.lib.auth import auth

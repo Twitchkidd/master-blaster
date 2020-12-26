@@ -18,7 +18,7 @@ def apply_name(name, repos):
 
 
 def check_branches(username, token, repos):
-    """Catch and categorize naming errors locally and on remote repos."""
+    """Get initial states of local and remote repos based on branch names."""
     repos = check_remote_branches(token, repos)
     localReposPresent = False
     for repo in repos:

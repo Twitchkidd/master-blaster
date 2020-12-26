@@ -43,12 +43,17 @@ def get_repos(username, token):
         print("Repos received!\n")
         reposResponseConfirmed = True
         for repository in response.json():
+            # ownerLogin is guaranteed to be the canonnical capitalization,
+            # and it might look like we should just set username after getting
+            # it, but the plan is to extend the option for different repo types
             repos.append(
                 {
-                    "default": repository["default_branch"],
-                    "htmlUrl": repository["html_url"],
                     "name": repository["name"],
                     "ownerLogin": f"{repository['owner']['login']}",
+                    "htmlUrl": repository["html_url"],
+                    "gitUrl": repository["git_url"],
+                    "sshUrl": repository["ssh_url"],
+                    "default": repository["default_branch"],
                 }
             )
     return repos

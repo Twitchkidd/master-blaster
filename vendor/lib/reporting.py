@@ -29,7 +29,7 @@ def intro():
 
     introText = """
       Welcome to master-blaster! This program batch renames primary branches
-      for GitHub users! We'll go through the options before making any changes!
+      for GitHub users! We'll go through the options before taking any action!
     """
     print(introText)
 
@@ -302,6 +302,8 @@ def check_names(repos):
     # >> Repo object [ones in brackets are only conditionally present]:
     #      default
     #      htmlUrl
+    #      gitUrl
+    #      sshUrl
     #      name
     #      ownerLogin
     #      targetName
@@ -529,23 +531,16 @@ def check_names(repos):
     # *
 
     states = {
-        "pendingMvThirdToTargetLocal": "Do you want to mv third to target? Local repo",
-        "mvThirdToTargetLocal": "Move third to target, local repo.",
-        "pendingMvThirdToTargetClone": "Do you want to mv third to target? Clone repo",
-        "mvThirdToTargetClone": "Move third to target, clone repo.",
-        "pendingMvThirdToTargetAndBlastLocalMaster": "Do you want to mv third to target and blast the local master? Local repo.",
-        "mvThirdToTargetAndBlastLocalMaster": "Move third to target and blast the local master, local repo.",
-        "pendingDeleteRemote": "Delete remote?",
-        "deleteRemoteLocal": "Delete remote from local repo.",
-        "deleteRemoteClone": "Delete remote from cloned repo.",
-        "pendingDeleteLocal": "Delete local?",
-        "deleteLocal": "Delete local.",
-        "pendingDeleteLocalAndRemote": "Delete local and remote?",
-        "deleteLocalAndRemote": "Delete local and remote.",
+        "pendingMvThirdToTarget": "Move third to target?",
+        "mvThirdToTargetLocal": "Move third to target.",
+        "pendingBlastRemote": "Blast remote master?",
+        "blastRemote": "Blast remote master.",
+        "pendingBlastLocal": "Blast local master?",
+        "blastLocal": "Blast local master.",
+        "pendingLocalUpdate": "Local update?",
+        "localUpdate": "Local update.",
         "remoteProcessLocal": "Perfect remote process local repo.",
         "remoteProcessClone": "Perfect remote process clone repo.",
-        "pendingLocalProcess": "Perfect case local process.",
-        "localProcess": "Local process is a go.",
         "alreadyBlasted": "Already blasted.",
         "multipleRemotes": "Multiple remotes found in git config file.",
         "folderError": "Local folder that possibly isn't git repo, error opening .git/config from local directory.",
@@ -880,7 +875,8 @@ def check_names(repos):
         "reposMvThirdToTargetLocal": reposMvThirdToTargetLocal,
         "reposMvThirdToTargetClone": reposMvThirdToTargetClone,
         "reposMvThirdToTargetAndBlastLocalMaster": reposMvThirdToTargetAndBlastLocalMaster,
-        "reposDeleteRemote": reposDeleteRemote,
+        "reposDeleteRemoteLocal": reposDeleteRemoteLocal,
+        "reposDeleteRemoteClone": reposDeleteRemoteClone,
         "reposDeleteLocal": reposDeleteLocal,
         "reposDeleteLocalAndRemote": reposDeleteLocalAndRemote,
         "reposLocalProcess": reposLocalProcess,
