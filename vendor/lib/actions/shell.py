@@ -76,40 +76,53 @@ def get_local_token():
         pass
 
 
+def check_remotes_quantity(configFile):
+    count = 0
+    for line in configFile:
+        if "[remote" in line:
+            count += 1
+    return count
+
+
 def get_local_repo_url(configFile):
     for line in configFile:
         if line.find("url =") != -1:
-            remoteOriginUrlStart = line.find("url =")
-            return line[remoteOriginUrlStart + 6 : -1]
+            urlStart = line.find("url =")
+            return line[urlStart + 6 : -1]
 
 
-def url_contains_username(repo, configFile):
-    url = get_local_repo_url(configFile)
-    return repo["ownerLogin"].lower() in url.lower()
+def check_config(configFile, repos):
+    """Check a config file against the list of repos and return whether
+    it's a match with any and whether there are zero, one, or more than
+    one remotes."""
 
 
-def check_for_multiple_remotes(configFile):
-    found = False
-    for line in configFile:
-        if "[remote" in line:
-            print(line)
-            if found == True:
-                return True
-            found = True
-    return False
+def get_local_repos(repos, localDirectory):
+    """Walk the file system from the specified local directory and
+    check for git config files, and if the"""
 
 
 def get_local_repos(repos, localDirectory):
     repoNames = [repo["name"] for repo in repos]
     for root, subdirs, files in os.walk(f"{localDirectory}"):
         for subdir in subdirs:
+            # Here's where we lose it, because that the folder name
+            # is the name of the repo is just a guess, and we're
+            # not checking folders that aren't named the repo when they
+            # could be cloned in with a differently named directory
             if any(subdir == repoName for repoName in repoNames):
                 try:
+                    # FileNotFoundError
                     with open(f"{root}/{subdir}/.git/config", "r") as configFile:
                         for repo in repos:
+                            # So again, broken right here.
                             if subdir == repo["name"]:
-                                if not url_contains_username(repo, configFile):
+                                if not config_url_indicates_match(
+                                    configFile, repo["ownerLogin"], repo["name"]
+                                ):
                                     continue
+                                # This should probably be done before checking the config
+                                # file for url, right?
                                 if check_for_multiple_remotes(configFile):
                                     raise MultipleRemotesError()
                                 repo["localPath"] = f"{root}/{subdir}"

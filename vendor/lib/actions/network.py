@@ -44,8 +44,7 @@ def get_repos(username, token):
         reposResponseConfirmed = True
         for repository in response.json():
             # ownerLogin is guaranteed to be the canonnical capitalization,
-            # and it might look like we should just set username after getting
-            # it, but the plan is to extend the option for different repo types
+            # leave as part of repo rather than setting username for future feature
             repos.append(
                 {
                     "name": repository["name"],

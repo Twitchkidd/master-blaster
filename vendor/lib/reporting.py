@@ -28,8 +28,8 @@ def intro():
     print(licenseText)
 
     introText = """
-      Welcome to master-blaster! This program batch renames primary branches
-      for GitHub users! We'll go through the options before taking any action!
+      Welcome to master-blaster! This program batch renames primary branches of
+      git repos and their default branches on GitHub.
     """
     print(introText)
 
