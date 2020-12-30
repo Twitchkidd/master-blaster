@@ -14,6 +14,28 @@ class SetBranchError(Error):
         )
 
 
+class NoRemotesError(Error):
+    """Raised when there are no remotes for a repo.
+
+    Attributes:
+        None
+    """
+
+    def __init__(self):
+        self.message = "ERROR: No remotes found for this repo!"
+
+
+class NoUrlError(Error):
+    """Raised when there's no url set for a repo's remote.
+
+    Attributes:
+        None
+    """
+
+    def __init__(self):
+        self.message = "ERROR: No url set for this repo's remote! Program may only acts on local repos where the url matches a repo to act on."
+
+
 class MultipleRemotesError(Error):
     """Raised when there are multiple remotes for a repo.
 
@@ -23,6 +45,17 @@ class MultipleRemotesError(Error):
 
     def __init__(self):
         self.message = "ERROR: Multiple remotes for this repo! Too complex for this version of `master-blaster`."
+
+
+class MultipleLocalReposError(Error):
+    """Raised when there are multiple local clones of a repo.
+
+    Attributes:
+        None
+    """
+
+    def __init__(self, name, directory, localPath):
+        self.message = f"ERROR: Multiple local clones for {name}! Too complex for this version of `master-blaster`. First directory: {directory} Other directory: {localPath}"
 
 
 class RenameBranchError(Error):

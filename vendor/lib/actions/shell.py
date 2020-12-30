@@ -3,7 +3,10 @@ import os
 from pathlib import Path
 from subprocess import Popen, PIPE
 from vendor.lib.actions.shell_exceptions import SetBranchError
+from vendor.lib.actions.shell_exceptions import NoRemotesError
+from vendor.lib.actions.shell_exceptions import NoUrlError
 from vendor.lib.actions.shell_exceptions import MultipleRemotesError
+from vendor.lib.actions.shell_exceptions import MultipleLocalReposError
 from vendor.lib.actions.shell_exceptions import RenameBranchError
 from vendor.lib.actions.shell_exceptions import PushBranchRenameError
 from vendor.lib.actions.shell_exceptions import DeleteRemoteError
@@ -76,30 +79,66 @@ def get_local_token():
         pass
 
 
-def check_remotes_quantity(configFile):
+def check_for_remote_or_remotes_and_get_url(configFile):
+    """Scan git config file for remote(s) and if there's one and
+    a url, return it, otherwise return either error codes 0 for
+    no remotes found, 1 for no url, and 2 for."""
     count = 0
+    url = ""
     for line in configFile:
         if "[remote" in line:
             count += 1
-    return count
-
-
-def get_local_repo_url(configFile):
-    for line in configFile:
-        if line.find("url =") != -1:
+        if "url =" in line:
             urlStart = line.find("url =")
-            return line[urlStart + 6 : -1]
+            url = line[urlStart + 6 : -1]
+    if count == 1 and url != "":
+        return url
+    if count == 0:
+        raise NoRemotesError()
+    if count == 1 and url == "":
+        raise NoUrlError()
+    if count > 1:
+        raise MultipleRemotesError()
 
 
 def check_config(configFile, repos):
     """Check a config file against the list of repos and return whether
-    it's a match with any and whether there are zero, one, or more than
-    one remotes."""
+    it's a match with any and how many remotes there are."""
+    try:
+        url = check_for_remote_or_remotes_and_get_url(configFile)
+        for repo in repos:
+            if url == repo["htmlUrl"] or url == repo["gitUrl"] or url == repo["sshUrl"]:
+                return repo
+        return None
+    except NoRemotesError as err:
+        logging.info(err.message)
+    except NoUrlError as err:
+        logging.info(err.message)
+    except MultipleRemotesError as err:
+        logging.info(err.message)
 
 
 def get_local_repos(repos, localDirectory):
     """Walk the file system from the specified local directory and
-    check for git config files, and if the"""
+    check for git config files, and return the repos with what we learn.
+    Remember to say if it didn't find any that maybe the git config
+    file couldn't be read for some reason or that there was a multiple
+    remotes or no url error."""
+    for root, subdirs, files in os.walk(f"{localDirectory}"):
+        for subdir in subdirs:
+            try:
+                # FileNotFoundError
+                with open(f"{root}/{subdir}/.git/config", "r") as configFile:
+                    repo = check_config(configFile, repos)
+                    if repo != None:
+                        if repo.get("localPath"):
+                            # repo["errors"].
+                            raise MultipleLocalReposError(repo["name"], repo["localPath"], f"{root}/{subdir}/")
+
+
+
+                        
+
 
 
 def get_local_repos(repos, localDirectory):
