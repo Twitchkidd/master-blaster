@@ -2,6 +2,7 @@ import logging
 import os
 from pathlib import Path
 from subprocess import Popen, PIPE
+from vendor.lib.utils import states
 from vendor.lib.actions.shell_exceptions import SetBranchError
 from vendor.lib.actions.shell_exceptions import NoRemotesError
 from vendor.lib.actions.shell_exceptions import NoUrlError
@@ -91,111 +92,87 @@ def check_for_remote_or_remotes_and_get_url(configFile):
         if "url =" in line:
             urlStart = line.find("url =")
             url = line[urlStart + 6 : -1]
-    if count == 1 and url != "":
-        return url
-    if count == 0:
-        raise NoRemotesError()
-    if count == 1 and url == "":
-        raise NoUrlError()
-    if count > 1:
-        raise MultipleRemotesError()
+    return url, count
 
 
 def check_config(configFile, repos):
     """Check a config file against the list of repos and return whether
     it's a match with any and how many remotes there are."""
     try:
-        url = check_for_remote_or_remotes_and_get_url(configFile)
+        url, numRemotes = check_for_remote_or_remotes_and_get_url(configFile)
+        if numRemotes == 0:
+            raise NoRemotesError()
+        if url == "":
+            raise NoUrlError()
         for repo in repos:
             if url == repo["htmlUrl"] or url == repo["gitUrl"] or url == repo["sshUrl"]:
+                if numRemotes != 1:
+                    raise MultipleRemotesError(repo)
                 return repo
         return None
-    except NoRemotesError as err:
-        logging.info(err.message)
-    except NoUrlError as err:
-        logging.info(err.message)
-    except MultipleRemotesError as err:
-        logging.info(err.message)
+    except (NoRemotesError, NoUrlError):
+        pass
+
+
+def fetch_dry_run(directory):
+    """Checks if the local repo is in fact a repo and the url
+    points to a remote that it shares a commit history with.
+
+    Warning! I don't know that it errors after the *second* time!"""
+    fetchDryRun = Popen(
+        ["git", "fetch", "--dry-run", "--verbose"],
+        cwd=directory,
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    stdout, stderr = process_runner(
+        f"cwd={directory}: git fetch --dry-run --verbose", fetchDryRun
+    )
+    if len(stderr) > 0:
+        if (
+            "fatal: Could not read from remote" in stderr
+            or "warning: no common commits" in stderr
+        ):
+            return False
+        return True
+    return False
 
 
 def get_local_repos(repos, localDirectory):
     """Walk the file system from the specified local directory and
     check for git config files, and return the repos with what we learn.
-    Remember to say if it didn't find any that maybe the git config
-    file couldn't be read for some reason or that there was a multiple
-    remotes or no url error."""
+    Say, if it didn't find any, that maybe the git config file couldn't
+    be read for some reason or that there was a multiple remotes or
+    no url error."""
     for root, subdirs, files in os.walk(f"{localDirectory}"):
         for subdir in subdirs:
             try:
-                # FileNotFoundError
                 with open(f"{root}/{subdir}/.git/config", "r") as configFile:
-                    repo = check_config(configFile, repos)
-                    if repo != None:
-                        if repo.get("localPath"):
-                            # repo["errors"].
-                            raise MultipleLocalReposError(repo["name"], repo["localPath"], f"{root}/{subdir}/")
-
-
-
-                        
-
-
-
-def get_local_repos(repos, localDirectory):
-    repoNames = [repo["name"] for repo in repos]
-    for root, subdirs, files in os.walk(f"{localDirectory}"):
-        for subdir in subdirs:
-            # Here's where we lose it, because that the folder name
-            # is the name of the repo is just a guess, and we're
-            # not checking folders that aren't named the repo when they
-            # could be cloned in with a differently named directory
-            if any(subdir == repoName for repoName in repoNames):
-                try:
-                    # FileNotFoundError
-                    with open(f"{root}/{subdir}/.git/config", "r") as configFile:
-                        for repo in repos:
-                            # So again, broken right here.
-                            if subdir == repo["name"]:
-                                if not config_url_indicates_match(
-                                    configFile, repo["ownerLogin"], repo["name"]
-                                ):
-                                    continue
-                                # This should probably be done before checking the config
-                                # file for url, right?
-                                if check_for_multiple_remotes(configFile):
-                                    raise MultipleRemotesError()
-                                repo["localPath"] = f"{root}/{subdir}"
-                                repo[
-                                    "currentBranch"
-                                ] = f"{get_current_branch(f'{root}/{subdir}')}"
-                                repo["status"] = None
-                                repoNames.remove(subdir)
-                except MultipleRemotesError as err:
-                    logging.warning(err)
-                    repo["status"] = "Multiple remotes found in git config file."
-                    print(
-                        f"Multiple remotes found in git config file for {repo['name']} so the program is not making any changes."
-                    )
-                    break
-                except Exception as err:
+                    checkedRepo = check_config(configFile, repos)
+                    if checkedRepo == None:
+                        continue
                     for repo in repos:
-                        if subdir == repo["name"]:
-                            repo[
-                                "status"
-                            ] = "Local folder that possibly isn't git repo, error opening .git/config from local directory."
+                        if repo["name"] == checkedRepo["name"]:
+                            remoteChecksOut = fetch_dry_run(f"{root}/{subdir}")
+                            if repo.get("localPath"):
+                                repo["status"].append(states["multipleLocals"])
+                                raise MultipleLocalReposError(
+                                    repo["name"], repo["localPath"], f"{root}/{subdir}/"
+                                )
                             repo["localPath"] = f"{root}/{subdir}"
-                    continue
-    for repo in repos:
-        try:
-            if (
-                repo["status"]
-                == "Local folder that possibly isn't git repo, error opening .git/config from local directory."
-            ):
-                logging.warning(
-                    f"Error with {repo['name']}: Local folder(s) found without .git/config files, path unclear. Last checked directory: {repo['localPath']}"
-                )
-        except KeyError:
-            pass
+                            repo[
+                                "currentBranch"
+                            ] = f"{get_current_branch(f'{root}/{subdir}')}"
+                            repo["status"] = []
+            except FileNotFoundError:
+                pass
+            except MultipleRemotesError as err:
+                logging.warning(err.message)
+                for repo in repos:
+                    if repo["name"] == err.repoName:
+                        repo["status"].append(states["multipleRemotes"])
+            except MultipleLocalReposError as err:
+                logging.warning(err.message)
     return repos
 
 
@@ -203,15 +180,12 @@ def check_local_branches(repos):
     """Determine presence of target/master branches, and what the default is."""
     for repo in repos:
         if repo.get("localPath"):
-            try:
-                if (
-                    repo["status"]
-                    == "Local folder that possibly isn't git repo, error opening .git/config from local directory."
-                    or repo["status"] == "Multiple remotes found in git config file."
-                ):
-                    continue
-            except KeyError:
-                pass
+            if (
+                states["multipleLocals"] in repo["status"]
+                or states["multipleRemotes"] in repo["status"]
+                or states["rejectedResponse"] in repo["status"]
+            ):
+                continue
             gitBranch = Popen(
                 ["git", "branch"], cwd=repo["localPath"], stdout=PIPE, stderr=PIPE
             )
@@ -220,9 +194,8 @@ def check_local_branches(repos):
             )
             if len(stderr) > 0:
                 logging.warning(f"Error in git branch! {repo['localPath']}")
-                repo[
-                    "status"
-                ] = "There was an error running git branch when checking the local repo, so action stopped on that repo."
+                repo["status"].append(states["gitBranchError"])
+                continue
             repo["localHasMaster"] = "master" in f"{stdout}"
             repo["localHasTarget"] = repo["targetName"] in f"{stdout}"
             if not repo["hasTarget"] and not repo["hasMaster"]:

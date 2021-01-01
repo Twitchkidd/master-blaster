@@ -63,6 +63,6 @@ def get_options(data, testing):
     if localDirectory:
         repos = get_local_repos(repos, localDirectory)
     repos = check_branches(username, token, repos)
-    repos, optionRepos = check_names(repos)
+    repos = check_names(repos)
 
-    return username, token, repos, optionRepos, localDirectory, removeClones, gitNew
+    return username, token, repos, localDirectory, removeClones, gitNew

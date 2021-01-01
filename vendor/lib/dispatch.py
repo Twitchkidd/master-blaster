@@ -1,6 +1,7 @@
 import logging
 from vendor.lib.utils import Error
 from vendor.lib.actions.shell import check_for_multiple_remotes
+from vendor.lib.utils import states
 from vendor.lib.actions.shell import rename_branch
 from vendor.lib.actions.shell import push_setting_upstream
 from vendor.lib.actions.network import update_default_branch
@@ -51,7 +52,7 @@ class ProcessError(Error):
         self.message = f"ERROR: Error in {series} for {name}! {errorMessage}"
 
 
-def mv_third_to_target_local(token, repo):
+def mv_third_to_target_local_repo(token, repo):
     """Rename 'third' to target and push upstream, rename default branch
     on GitHub, and delete remote 'third'."""
     process = "'rename third to target from local repo process'"
@@ -61,58 +62,58 @@ def mv_third_to_target_local(token, repo):
         update_default_branch(token, repo)
         delete_remote_branch(repo["default"], repo["localPath"])
     except RenameBranchError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Got an error trying to rename branch locally! {err}",
+            f"Got an error trying to rename branch locally! {err.message}",
         )
     except PushBranchRenameError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         try:
             rename_branch(repo["targetName"], repo["default"], repo["localPath"])
         except RenameBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but then got an error renaming it! {err}",
+                f"Successfully renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but then got an error renaming it! {err.message}",
             )
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed local branch, but got an error pushing the change to remote, so the program renamed the branch back. {err}",
+            f"Successfully renamed local branch, but got an error pushing the change to remote, so the program renamed the branch back. {err.message}",
         )
     except UpdateDefaultError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         try:
             rename_branch(repo["targetName"], repo["default"], repo["localPath"])
             push_setting_upstream(repo["default"], repo["localPath"])
         except RenameBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub, so the program tried to change the name back, but then got another error! {err}",
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub, so the program tried to change the name back, but then got another error! {err.message}",
             )
         except PushBranchRenameError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back, but then got an error pushing it to the remote! {err}",
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back, but then got an error pushing it to the remote! {err.message}",
             )
     except DeleteRemoteError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed local branch, pushed the change to remote, and changed the default branch on GitHub, but got an error deleting the {repo['default']} branch on the remote! {err}",
+            f"Successfully renamed local branch, pushed the change to remote, and changed the default branch on GitHub, but got an error deleting the {repo['default']} branch on the remote! {err.message}",
         )
 
 
-def mv_third_to_target_clone(token, repo, localDirectory):
-    """Clone branch, rename third and push target upstream, rename default branch on GitHub, delete remote third."""
+def mv_third_to_target_clone_repo(token, repo, localDirectory):
+    """Clone repo, rename third and push target upstream, rename default branch on GitHub, delete remote third."""
     process = "'rename third to target with a cloned repo process'"
     try:
         mkdir_if_need_be(repo["ownerLogin"], localDirectory)
@@ -129,71 +130,339 @@ def mv_third_to_target_clone(token, repo, localDirectory):
         update_default_branch(token, repo)
         delete_remote_branch(repo["default"], newPath)
     except MakeDirectoryError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Unable to make directory to clone repo into! {err}",
+            f"Unable to make directory to clone repo into! {err.message}",
         )
     except CloneRepoError as err:
-        logging.warning(err)
-        raise ProcessError(process, repo["name"], f"Unable to clone repo! {err}")
+        logging.warning(err.message)
+        raise ProcessError(
+            process, repo["name"], f"Unable to clone repo! {err.message}"
+        )
     except MultipleRemotesError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         repo["status"] = "Multiple remotes found in git config file."
-        raise ProcessError(process, repo["name"], err)
+        raise ProcessError(process, repo["name"], err.message)
     except RenameBranchError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully cloned repo, but got an error trying to rename branch locally! {err}",
+            f"Successfully cloned repo, but got an error trying to rename branch locally! {err.message}",
         )
     except PushBranchRenameError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         try:
             rename_branch(repo["targetName"], repo["default"], newPath)
         except RenameBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully cloned repo and renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but then got another error! {err}",
+                f"Successfully cloned repo and renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but then got another error! {err.message}",
             )
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully cloned repo and renamed local branch, but got an error pushing the change to remote, so the program renamed the branch back. {err}",
+            f"Successfully cloned repo and renamed local branch, but got an error pushing the change to remote, so the program renamed the branch back. {err.message}",
         )
     except UpdateDefaultError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         try:
             rename_branch(repo["targetName"], repo["default"], newPath)
             push_setting_upstream(repo["default"], newPath)
         except RenameBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully cloned repo, renamed local branch, pushed change to remote, but got an error changing the default branch on GitHub, so the program tried to change the name back, but got another error! {err}",
+                f"Successfully cloned repo, renamed local branch, pushed change to remote, but got an error changing the default branch on GitHub, so the program tried to change the name back, but got another error! {err.message}",
             )
         except PushBranchRenameError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully cloned repo, renamed local branch, and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back, but got an error pushing the change to the remote! {err}",
+                f"Successfully cloned repo, renamed local branch, and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back, but got an error pushing the change to the remote! {err.message}",
             )
     except DeleteRemoteError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully cloned repo, renamed local branch, pushed the change to remote, and changed the default branch on GitHub, but got an error deleting the {repo['default']} branch on the remote! {err}",
+            f"Successfully cloned repo, renamed local branch, pushed the change to remote, and changed the default branch on GitHub, but got an error deleting the {repo['default']} branch on the remote! {err.message}",
         )
 
 
-def mv_third_to_target_and_blast_local_master(token, repo, localDirectory):
+def mv_third_to_target_and_delete_remote_master_local_repo(token, repo):
+    """Rename third and push target upstream, rename the default branch on
+    GitHub, delete remote third, and delete remote master from a local repo."""
+    process = "'rename third to target and blast remote master from local repo process'"
+    try:
+        rename_branch(repo["default"], repo["targetName"], repo["localPath"])
+        push_setting_upstream(repo["targetName"], repo["localPath"])
+        update_default_branch(token, repo)
+        delete_remote_branch(repo["default"], repo["localPath"])
+        delete_remote_branch("master", repo["localPath"])
+    except RenameBranchError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Tried to rename local branch, but got an error! {err.message}",
+        )
+    except PushBranchRenameError as err:
+        logging.warning(err.message)
+        try:
+            rename_branch(repo["targetName"], repo["default"], repo["localPath"])
+        except RenameBranchError as err:
+            logging.warning(err.message)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but got another error! {err.message}",
+            )
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Successfully renamed local branch, but got an error pushing th change to remote, so the program renamed the branch back. {err.message}",
+        )
+    except UpdateDefaultError as err:
+        logging.warning(err.message)
+        try:
+            rename_branch(repo["targetName"], repo["default"], repo["localPath"])
+            push_setting_upstream(repo["default"], repo["localPath"])
+        except RenameBranchError as err:
+            logging.warning(err.message)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub on GitHub, so the program tried to change the name back, but got an error! {err.message}",
+            )
+        except PushBranchRenameError as err:
+            logging.warning(err.message)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back locally, but got an error pushing the change to the remote! {err.message}",
+            )
+    except DeleteRemoteError as err:
+        logging.warning(err.message)
+        if err.branch == repo["default"]:
+            try:
+                delete_remote_branch("master", repo["localPath"])
+            except DeleteRemoteError as err:
+                logging.warning(err.message)
+                raise ProcessError(
+                    process,
+                    repo["name"],
+                    f"Successfully renamed local branch, pushed the change to remote, and changed the default branch on GitHub, got an error deleting the {repo['default']} branch on the remote, and then got another error deleting the master branch on the remote! {err.message}",
+                )
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, and deleted the master branch on the remote, but got an error deleting the {repo['default']} branch on the remote! {err.message}",
+            )
+        else:
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, and deleted the {repo['default']} branch on the remote, but got an error deleting the master branch on the remote! {err.message}",
+            )
+
+
+def mv_third_to_target_and_delete_remote_master_clone_repo(token, repo, localDirectory):
+    """Clone repo, rename third and push target upstream, rename the default branch on
+    GitHub, delete remote third, and delete remote master from a cloned repo."""
+    process = (
+        "'rename third to target and blast remote master from cloned repo process'"
+    )
+    try:
+        mkdir_if_need_be(repo["ownerLogin"], localDirectory)
+        clone_repo(repo["ownerLogin"], repo, localDirectory)
+        clonedRepos.append(repo)
+        newPath = (
+            f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
+        )
+        with open(f"{newPath}.git/config", "r") as configFile:
+            if check_for_multiple_remotes(configFile):
+                raise MultipleRemotesError()
+        rename_branch(repo["default"], repo["targetName"], repo["localPath"])
+        push_setting_upstream(repo["targetName"], repo["localPath"])
+        update_default_branch(token, repo)
+        delete_remote_branch(repo["default"], repo["localPath"])
+        delete_remote_branch("master", repo["localPath"])
+    except MakeDirectoryError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Unable to make directory to clone repo into! {err.message}",
+        )
+    except CloneRepoError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process, repo["name"], f"Unable to clone repo! {err.message}"
+        )
+    except MultipleRemotesError as err:
+        logging.warning(err.message)
+        repo["status"] = "Multiple remotes found in git config file."
+        raise ProcessError(process, repo["name"], err.message)
+    except RenameBranchError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Tried to rename local branch, but got an error! {err.message}",
+        )
+    except PushBranchRenameError as err:
+        logging.warning(err.message)
+        try:
+            rename_branch(repo["targetName"], repo["default"], repo["localPath"])
+        except RenameBranchError as err:
+            logging.warning(err.message)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but got another error! {err.message}",
+            )
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Successfully renamed local branch, but got an error pushing th change to remote, so the program renamed the branch back. {err.message}",
+        )
+    except UpdateDefaultError as err:
+        logging.warning(err.message)
+        try:
+            rename_branch(repo["targetName"], repo["default"], repo["localPath"])
+            push_setting_upstream(repo["default"], repo["localPath"])
+        except RenameBranchError as err:
+            logging.warning(err.message)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub on GitHub, so the program tried to change the name back, but got an error! {err.message}",
+            )
+        except PushBranchRenameError as err:
+            logging.warning(err.message)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back locally, but got an error pushing the change to the remote! {err.message}",
+            )
+    except DeleteRemoteError as err:
+        logging.warning(err.message)
+        if err.branch == repo["default"]:
+            try:
+                delete_remote_branch("master", repo["localPath"])
+            except DeleteRemoteError as err:
+                logging.warning(err.message)
+                raise ProcessError(
+                    process,
+                    repo["name"],
+                    f"Successfully renamed local branch, pushed the change to remote, and changed the default branch on GitHub, got an error deleting the {repo['default']} branch on the remote, and then got another error deleting the master branch on the remote! {err.message}",
+                )
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, and deleted the master branch on the remote, but got an error deleting the {repo['default']} branch on the remote! {err.message}",
+            )
+        else:
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, and deleted the {repo['default']} branch on the remote, but got an error deleting the master branch on the remote! {err.message}",
+            )
+
+
+def mv_third_to_target_and_delete_remote_and_local_master(token, repo):
+    """Rename third and push target upstream, rename the default branch on
+    GitHub, delete remote third, and delete remote and local master branches."""
+    process = "'rename third to target and blast remote and local masters process'"
+    try:
+        rename_branch(repo["default"], repo["targetName"], repo["localPath"])
+        push_setting_upstream(repo["targetName"], repo["localPath"])
+        update_default_branch(token, repo)
+        delete_remote_branch(repo["default"], repo["localPath"])
+        delete_remote_branch("master", repo["localPath"])
+        delete_local_branch("master", repo["localPath"])
+    except RenameBranchError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Tried to rename local branch, but got an error! {err.message}",
+        )
+    except PushBranchRenameError as err:
+        logging.warning(err.message)
+        try:
+            rename_branch(repo["targetName"], repo["default"], repo["localPath"])
+        except RenameBranchError as err:
+            logging.warning(err.message)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but got another error! {err.message}",
+            )
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Successfully renamed local branch, but got an error pushing th change to remote, so the program renamed the branch back. {err.message}",
+        )
+    except UpdateDefaultError as err:
+        logging.warning(err.message)
+        try:
+            rename_branch(repo["targetName"], repo["default"], repo["localPath"])
+            push_setting_upstream(repo["default"], repo["localPath"])
+        except RenameBranchError as err:
+            logging.warning(err.message)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub on GitHub, so the program tried to change the name back, but got an error! {err.message}",
+            )
+        except PushBranchRenameError as err:
+            logging.warning(err.message)
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back locally, but got an error pushing the change to the remote! {err.message}",
+            )
+    except DeleteRemoteError as err:
+        logging.warning(err.message)
+        if err.branch == repo["default"]:
+            try:
+                delete_remote_branch("master", repo["localPath"])
+            except DeleteRemoteError as err:
+                logging.warning(err.message)
+                raise ProcessError(
+                    process,
+                    repo["name"],
+                    f"Successfully renamed local branch, pushed the change to remote, and changed the default branch on GitHub, got an error deleting the {repo['default']} branch on the remote, and then got another error deleting the master branch on the remote! {err.message}",
+                )
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, and deleted the master branch on the remote, but got an error deleting the {repo['default']} branch on the remote! {err.message}",
+            )
+        else:
+            raise ProcessError(
+                process,
+                repo["name"],
+                f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, and deleted the {repo['default']} branch on the remote, but got an error deleting the master branch on the remote! {err.message}",
+            )
+    except DeleteLocalError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, deleted the {repo['default']} branch on the remote, and deleted the master branch on the remote, but got an error deleting the master branch in the local repo! {err.message}",
+        )
+
+
+def mv_third_to_target_and_blast_local_master(token, repo):
     """Rename third and push target upstream, rename the default branch on
     GitHub, delete remote third, and delete local master."""
     process = "'rename third to target and blast local master process'"
@@ -204,77 +473,78 @@ def mv_third_to_target_and_blast_local_master(token, repo, localDirectory):
         delete_remote_branch(repo["default"], repo["localPath"])
         delete_local_branch("master", repo["localPath"])
     except RenameBranchError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Tried to rename local branch, but got an error! {err}",
+            f"Tried to rename local branch, but got an error! {err.message}",
         )
     except PushBranchRenameError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         try:
             rename_branch(repo["targetName"], repo["default"], repo["localPath"])
         except RenameBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but got another error! {err}",
+                f"Successfully renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but got another error! {err.message}",
             )
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed local branch, but got an error pushing th change to remote, so the program renamed the branch back. {err}",
+            f"Successfully renamed local branch, but got an error pushing th change to remote, so the program renamed the branch back. {err.message}",
         )
     except UpdateDefaultError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         try:
             rename_branch(repo["targetName"], repo["default"], repo["localPath"])
             push_setting_upstream(repo["default"], repo["localPath"])
         except RenameBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub on GitHub, so the program tried to change the name back, but got an error! {err}",
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub on GitHub, so the program tried to change the name back, but got an error! {err.message}",
             )
         except PushBranchRenameError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back locally, but got an error pushing the change to the remote! {err}",
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back locally, but got an error pushing the change to the remote! {err.message}",
             )
     except DeleteRemoteError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed local branch, pushed the change to remote, and changed the default branch on GitHub, but got an error deleting the {repo['default']} branch on the remote! {err}",
+            f"Successfully renamed local branch, pushed the change to remote, and changed the default branch on GitHub, but got an error deleting the {repo['default']} branch on the remote! {err.message}",
         )
     except DeleteLocalError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, and deleted {repo['default']} remotely, but failed to delete local master branch! {err}",
+            f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, and deleted {repo['default']} remotely, but failed to delete local master branch! {err.message}",
         )
 
 
-def delete_remote_local(repo):
+def delete_remote_master_local_repo(repo):
     """Delete a stray master branch on the remote from a local repo."""
+    process = "'delete remote master from local repo process'"
     try:
         delete_remote_branch("master", repo["localPath"])
     except DeleteRemoteError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
-            "'blast remote master from local repo process'",
+            process,
             repo["localPath"],
-            f"Unable to blast remote master for {repo['name']}! {err}",
+            f"Unable to blast remote master! {err.message}",
         )
 
 
-def delete_remote_clone(token, repo, localDirectory):
+def delete_remote_master_clone_repo(token, repo, localDirectory):
     """Delete a stray master branch on the remote from a cloned repo."""
     process = "'clone and blast remote master process'"
     try:
@@ -289,49 +559,67 @@ def delete_remote_clone(token, repo, localDirectory):
                 raise MultipleRemotesError()
         delete_remote_branch(repo["default"], newPath)
     except MakeDirectoryError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Unable to make directory to clone repo into! {err}",
+            f"Unable to make directory to clone repo into! {err.message}",
         )
     except CloneRepoError as err:
-        logging.warning(err)
-        raise ProcessError(process, repo["name"], f"Unable to clone repo! {err}")
+        logging.warning(err.message)
+        raise ProcessError(
+            process, repo["name"], f"Unable to clone repo! {err.message}"
+        )
     except MultipleRemotesError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         repo["status"] = "Multiple remotes found in git config file."
-        raise ProcessError(process, repo["name"], err)
+        raise ProcessError(process, repo["name"], err.message)
     except DeleteRemoteError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully cloned repo, but got an error blasting master branch on the remote! {err}",
+            f"Successfully cloned repo, but got an error blasting master branch on the remote! {err.message}",
         )
 
 
-def delete_local_and_remote(repo):
+def delete_remote_and_local_master(repo):
     """Delete remote and local master branches."""
     process = "'delete remote and local master branches process'"
     try:
         delete_remote_branch("master", repo["localPath"])
         delete_local_branch("master", repo["localPath"])
     except DeleteRemoteError as err:
-        logging.warning(err)
-        raise ProcessError(
-            process, repo["name"], f"got an error blasting master on the remote! {err}"
-        )
-    except DeleteLocalError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Master blasted on the remote, but failed to blast master locally! {err}",
+            f"Got an error blasting master on the remote! {err.message}",
+        )
+    except DeleteLocalError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Master blasted on the remote, but failed to blast master locally! {err.message}",
         )
 
 
-def local_process(repo):
+def delete_local_master(repo):
+    """Delete local master branch."""
+    process = "'delete local master process'"
+    try:
+        delete_local_branch("master", repo["localPath"])
+    except DeleteLocalError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Got an error deleting local master branch! {err.message}",
+        )
+
+
+def local_update_process(repo):
     """To sync up a local repo whose remote has been blasted, check out master,
     move it to target, fetch, unset the upstream, set the upstream, and update
     the symbolic ref."""
@@ -347,88 +635,88 @@ def local_process(repo):
         set_upstream(repo["targetName"], repo["localPath"])
         update_symbolic_ref(repo["targetName"], repo["localPath"])
     except CheckoutError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Failed to checkout master branch from {repo['localPath']}! {err}",
+            f"Failed to checkout master branch! {err.message}",
         )
     except RenameBranchError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         if currentBranch != None:
             try:
                 set_branch(currentBranch, repo["localPath"])
             except SetBranchError as err:
-                logging.warning(err)
+                logging.warning(err.message)
                 pass
         raise ProcessError(
             process,
             repo["name"],
-            f"Tried to rename local branch, but got an error! {err}",
+            f"Tried to rename local branch, but got an error! {err.message}",
         )
     except FetchError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         try:
             rename_branch(repo["targetName"], "master", repo["localPath"])
             if currentBranch != None:
                 set_branch(currentBranch, repo["localPath"])
         except RenameBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully renamed branch, but got an error fetching refs from remote, so the program tried to name it back, but got another error! {err}",
+                f"Successfully renamed branch, but got an error fetching refs from remote, so the program tried to name it back, but got another error! {err.message}",
             )
         except SetBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             pass
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed branch, but got an error fetching refs from remote, so the program renamed it back. {err}",
+            f"Successfully renamed branch, but got an error fetching refs from remote, so the program renamed it back. {err.message}",
         )
     except UnsetUpstreamError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         if currentBranch != None and currentBranch != "master":
             try:
                 set_branch(currentBranch, repo["localPath"])
             except SetBranchError as err:
-                logging.warning(err)
+                logging.warning(err.message)
                 pass
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed branch and fetched refs from remote, but got an error unsetting the upstream information! The program does NOT take any steps to recover at this point and leaves the following commands up to the user to run to continue the process! (From the project directory): `git branch --unset-upstream && git branch -u {repo['targetName']} && git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['targetName']}` {err}",
+            f"Successfully renamed branch and fetched refs from remote, but got an error unsetting the upstream information! The program does NOT take any steps to recover at this point and leaves the following commands up to the user to run to continue the process! (From the project directory): `git branch --unset-upstream && git branch -u {repo['targetName']} && git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['targetName']}` {err.message}",
         )
     except SetUpstreamError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         if currentBranch != None and currentBranch != "master":
             try:
                 set_branch(currentBranch, repo["localPath"])
             except SetBranchError as err:
-                logging.warning(err)
+                logging.warning(err.message)
                 pass
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed branch and fetched refs from remote, and unset the upstream information, but got an error setting it again! The program does NOT take any steps to recover at this point and leaves the following commands up to the user to run to continue the process! (From the project directory): `git branch -u {repo['targetName']} && git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['targetName']}` {err}",
+            f"Successfully renamed branch and fetched refs from remote, and unset the upstream information, but got an error setting it again! The program does NOT take any steps to recover at this point and leaves the following commands up to the user to run to continue the process! (From the project directory): `git branch -u {repo['targetName']} && git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['targetName']}` {err.message}",
         )
     except UpdateRefError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         if currentBranch != None and currentBranch != "master":
             try:
                 set_branch(currentBranch, repo["localPath"])
             except SetBranchError as err:
-                logging.warning(err)
+                logging.warning(err.message)
                 pass
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed branch and fetched refs from remote, unset the upstream information, set it again, but got an error updating the symbolic ref! The program does NOT take any steps to recover at this point and leaves the following command up to the user to run to continue the process! (From the project directory): `git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['targetName']}` {err}",
+            f"Successfully renamed branch and fetched refs from remote, unset the upstream information, set it again, but got an error updating the symbolic ref! The program does NOT take any steps to recover at this point and leaves the following command up to the user to run to continue the process! (From the project directory): `git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['targetName']}` {err.message}",
         )
 
 
-def remote_process_local(token, repo):
+def remote_process_local_repo(token, repo):
     """Move the branch, push that upstream, change the default branch on
     GitHub, and delete remote master branch."""
     process = "'blast master locally and on remote from local repo process'"
@@ -438,57 +726,57 @@ def remote_process_local(token, repo):
         update_default_branch(token, repo)
         delete_remote_branch("master", repo["localPath"])
     except RenameBranchError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Tried to rename local branch, but got an error! {err}",
+            f"Tried to rename local branch, but got an error! {err.message}",
         )
     except PushBranchRenameError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         try:
             rename_branch(repo["targetName"], "master", repo["localPath"])
         except RenameBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but got another error! {err}",
+                f"Successfully renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but got another error! {err.message}",
             )
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed local branch, but got an error pushing th change to remote, so the program renamed the branch back. {err}",
+            f"Successfully renamed local branch, but got an error pushing th change to remote, so the program renamed the branch back. {err.message}",
         )
     except UpdateDefaultError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         try:
             rename_branch(repo["targetName"], "master", repo["localPath"])
             push_setting_upstream(repo["localPath"], "master")
         except RenameBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub on GitHub, so the program tried to change the name back, but got an error! {err}",
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub on GitHub, so the program tried to change the name back, but got an error! {err.message}",
             )
         except PushBranchRenameError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back locally, but got an error pushing the change to the remote! {err}",
+                f"Successfully renamed local branch and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back locally, but got an error pushing the change to the remote! {err.message}",
             )
     except DeleteRemoteError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed local branch, pushed the change to remote, and changed the default branch on GitHub, but got an error deleting the master branch on the remote! {err}",
+            f"Successfully renamed local branch, pushed the change to remote, and changed the default branch on GitHub, but got an error deleting the master branch on the remote! {err.message}",
         )
 
 
-def remote_process_clone(token, repo, localDirectory):
+def remote_process_clone_repo(token, repo, localDirectory):
     """Mkdir if need be and clone the repo, then move the branch, push that
     upstream, change the default branch on GitHub, and delete remote master."""
     process = "'blast master on remote from cloned repo process'"
@@ -507,67 +795,69 @@ def remote_process_clone(token, repo, localDirectory):
         update_default_branch(token, repo)
         delete_remote_branch("master", newPath)
     except MakeDirectoryError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Unable to make directory to clone repo into! {err}",
+            f"Unable to make directory to clone repo into! {err.message}",
         )
     except CloneRepoError as err:
-        logging.warning(err)
-        raise ProcessError(process, repo["name"], f"Unable to clone repo! {err}")
+        logging.warning(err.message)
+        raise ProcessError(
+            process, repo["name"], f"Unable to clone repo! {err.message}"
+        )
     except MultipleRemotesError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         repo["status"] = "Multiple remotes found in git config file."
-        raise ProcessError(process, repo["name"], err)
+        raise ProcessError(process, repo["name"], err.message)
     except RenameBranchError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully cloned repo, but got an error trying to rename local branch! {err}",
+            f"Successfully cloned repo, but got an error trying to rename local branch! {err.message}",
         )
     except PushBranchRenameError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         try:
             rename_branch(repo["targetName"], "master", repo["localPath"])
         except RenameBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully cloned repo and renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but then got another error! {err}",
+                f"Successfully cloned repo and renamed local branch, but got an error pushing the change to remote, so the program tried to rename the branch back, but then got another error! {err.message}",
             )
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully cloned repo and renamed local branch, but got an error pushing the change to remote, so the program renamed the branch back. {err}",
+            f"Successfully cloned repo and renamed local branch, but got an error pushing the change to remote, so the program renamed the branch back. {err.message}",
         )
     except UpdateDefaultError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         try:
             rename_branch(repo["targetName"], "master", repo["localPath"])
             push_setting_upstream(repo["localPath"], "master")
         except RenameBranchError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully cloned repo, renamed local branch, and pushed the change to remote, but got an error changing the default branch on GitHub on GitHub, so the program tried to change the name back, but got an error! {err}",
+                f"Successfully cloned repo, renamed local branch, and pushed the change to remote, but got an error changing the default branch on GitHub on GitHub, so the program tried to change the name back, but got an error! {err.message}",
             )
         except PushBranchRenameError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             raise ProcessError(
                 process,
                 repo["name"],
-                f"Successfully cloned repo, renamed local branch, and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back locally, but got an error pushing the change to the remote! {err}",
+                f"Successfully cloned repo, renamed local branch, and pushed the change to remote, but got an error changing the default branch on GitHub, so the program changed the name back locally, but got an error pushing the change to the remote! {err.message}",
             )
     except DeleteRemoteError as err:
-        logging.warning(err)
+        logging.warning(err.message)
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully cloned repo, renamed local branch, pushed the change to remote, and changed the default branch on GitHub, but got an error deleting the master branch on the remote!  {err}",
+            f"Successfully cloned repo, renamed local branch, pushed the change to remote, and changed the default branch on GitHub, but got an error deleting the master branch on the remote!  {err.message}",
         )
 
 
@@ -577,72 +867,114 @@ def run(dataWithOptions):
         username,
         token,
         repos,
-        optionRepos,
         localDirectory,
         removeClones,
         gitNew,
     ) = dataWithOptions
-    states = {
-        "pendingMvThirdToTargetLocal": "Do you want to mv third to target? Local repo",
-        "mvThirdToTargetLocal": "Move third to target, local repo.",
-        "pendingMvThirdToTargetClone": "Do you want to mv third to target? Clone repo",
-        "mvThirdToTargetClone": "Move third to target, clone repo.",
-        "pendingMvThirdToTargetAndBlastLocalMaster": "Do you want to mv third to target and blast the local master? Local repo.",
-        "mvThirdToTargetAndBlastLocalMaster": "Move third to target and blast the local master, local repo.",
-        "pendingDeleteRemote": "Delete remote?",
-        "deleteRemoteLocal": "Delete remote from local repo.",
-        "deleteRemoteClone": "Delete remote from cloned repo.",
-        "pendingDeleteLocal": "Delete local?",
-        "deleteLocal": "Delete local.",
-        "pendingDeleteLocalAndRemote": "Delete local and remote?",
-        "deleteLocalAndRemote": "Delete local and remote.",
-        "remoteProcessLocal": "Perfect remote process local repo.",
-        "remoteProcessClone": "Perfect remote process clone repo.",
-        "pendingLocalProcess": "Perfect case local process.",
-        "localProcess": "Local process is a go.",
-        "alreadyBlasted": "Already blasted.",
-        "multipleRemotes": "Multiple remotes found in git config file.",
-        "folderError": "Local folder that possibly isn't git repo, error opening .git/config",
-        "gitBranchError": "There was an error running git branch when checking the local repo, so action stopped on that repo.",
-        "pathUnclear": "Path unclear.",
-    }
 
-    # *  optionRepos = {
-    # *     "reposMvThirdToTargetLocal": reposMvThirdToTargetLocal,
-    # *     "reposMvThirdToTargetClone": reposMvThirdToTargetClone,
-    # *     "reposMvThirdToTargetAndBlastLocalMaster": reposMvThirdToTargetAndBlastLocalMaster,
-    # *     "reposDeleteRemoteLocal": reposDeleteRemoteLocal,
-    # *     "reposDeleteRemoteClone": reposDeleteRemoteClone,
-    # *     "reposDeleteLocal": reposDeleteLocal,
-    # *     "reposDeleteLocalAndRemote": reposDeleteLocalAndRemote,
-    # *     "reposLocalProcess": reposLocalProcess,
-    # * }
-
-    reposRemoteProcessLocal = {"repos": [], "errors": []}
-    reposRemoteProcessClone = {"repos": [], "errors": []}
-    reposAlreadyBlasted = {"repos": []}
-    reposMultipleRemotes = {"repos": []}
-    reposFolderError = {"repos": []}
-    reposGitBranchError = {"repos": []}
-    reposPathUnclear = {"repos": []}
-
-    for name, optionRepo in optionRepos.items():
-        optionRepo["errors"] = []
-
-    for repo in repos:
-        if repo["status"] == states["remoteProcessLocal"]:
-            reposRemoteProcessLocal["repos"].append(repo)
-        if repo["status"] == states["remoteProcessClone"]:
-            reposRemoteProcessClone["repos"].append(repo)
-        if repo["status"] == states["alreadyBlasted"]:
-            reposAlreadyBlasted["repos"].append(repo)
-        if repo["status"] == states["folderError"]:
-            reposFolderError["repos"].append(repo)
-        if repo["status"] == states["gitBranchError"]:
-            reposGitBranchError["repos"].append(repo)
-        if repo["status"] == states["pathUnclear"]:
-            reposPathUnclear["repos"].append(repo)
-
+    mvThirdToTargetLocalRepos = [
+        repo
+        for repo in repos
+        if states["mvThirdToTarget"] in repo["status"]
+        and repo.get("localPath")
+        and not states["deleteMaster"] in repo["status"]
+    ]
+    mvThirdToTargetCloneRepos = [
+        repo
+        for repo in repos
+        if states["mvThirdToTarget"] in repo["status"] and not repo.get("localPath")
+    ]
+    mvThirdToTargetAndDeleteRemoteMasterLocalRepos = [
+        repo
+        for repo in repos
+        if states["mvThirdToTarget"] in repo["status"]
+        and states["deleteMaster"] in repo["status"]
+        and repo.get("localPath")
+        and not repo["localHasMaster"]
+    ]
+    mvThirdToTargetAndDeleteRemoteMasterCloneRepos = [
+        repo
+        for repo in repos
+        if states["mvThirdToTarget"] in repo["status"]
+        and states["deleteMaster"] in repo["status"]
+        and not repo.get("localPath")
+    ]
+    mvThirdToTargetAndDeleteRemoteAndLocalMasters = [
+        repo
+        for repo in repos
+        if states["mvThirdToTarget"] in repo["status"]
+        and states["deleteMaster"] in repo["status"]
+        and repo["hasMaster"]
+        and repo["localHasMaster"]
+    ]
+    mvThirdToTargetAndDeleteLocalMasters = [
+        repo
+        for repo in repos
+        if states["mvThirdToTarget"] in repo["status"]
+        and repo.get("localPath")
+        and states["deleteMaster"] in repo["status"]
+        and not repo["hasMaster"]
+    ]
+    deleteRemoteMasterLocalRepos = [
+        repo
+        for repo in repos
+        if states["deleteMaster"] in repo["status"]
+        and not states["mvThirdToTarget"] in repo["status"]
+        and repo.get("localPath")
+        and not repo["localHasMaster"]
+    ]
+    deleteRemoteMasterCloneRepos = [
+        repo
+        for repo in repos
+        if states["deleteMaster"] in repo["status"]
+        and not repo.get("localPath")
+        and not states["mvThirdToTarget"] in repo["status"]
+    ]
+    deleteLocalAndRemoteMasters = [
+        repo
+        for repo in repos
+        if states["deleteMaster"]
+        and repo["localHasMaster"]
+        and repo["hasMaster"]
+        and not states["mvThirdToTarget"] in repo["status"]
+    ]
+    deleteLocalMasters = [
+        repo
+        for repo in repos
+        if states["deleteMaster"] in repo["status"]
+        and repo["localHasMaster"]
+        and not states["mvThirdToTarget"] in repo["status"]
+    ]
+    localUpdates = [
+        repo for repo in repos if states["localUpdateProcess"] in repo["status"]
+    ]
+    remoteProcessLocalRepos = [
+        repo
+        for repo in repos
+        if states["remoteProcess"] in repo["status"] and repo.get("localPath")
+    ]
+    remoteProcessCloneRepos = [
+        repo
+        for repo in repos
+        if states["remoteProcess"] in repo["status"] and not repo.get("localPath")
+    ]
+    # ++ pending includes strings "moveThird", "deleteMaster", and/or "local"
+    alreadyBlasteds = [
+        repo for repo in repos if states["alreadyBlasted"] in repo["status"]
+    ]
+    multipleLocalRepos = [
+        repo for repo in repos if states["multipleLocals"] in repo["status"]
+    ]
+    multipleRemoteRepos = [
+        repo for repo in repos if states["multipleRemotes"] in repo["status"]
+    ]
+    gitBranchErrors = [
+        repo for repo in repos if states["gitBranchError"] in repo["status"]
+    ]
+    rejectedResponses = [
+        repo for repo in repos if states["rejectedResponse"] in repo["status"]
+    ]
+    pathUnclears = [repo for repo in repos if states["pathUnclear"] in repo["status"]]
     if len(optionRepos["reposMvThirdToTargetLocal"]["repos"]) > 0:
         for repo in optionRepos["reposMvThirdToTargetLocal"]["repos"]:
             try:
@@ -664,11 +996,11 @@ def run(dataWithOptions):
     if len(optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["repos"]) > 0:
         for repo in optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["repos"]:
             try:
-                mv_third_to_target_and_blast_local_master(token, repo, localDirectory)
+                mv_third_to_target_and_blast_local_master(token, repo)
             except ProcessError as err:
-                optionRepos["reposMvThirdToTargetAndBlastLocalMaster"][
-                    "errors"
-                ].appendd([repo, err.message])
+                optionRepos["reposMvThirdToTargetAndBlastLocalMaster"]["errors"].append(
+                    [repo, err.message]
+                )
 
     if len(optionRepos["reposDeleteRemoteLocal"]["repos"]) > 0:
         for repo in optionRepos["reposDeleteRemoteLocal"]["repos"]:
@@ -739,7 +1071,7 @@ def run(dataWithOptions):
         try:
             git_new(repos[0]["targetName"])
         except GitNewError as err:
-            logging.warning(err)
+            logging.warning(err.message)
             gitNewError = True
             print(
                 f"Error adding the git alias `git new` failed! You can run `git config --global alias.new '!git init && git symbolic-ref HEAD refs/heads/{repos[0]['targetname']}` to try again!"

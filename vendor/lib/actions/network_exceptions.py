@@ -9,8 +9,9 @@ class RequestError(Error):
         status_code -- the response's status code
     """
 
-    def __init__(self, status_code):
-        self.message = f"ERROR: GitHub API request status code: {status_code}"
+    def __init__(self, repoName, status_code):
+        self.message = f"ERROR: Error with connection to GitHub API for {repoName}. Request status code: {status_code}"
+        self.repoName = repoName
 
 
 class NetworkConnectivityError(Error):

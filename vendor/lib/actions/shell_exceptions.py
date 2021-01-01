@@ -43,8 +43,9 @@ class MultipleRemotesError(Error):
         None
     """
 
-    def __init__(self):
-        self.message = "ERROR: Multiple remotes for this repo! Too complex for this version of `master-blaster`."
+    def __init__(self, repo):
+        self.message = f"ERROR: Multiple remotes for {repo['name']}! Too complex for this version of `master-blaster`."
+        self.repoName = repo["name"]
 
 
 class MultipleLocalReposError(Error):
@@ -105,6 +106,7 @@ class DeleteRemoteError(Error):
     """
 
     def __init__(self, branchName, directory, errorMessage):
+        self.branch = branchName
         self.message = f"ERROR: Failed to delete branch on GitHub from {directory}! Attempting to move branch back to original and push branch name change to remote! {errorMessage}"
 
 

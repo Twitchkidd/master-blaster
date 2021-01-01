@@ -3,6 +3,7 @@ import logging
 import urllib.request
 import urllib.error
 import requests
+from vendor.lib.utils import states
 from vendor.lib.actions.network_exceptions import RequestError
 from vendor.lib.actions.network_exceptions import NetworkConnectivityError
 from vendor.lib.actions.network_exceptions import NoReposError
@@ -26,7 +27,6 @@ def internet_on():
 
 def get_repos(username, token):
     """Get list of repos, or throw an exception if the request fails (probably token.)"""
-    repos = []
     url = f"{GITHUB_API}/user/repos"
     headers = {"Authorization": "token " + token}
     params = {"per_page": "1000", "type": "owner"}
@@ -42,19 +42,19 @@ def get_repos(username, token):
             raise NoReposError()
         print("Repos received!\n")
         reposResponseConfirmed = True
-        for repository in response.json():
-            # ownerLogin is guaranteed to be the canonnical capitalization,
-            # leave as part of repo rather than setting username for future feature
-            repos.append(
-                {
-                    "name": repository["name"],
-                    "ownerLogin": f"{repository['owner']['login']}",
-                    "htmlUrl": repository["html_url"],
-                    "gitUrl": repository["git_url"],
-                    "sshUrl": repository["ssh_url"],
-                    "default": repository["default_branch"],
-                }
-            )
+        # ownerLogin is guaranteed to be the canonnical capitalization,
+        # leave as part of repo rather than setting username for future feature
+        repos = map(
+            lambda repo: {
+                "name": repo["name"],
+                "ownerLogin": f"{repo['owner']['login']}",
+                "htmlUrl": repo["html_url"],
+                "gitUrl": repo["git_url"],
+                "sshUrl": repo["ssh_url"],
+                "default": repo["default_branch"],
+            },
+            response.json(),
+        )
     return repos
 
 
@@ -67,37 +67,42 @@ def check_remote_branches(token, repos):
     for repo in repos:
         try:
             if (
-                repo["status"]
-                == "Local folder that possibly isn't git repo, error opening .git/config from local directory."
-                or repo["status"] == "Multiple remotes found in git config file."
+                states["multipleLocals"] in repo["status"]
+                or states["multipleRemotes"] in repo["status"]
             ):
                 continue
         except KeyError:
             pass
-        targetBranchUrl = get_branch_url(repo, repo["targetName"])
-        masterBranchUrl = get_branch_url(repo, "master")
-        print(f"Checking {repo['name']} ...", end="")
-        targetBranchResponse = requests.get(targetBranchUrl, headers=headers)
-        if (
-            targetBranchResponse.status_code != 404
-            and targetBranchResponse.status_code >= 400
-        ):
-            raise RequestError(targetBranchResponse.status_code)
-        masterBranchResponse = requests.get(masterBranchUrl, headers=headers)
-        if (
-            masterBranchResponse.status_code != 404
-            and masterBranchResponse.status_code >= 400
-        ):
-            raise RequestError(masterBranchResponse.status_code)
-        print(" got it!")
-        if targetBranchResponse.json().get("message"):
-            repo["hasTarget"] = False
-        if masterBranchResponse.json().get("message"):
-            repo["hasMaster"] = False
-        if targetBranchResponse.json().get("name"):
-            repo["hasTarget"] = True
-        if masterBranchResponse.json().get("name"):
-            repo["hasMaster"] = True
+        try:
+            targetBranchUrl = get_branch_url(repo, repo["targetName"])
+            masterBranchUrl = get_branch_url(repo, "master")
+            print(f"Checking {repo['name']} ...", end="")
+            targetBranchResponse = requests.get(targetBranchUrl, headers=headers)
+            if (
+                targetBranchResponse.status_code != 404
+                and targetBranchResponse.status_code >= 400
+            ):
+                raise RequestError(repo["name"], targetBranchResponse.status_code)
+            masterBranchResponse = requests.get(masterBranchUrl, headers=headers)
+            if (
+                masterBranchResponse.status_code != 404
+                and masterBranchResponse.status_code >= 400
+            ):
+                raise RequestError(repo["name"], masterBranchResponse.status_code)
+            print(" got it!")
+            if targetBranchResponse.json().get("message"):
+                repo["hasTarget"] = False
+            if masterBranchResponse.json().get("message"):
+                repo["hasMaster"] = False
+            if targetBranchResponse.json().get("name"):
+                repo["hasTarget"] = True
+            if masterBranchResponse.json().get("name"):
+                repo["hasMaster"] = True
+        except RequestError as err:
+            logging.warning(err.message)
+            for repo in repos:
+                if repo["name"] == err.repoName:
+                    repo["status"].append(states["rejectedResponse"])
     return repos
 
 
