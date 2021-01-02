@@ -2,6 +2,8 @@
 
 Batch rename primary branches of git repos and update the associated default branches on GitHub!
 
+[![Excalidraw chart](https://raw.githubusercontent.com/Twitchkidd/master-blaster/dev/master-blaster-excalidraw-1x.png)](https://raw.githubusercontent.com/Twitchkidd/master-blaster/dev/master-blaster-excalidraw-3x.png 'Excalidraw chart, high res')
+
 ### v1.1.0 Reboot 2021!
 
 #### Update 1/2:
