@@ -737,8 +737,8 @@ def check_names(repos):
                     )
             except KeyError:
                 pass
-    print("check_names")
-    print(repos)
+    # print("check_names")
+    # print(repos)
     return repos
 
 

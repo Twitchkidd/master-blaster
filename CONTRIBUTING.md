@@ -4,6 +4,12 @@ TODO Tidy this up!
 
 ### v1.1.0 Changes!!
 
+WARNING!
+
+This definitely doesn't work with multiple git users based on ~/.ssh/config yet, because this is how I work and I have to set my id file when I'm testing!
+
+WARNING!
+
 Adding tests!
 
 `pip install -U pytest`
