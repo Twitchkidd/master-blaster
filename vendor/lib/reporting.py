@@ -10,8 +10,8 @@ def intro():
     """Print the license, intro blurb, and token blurb!"""
     licenseText = """
       master-blaster: batch rename primary branches of git repos
-      and update the associated 'default' branches on GitHub.
-      Copyright (C) 2020  Gareth Field field.gareth@gmail.com
+      and update the associated default branches on GitHub.
+      Copyright (C) 2021  Gareth Field field.gareth@gmail.com
 
       This program is free software: you can redistribute it and/or modify
       it under the terms of the GNU General Public License as published by
