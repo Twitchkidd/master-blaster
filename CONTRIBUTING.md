@@ -1,5 +1,27 @@
 # Contributing to `master-blaster`
 
+TODO Tidy this up!
+
+### v1.1.0 Changes!!
+
+WARNING!
+
+This definitely doesn't work with multiple git users based on ~/.ssh/config yet, because this is how I work and I have to set my id file when I'm testing!
+
+WARNING!
+
+Adding tests!
+
+`pip install -U pytest`
+
+and then `pytest`!
+
+---
+
+Functions snake, variables camel!
+
+### Previous CONTRIBUTING
+
 Hi! Let me start this off by at least having the steps for how to run `dev`!
 
 The first thing is if you're in ~/Code/master-blaster, it captures the current branch, because for some reason I was getting put on the main branch when I didn't mean to be. I might have fixed this, but it puts you back right at the end of the program.

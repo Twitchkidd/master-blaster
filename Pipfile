@@ -7,9 +7,8 @@ verify_ssl = true
 autopep8 = "*"
 
 [packages]
-requests = "*"
-questionary = "*"
 master-blaster = {path = "."}
+wcwidth = {path = "."}
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"

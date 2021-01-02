@@ -1,0 +1,59 @@
+from typing import Any, Dict, NamedTuple, Sequence
+
+from questionary.constants import DEFAULT_KBI_MESSAGE
+from questionary.question import Question
+
+
+class FormField(NamedTuple):
+    key: str
+    question: Question
+
+
+def form(**kwargs: Question) -> "Form":
+    """Create a form with multiple questions.
+
+    The parameter name of a question will be the key for the answer in
+    the returned dict."""
+    return Form(*(FormField(k, q) for k, q in kwargs.items()))
+
+
+class Form:
+    """Multi question prompts. Questions are asked one after another.
+
+    All the answers are returned as a dict with one entry per question."""
+
+    form_fields: Sequence[FormField]
+
+    def __init__(self, *form_fields: FormField) -> None:
+        self.form_fields = form_fields
+
+    def unsafe_ask(self, patch_stdout: bool = False) -> Dict[str, Any]:
+        return {f.key: f.question.unsafe_ask(patch_stdout) for f in self.form_fields}
+
+    async def unsafe_ask_async(self, patch_stdout: bool = False) -> Dict[str, Any]:
+        return {
+            f.key: await f.question.unsafe_ask_async(patch_stdout)
+            for f in self.form_fields
+        }
+
+    def ask(
+        self, patch_stdout: bool = False, kbi_msg: str = DEFAULT_KBI_MESSAGE
+    ) -> Dict[str, Any]:
+        try:
+            return self.unsafe_ask(patch_stdout)
+        except KeyboardInterrupt:
+            print("")
+            print(kbi_msg)
+            print("")
+            return {}
+
+    async def ask_async(
+        self, patch_stdout: bool = False, kbi_msg: str = DEFAULT_KBI_MESSAGE
+    ) -> Dict[str, Any]:
+        try:
+            return await self.unsafe_ask_async(patch_stdout)
+        except KeyboardInterrupt:
+            print("")
+            print(kbi_msg)
+            print("")
+            return {}

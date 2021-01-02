@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="master-blaster",
-    version="1.0.6",
+    version="1.1.0-dev",
     author="Gareth Field",
     author_email="field.gareth@gmail.com",
     description="Rename primary branches of code repositories.",
@@ -18,6 +18,7 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
-    scripts=["bin/master-blaster"]
+    python_requires=">=3.8",
+    install_requires=["questionary", "requests"],
+    scripts=["bin/master-blaster"],
 )
