@@ -26,6 +26,8 @@ def check_branches(username, token, repos):
             localReposPresent = True
     if localReposPresent:
         repos = check_local_branches(repos)
+    # print("check_branches")
+    # print(repos)
     return repos
 
 
@@ -61,7 +63,7 @@ def get_options(data, testing):
     gitNew = get_git_new(namingMode, perRepo, name, testing)
     print("Checking repos ...")
     if localDirectory:
-        repos = get_local_repos(repos, localDirectory)
+        repos = get_local_repos(repos, localDirectory, testing)
     repos = check_branches(username, token, repos)
     repos = check_names(repos)
 

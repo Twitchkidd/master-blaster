@@ -95,16 +95,25 @@ def check_for_remote_or_remotes_and_get_url(configFile):
     return url, count
 
 
-def check_config(configFile, repos):
+def check_config(configFile, repos, testing):
     """Check a config file against the list of repos and return whether
     it's a match with any and how many remotes there are."""
     try:
         url, numRemotes = check_for_remote_or_remotes_and_get_url(configFile)
+        # print(url)
+        # print(numRemotes)
         if numRemotes == 0:
             raise NoRemotesError()
         if url == "":
             raise NoUrlError()
         for repo in repos:
+            if testing:
+                # git@github.com-monty_mcblaster1:
+                # git@github.com:
+                if url[31:] == repo["sshUrl"][14:]:
+                    if numRemotes != 1:
+                        raise MultipleRemotesError(repo)
+                    return repo
             if url == repo["htmlUrl"] or url == repo["gitUrl"] or url == repo["sshUrl"]:
                 if numRemotes != 1:
                     raise MultipleRemotesError(repo)
@@ -126,19 +135,19 @@ def fetch_dry_run(directory):
         stderr=PIPE,
     )
     stdout, stderr = process_runner(
-        f"cwd={directory}: git fetch --dry-run --verbose", fetchDryRun
+        f"cwd={directory}: git fetch --dry-run --verbose", fetchDryRun, "From "
     )
-    if len(stderr) > 0:
+    if len(stderr.decode()) > 0:
         if (
-            "fatal: Could not read from remote" in stderr
-            or "warning: no common commits" in stderr
+            "fatal: Could not read from remote" in stderr.decode()
+            or "warning: no common commits" in stderr.decode()
         ):
             return False
         return True
     return False
 
 
-def get_local_repos(repos, localDirectory):
+def get_local_repos(repos, localDirectory, testing):
     """Walk the file system from the specified local directory and
     check for git config files, and return the repos with what we learn.
     Say, if it didn't find any, that maybe the git config file couldn't
@@ -148,7 +157,9 @@ def get_local_repos(repos, localDirectory):
         for subdir in subdirs:
             try:
                 with open(f"{root}/{subdir}/.git/config", "r") as configFile:
-                    checkedRepo = check_config(configFile, repos)
+                    # print(f"{root}/{subdir}")
+                    checkedRepo = check_config(configFile, repos, testing)
+                    # print(checkedRepo)
                     if checkedRepo == None:
                         continue
                     for repo in repos:
@@ -173,6 +184,8 @@ def get_local_repos(repos, localDirectory):
                         repo["status"].append(states["multipleRemotes"])
             except MultipleLocalReposError as err:
                 logging.warning(err.message)
+    # print("get_local_repos")
+    # print(repos)
     return repos
 
 
@@ -200,6 +213,8 @@ def check_local_branches(repos):
             repo["localHasTarget"] = repo["targetName"] in f"{stdout}"
             if not repo["hasTarget"] and not repo["hasMaster"]:
                 repo["localHasThird"] = repo["default"] in f"{stdout}"
+    # print("check_local_branches")
+    # print(repos)
     return repos
 
 
@@ -226,8 +241,8 @@ def push_setting_upstream(targetName, directory):
     stdout, stderr = process_runner(
         f"cwd={directory}: git push -u origin {targetName}", gitPushSetUpstream, "To"
     )
-    if len(stderr) > 0 and not "To" in stderr.decode():
-        raise PushBranchRenameError(directory, stderr.decode)
+    if len(stderr) > 0 and "fatal" in stderr.decode():
+        raise PushBranchRenameError(directory, stderr.decode())
 
 
 def delete_remote_branch(branch, directory):
@@ -268,7 +283,7 @@ def clone_repo(username, repo, localDirectory):
         [
             "git",
             "clone",
-            f"{repo['htmlUrl']}.git",
+            f"{repo['sshUrl']}",
             f"./{repo['ownerLogin']}/{repo['name']}",
         ],
         cwd=f"{localDirectory}/master-blaster-{username}/",
@@ -276,10 +291,11 @@ def clone_repo(username, repo, localDirectory):
         stderr=PIPE,
     )
     stdout, stderr = process_runner(
-        f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['htmlUrl']}.git ./{repo['ownerLogin']}/{repo['name']}",
+        f"cwd={localDirectory}/master-blaster-{username}/: git clone {repo['sshUrl']} ./{repo['ownerLogin']}/{repo['name']}",
         gitClone,
+        "Cloning into",
     )
-    if len(stderr) > 0:
+    if len(stderr) > 0 and "fatal" in stderr.decode():
         raise CloneRepoError(stderr.decode())
 
 
@@ -308,16 +324,16 @@ def checkout(branch, directory):
     )
     if (
         len(stderr) > 0
-        and not "Already on" in stderr
+        and not "Already on" in stderr.decode()
         and not "Switched to" in stderr.decode()
     ):
-        raise CheckoutError(directory, stderr.decode())
+        raise CheckoutError(branch, directory, stderr.decode())
 
 
 def fetch(directory):
     gitFetch = Popen(["git", "fetch"], cwd=directory, stdout=PIPE, stderr=PIPE)
-    stdout, stderr = process_runner(f"cwd={directory}: git fetch", gitFetch)
-    if len(stderr) > 0:
+    stdout, stderr = process_runner(f"cwd={directory}: git fetch", gitFetch, "From ")
+    if len(stderr) > 0 and "fatal" in stderr.decode():
         raise FetchError(directory, stderr.decode())
 
 
@@ -335,7 +351,7 @@ def unset_upstream(directory):
 def set_upstream(targetName, directory):
     gitBranchSetUpstream = Popen(
         ["git", "branch", "-u", f"origin/{targetName}"],
-        cwd={directory},
+        cwd=directory,
         stdout=PIPE,
         stderr=PIPE,
     )

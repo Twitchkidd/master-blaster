@@ -737,7 +737,8 @@ def check_names(repos):
                     )
             except KeyError:
                 pass
-
+    print("check_names")
+    print(repos)
     return repos
 
 
@@ -763,7 +764,7 @@ def print_names_and_errors(repos, errorsPossiblyPresent=False):
                     print(errorRepo["name"])
                 print("\n")
             else:
-                for repo in repos["repos"]:
+                for repo in repos:
                     print(repo["name"])
                 print("\n")
         else:
@@ -778,7 +779,7 @@ def print_names_and_errors(repos, errorsPossiblyPresent=False):
         print("\n")
 
 
-# ++ pending includes strings "moveThird", "deleteMaster", and/or "local"
+# TODO pending includes strings "moveThird", "deleteMaster", and/or "local"
 # alreadyBlasteds = [
 #     repo for repo in repos if states["alreadyBlasted"] in repo["status"]
 # ]
@@ -805,7 +806,7 @@ def report_on(
 
     reposNumber = len(finalRepos["mvThirdToTargetLocalRepos"])
     repoErrorsNumber = len(
-        [repo for repo in finalRepos["mvThirdToTargetLocalRepos"] if repo.get["error"]]
+        [repo for repo in finalRepos["mvThirdToTargetLocalRepos"] if repo.get("error")]
     )
     if reposNumber > 0:
         if not repoErrorsNumber > 0:
@@ -842,7 +843,7 @@ def report_on(
 
     reposNumber = len(finalRepos["mvThirdToTargetCloneRepos"])
     repoErrorsNumber = len(
-        [repo for repo in finalRepos["mvThirdToTargetCloneRepos"] if repo.get["error"]]
+        [repo for repo in finalRepos["mvThirdToTargetCloneRepos"] if repo.get("error")]
     )
     if reposNumber > 0:
         if not repoErrorsNumber > 0:
@@ -882,7 +883,7 @@ def report_on(
         [
             repo
             for repo in finalRepos["mvThirdToTargetAndDeleteRemoteMasterLocalRepos"]
-            if repo.get["error"]
+            if repo.get("error")
         ]
     )
     if reposNumber > 0:
@@ -924,7 +925,7 @@ def report_on(
         [
             repo
             for repo in finalRepos["mvThirdToTargetAndDeleteRemoteMasterCloneRepos"]
-            if repo.get["error"]
+            if repo.get("error")
         ]
     )
     if reposNumber > 0:
@@ -966,7 +967,7 @@ def report_on(
         [
             repo
             for repo in finalRepos["mvThirdToTargetAndDeleteRemoteAndLocalMasters"]
-            if repo.get["error"]
+            if repo.get("error")
         ]
     )
     if reposNumber > 0:
@@ -1008,7 +1009,7 @@ def report_on(
         [
             repo
             for repo in finalRepos["mvThirdToTargetAndDeleteLocalMasters"]
-            if repo.get["error"]
+            if repo.get("error")
         ]
     )
     if reposNumber > 0:
@@ -1050,7 +1051,7 @@ def report_on(
         [
             repo
             for repo in finalRepos["deleteRemoteMasterLocalRepos"]
-            if repo.get["error"]
+            if repo.get("error")
         ]
     )
     if reposNumber > 0:
@@ -1091,7 +1092,7 @@ def report_on(
         [
             repo
             for repo in finalRepos["deleteRemoteMasterCloneRepos"]
-            if repo.get["error"]
+            if repo.get("error")
         ]
     )
     if reposNumber > 0:
@@ -1132,7 +1133,7 @@ def report_on(
         [
             repo
             for repo in finalRepos["deleteLocalAndRemoteMasters"]
-            if repo.get["error"]
+            if repo.get("error")
         ]
     )
     if reposNumber > 0:
@@ -1170,7 +1171,7 @@ def report_on(
 
     reposNumber = len(finalRepos["deleteLocalMasters"])
     repoErrorsNumber = len(
-        [repo for repo in finalRepos["deleteLocalMasters"] if repo.get["error"]]
+        [repo for repo in finalRepos["deleteLocalMasters"] if repo.get("error")]
     )
     if reposNumber > 0:
         if not repoErrorsNumber > 0:
@@ -1207,7 +1208,7 @@ def report_on(
 
     reposNumber = len(finalRepos["localUpdates"])
     repoErrorsNumber = len(
-        [repo for repo in finalRepos["localUpdates"] if repo.get["error"]]
+        [repo for repo in finalRepos["localUpdates"] if repo.get("error")]
     )
     if reposNumber > 0:
         if not repoErrorsNumber > 0:
@@ -1242,7 +1243,7 @@ def report_on(
 
     reposNumber = len(finalRepos["remoteProcessLocalRepos"])
     repoErrorsNumber = len(
-        [repo for repo in finalRepos["remoteProcessLocalRepos"] if repo.get["error"]]
+        [repo for repo in finalRepos["remoteProcessLocalRepos"] if repo.get("error")]
     )
     if reposNumber > 0:
         if not repoErrorsNumber > 0:
@@ -1275,7 +1276,7 @@ def report_on(
 
     reposNumber = len(finalRepos["remoteProcessCloneRepos"])
     repoErrorsNumber = len(
-        [repo for repo in finalRepos["remoteProcessCloneRepos"] if repo.get["error"]]
+        [repo for repo in finalRepos["remoteProcessCloneRepos"] if repo.get("error")]
     )
     if reposNumber > 0:
         if not repoErrorsNumber > 0:
@@ -1305,54 +1306,6 @@ def report_on(
         print_names_and_errors(
             finalRepos["remoteProcessCloneRepos"], errorsPossiblyPresent=True
         )
-
-    reposNumber = len(finalRepos["reposAlreadyBlasted"]["repos"])
-    if reposNumber > 0:
-        if reposNumber > 1:
-            print(f"{reposNumber} repos were already blasted!\n")
-        else:
-            print(f"{reposNumber} repo was already blasted!\n")
-    if reposNumber > 0:
-        print_names_and_errors(finalRepos["reposAlreadyBlasted"])
-
-    reposNumber = len(finalRepos["reposMultipleRemotes"]["repos"])
-    if reposNumber > 0:
-        if reposNumber > 1:
-            print(
-                f"{reposNumber} repos weren't acted on because there were multiple remotes in the\n.git/config file! That's out of scope for this version of `master-blaster`.\n"
-            )
-        else:
-            print(
-                f"{reposNumber} repo wasn't acted on because there were multiple remotes in the\n.git/config file! That's out of scope for this version of `master-blaster`.\n"
-            )
-    if reposNumber > 0:
-        print_names_and_errors(finalRepos["reposMultipleRemotes"])
-
-    reposNumber = len(finalRepos["reposFolderError"]["repos"])
-    if reposNumber > 0:
-        if reposNumber > 1:
-            print(
-                f"{reposNumber} repos weren't acted on because there was a local folder that possibly\nisn't git repo, error opening .git/config!\n"
-            )
-        else:
-            print(
-                f"{reposNumber} repo wasn't acted on because there was a local folder that possibly\nisn't git repo, error opening .git/config!\n"
-            )
-    if reposNumber > 0:
-        print_names_and_errors(finalRepos["reposFolderError"])
-
-    reposNumber = len(finalRepos["reposGitBranchError"]["repos"])
-    if reposNumber > 0:
-        if reposNumber > 1:
-            print(
-                f"{reposNumber} repos weren't acted on because there was an error running\n`git branch` on them!\n"
-            )
-        else:
-            print(
-                f"{reposNumber} repo wasn't acted on because there was an error running\n`git branch` on it!\n"
-            )
-    if reposNumber > 0:
-        print_names_and_errors(finalRepos["reposGitBranchError"])
 
     reposNumber = len(
         [repo for repo in repos if states["alreadyBlasted"] in repo["status"]]

@@ -1,6 +1,6 @@
 import logging
 from vendor.lib.utils import Error
-from vendor.lib.actions.shell import check_for_multiple_remotes
+from vendor.lib.actions.shell import check_for_remote_or_remotes_and_get_url
 from vendor.lib.utils import states
 from vendor.lib.actions.shell import rename_branch
 from vendor.lib.actions.shell import push_setting_upstream
@@ -119,11 +119,9 @@ def mv_third_to_target_clone_repo(token, repo, localDirectory):
         mkdir_if_need_be(repo["ownerLogin"], localDirectory)
         clone_repo(repo["ownerLogin"], repo, localDirectory)
         clonedRepos.append(repo)
-        newPath = (
-            f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
-        )
+        newPath = f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['ownerLogin']}/{repo['name']}/"
         with open(f"{newPath}.git/config", "r") as configFile:
-            if check_for_multiple_remotes(configFile):
+            if check_for_remote_or_remotes_and_get_url(configFile)[1] > 1:
                 raise MultipleRemotesError()
         rename_branch(repo["default"], repo["targetName"], newPath)
         push_setting_upstream(repo["targetName"], newPath)
@@ -283,11 +281,9 @@ def mv_third_to_target_and_delete_remote_master_clone_repo(token, repo, localDir
         mkdir_if_need_be(repo["ownerLogin"], localDirectory)
         clone_repo(repo["ownerLogin"], repo, localDirectory)
         clonedRepos.append(repo)
-        newPath = (
-            f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
-        )
+        newPath = f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['ownerLogin']}/{repo['name']}/"
         with open(f"{newPath}.git/config", "r") as configFile:
-            if check_for_multiple_remotes(configFile):
+            if check_for_remote_or_remotes_and_get_url(configFile)[1] > 1:
                 raise MultipleRemotesError()
         rename_branch(repo["default"], repo["targetName"], repo["localPath"])
         push_setting_upstream(repo["targetName"], repo["localPath"])
@@ -387,6 +383,7 @@ def mv_third_to_target_and_delete_remote_and_local_master(token, repo):
         update_default_branch(token, repo)
         delete_remote_branch(repo["default"], repo["localPath"])
         delete_remote_branch("master", repo["localPath"])
+        checkout(repo["targetName"], repo["localPath"])
         delete_local_branch("master", repo["localPath"])
     except RenameBranchError as err:
         logging.warning(err.message)
@@ -453,6 +450,13 @@ def mv_third_to_target_and_delete_remote_and_local_master(token, repo):
                 repo["name"],
                 f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, and deleted the {repo['default']} branch on the remote, but got an error deleting the master branch on the remote! {err.message}",
             )
+    except CheckoutError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, deleted the {repo['default']} branch on the remote, deleted the master branch on the remote, but got an error running git checkout trying to delete the local master branch! {err.message}",
+        )
     except DeleteLocalError as err:
         logging.warning(err.message)
         raise ProcessError(
@@ -471,6 +475,7 @@ def mv_third_to_target_and_delete_local_master(token, repo):
         push_setting_upstream(repo["targetName"], repo["localPath"])
         update_default_branch(token, repo)
         delete_remote_branch(repo["default"], repo["localPath"])
+        checkout(repo["targetName"], repo["localPath"])
         delete_local_branch("master", repo["localPath"])
     except RenameBranchError as err:
         logging.warning(err.message)
@@ -521,6 +526,13 @@ def mv_third_to_target_and_delete_local_master(token, repo):
             repo["name"],
             f"Successfully renamed local branch, pushed the change to remote, and changed the default branch on GitHub, but got an error deleting the {repo['default']} branch on the remote! {err.message}",
         )
+    except CheckoutError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Successfully renamed local branch, pushed the change to remote, changed the default branch on GitHub, deleted the {repo['default']} branch on the remote, and deleted the master branch on the remote, but got an error running git checkout trying to delete the local master branch! {err.message}",
+        )
     except DeleteLocalError as err:
         logging.warning(err.message)
         raise ProcessError(
@@ -551,13 +563,11 @@ def delete_remote_master_clone_repo(token, repo, localDirectory):
         mkdir_if_need_be(repo["ownerLogin"], localDirectory)
         clone_repo(repo["ownerLogin"], repo, localDirectory)
         clonedRepos.append(repo)
-        newPath = (
-            f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
-        )
+        newPath = f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['ownerLogin']}/{repo['name']}/"
         with open(f"{newPath}.git/config", "r") as configFile:
-            if check_for_multiple_remotes(configFile):
+            if check_for_remote_or_remotes_and_get_url(configFile)[1] > 1:
                 raise MultipleRemotesError()
-        delete_remote_branch(repo["default"], newPath)
+        delete_remote_branch("master", newPath)
     except MakeDirectoryError as err:
         logging.warning(err.message)
         raise ProcessError(
@@ -588,6 +598,7 @@ def delete_remote_and_local_master(repo):
     process = "'delete remote and local master branches process'"
     try:
         delete_remote_branch("master", repo["localPath"])
+        checkout(repo["targetName"], repo["localPath"])
         delete_local_branch("master", repo["localPath"])
     except DeleteRemoteError as err:
         logging.warning(err.message)
@@ -595,6 +606,13 @@ def delete_remote_and_local_master(repo):
             process,
             repo["name"],
             f"Got an error blasting master on the remote! {err.message}",
+        )
+    except CheckoutError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Successfully deleted the master branch on the remote, but got an error running git checkout trying to delete the local master branch! {err.message}",
         )
     except DeleteLocalError as err:
         logging.warning(err.message)
@@ -609,7 +627,15 @@ def delete_local_master(repo):
     """Delete local master branch."""
     process = "'delete local master process'"
     try:
+        checkout(repo["targetName"], repo["localPath"])
         delete_local_branch("master", repo["localPath"])
+    except CheckoutError as err:
+        logging.warning(err.message)
+        raise ProcessError(
+            process,
+            repo["name"],
+            f"Got an error running git checkout trying to delete the local master branch! {err.message}",
+        )
     except DeleteLocalError as err:
         logging.warning(err.message)
         raise ProcessError(
@@ -686,7 +712,7 @@ def local_update_process(repo):
         raise ProcessError(
             process,
             repo["name"],
-            f"Successfully renamed branch and fetched refs from remote, but got an error unsetting the upstream information! The program does NOT take any steps to recover at this point and leaves the following commands up to the user to run to continue the process! (From the project directory): `git branch --unset-upstream && git branch -u {repo['targetName']} && git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['targetName']}` {err.message}",
+            f"Successfully renamed branch and fetched refs from remote, but got an error unsetting the upstream information! The program does NOT take any steps to recover at this point and leaves the following commands up to the user to run to continue the process! (From the project directory): `git branch --unset-upstream && git branch -u {repo['targetName']} && git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/{repo['targetName']}`",
         )
     except SetUpstreamError as err:
         logging.warning(err.message)
@@ -784,11 +810,9 @@ def remote_process_clone_repo(token, repo, localDirectory):
         mkdir_if_need_be(repo["ownerLogin"], localDirectory)
         clone_repo(repo["ownerLogin"], repo, localDirectory)
         clonedRepos.append(repo)
-        newPath = (
-            f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['name']}/"
-        )
+        newPath = f"{localDirectory}/master-blaster-{repo['ownerLogin']}/{repo['ownerLogin']}/{repo['name']}/"
         with open(f"{newPath}.git/config", "r") as configFile:
-            if check_for_multiple_remotes(configFile):
+            if check_for_remote_or_remotes_and_get_url(configFile)[1] > 1:
                 raise MultipleRemotesError()
         rename_branch("master", repo["targetName"], newPath)
         push_setting_upstream(repo["targetName"], newPath)
@@ -820,7 +844,7 @@ def remote_process_clone_repo(token, repo, localDirectory):
     except PushBranchRenameError as err:
         logging.warning(err.message)
         try:
-            rename_branch(repo["targetName"], "master", repo["localPath"])
+            rename_branch(repo["targetName"], "master", newPath)
         except RenameBranchError as err:
             logging.warning(err.message)
             raise ProcessError(
@@ -836,8 +860,8 @@ def remote_process_clone_repo(token, repo, localDirectory):
     except UpdateDefaultError as err:
         logging.warning(err.message)
         try:
-            rename_branch(repo["targetName"], "master", repo["localPath"])
-            push_setting_upstream(repo["localPath"], "master")
+            rename_branch(repo["targetName"], "master", newPath)
+            push_setting_upstream(newPath, "master")
         except RenameBranchError as err:
             logging.warning(err.message)
             raise ProcessError(
@@ -890,7 +914,7 @@ def run(dataWithOptions):
         if states["mvThirdToTarget"] in repo["status"]
         and states["deleteMaster"] in repo["status"]
         and repo.get("localPath")
-        and not repo["localHasMaster"]
+        and not repo.get("localHasMaster")
     ]
     mvThirdToTargetAndDeleteRemoteMasterCloneRepos = [
         repo
@@ -905,7 +929,7 @@ def run(dataWithOptions):
         if states["mvThirdToTarget"] in repo["status"]
         and states["deleteMaster"] in repo["status"]
         and repo["hasMaster"]
-        and repo["localHasMaster"]
+        and repo.get("localHasMaster")
     ]
     mvThirdToTargetAndDeleteLocalMasters = [
         repo
@@ -921,7 +945,7 @@ def run(dataWithOptions):
         if states["deleteMaster"] in repo["status"]
         and not states["mvThirdToTarget"] in repo["status"]
         and repo.get("localPath")
-        and not repo["localHasMaster"]
+        and not repo.get("localHasMaster")
     ]
     deleteRemoteMasterCloneRepos = [
         repo
@@ -934,7 +958,7 @@ def run(dataWithOptions):
         repo
         for repo in repos
         if states["deleteMaster"]
-        and repo["localHasMaster"]
+        and repo.get("localHasMaster")
         and repo["hasMaster"]
         and not states["mvThirdToTarget"] in repo["status"]
     ]
@@ -942,7 +966,7 @@ def run(dataWithOptions):
         repo
         for repo in repos
         if states["deleteMaster"] in repo["status"]
-        and repo["localHasMaster"]
+        and repo.get("localHasMaster")
         and not states["mvThirdToTarget"] in repo["status"]
     ]
     localUpdates = [
@@ -1012,7 +1036,7 @@ def run(dataWithOptions):
     if len(deleteLocalAndRemoteMasters) > 0:
         for repo in deleteLocalAndRemoteMasters:
             try:
-                delete_remote_and_local_master(token, repo)
+                delete_remote_and_local_master(repo)
             except ProcessError as err:
                 repo["error"] = err.message
     if len(deleteLocalMasters) > 0:

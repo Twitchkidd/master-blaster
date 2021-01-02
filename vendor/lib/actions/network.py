@@ -55,7 +55,7 @@ def get_repos(username, token):
             },
             response.json(),
         )
-    return repos
+    return [*repos]
 
 
 def get_branch_url(repo, branch):
@@ -103,6 +103,8 @@ def check_remote_branches(token, repos):
             for repo in repos:
                 if repo["name"] == err.repoName:
                     repo["status"].append(states["rejectedResponse"])
+    # print("check_remote_branches")
+    # print(repos)
     return repos
 
 
