@@ -2,6 +2,28 @@
 
 TODO Tidy this up!
 
+### Feb 2nd 2021:
+
+Hi, dear Reader!
+
+The meat and potatoes live in /vendor/lib, and definitely check out the diagram in the readme for an overview (and hopefully how I've named things is readable!)
+
+Through the course of the program there are a few places where there are flags for testing for things to be hard-coded in, like the GitHub username, the personal access token, and local directory to search for local repos in.
+
+The way I was testing it was to set up an account on GitHub and switch my ssh config over while I was testing, set up repos named after each scenario, run it, look at info.log and the repos, change my code, reset the repos, rinse and repeat.
+
+Running it in development requires `pipenv`, and from the project directory:
+
+`pipenv shell`
+
+`pipenv install .`
+
+`master-blaster` (or, I think, `winpty master-blaster` on Windows)
+
+and it should do it's thing.
+
+Have a great day!
+
 ### v1.1.0 Changes!!
 
 WARNING!
