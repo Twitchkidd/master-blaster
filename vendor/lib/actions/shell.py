@@ -40,7 +40,7 @@ def get_current_branch(path):
 
 def process_runner(string, process, *args):
     """Logs the argument to be attempted to run, runs it, logs and returns
-    stdout and stderr."""
+    stdout and stderr. Pass in any (optional) strings that mean error actually ok."""
     logging.info(string)
     stdout, stderr = process.communicate()
     if len(stdout) > 0:
