@@ -40,9 +40,8 @@ def get_repos(username, token):
     if len(response.json()) == 0:
         raise NoReposError()
     print("Repos received!\n")
-    reposResponseConfirmed = True
     # ownerLogin is guaranteed to be the canonnical capitalization,
-    # leave as part of repo rather than setting username for future feature
+    # leave as part of repo rather than setting username for future
     repos = map(
         lambda repo: {
             "name": repo["name"],
