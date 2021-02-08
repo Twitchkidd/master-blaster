@@ -61,6 +61,11 @@ def get_options(data, testing):
     localDirectory = get_local_directory(testing)
     removeClones = get_remove_clones(testing)
     gitNew = get_git_new(namingMode, perRepo, name, testing)
+
+    # ! This is where get_options goes buck-wild.
+    # * What we need are the check functions, a sort function,
+    # * and a resolve naming conflicts function, *THEN* run()
+
     print("Checking repos ...")
     if localDirectory:
         repos = get_local_repos(repos, localDirectory, testing)
