@@ -23,6 +23,21 @@ from vendor.lib.actions.shell_exceptions import RemoveClonesError
 from vendor.lib.actions.shell_exceptions import GitNewError
 
 
+def get_current_branch(path):
+    """Grab the current git branch.
+
+    Credit:
+        Mostly from u/merfi on SO, added path param, logging.
+    """
+    head_dir = Path(path) / ".git" / "HEAD"
+    with head_dir.open("r") as f:
+        content = f.read().splitlines()
+    for line in content:
+        if line[0:4] == "ref:":
+            return line.partition("refs/heads/")[2]
+    logging.warning(f"ERROR: Failed to get branch from {path}.")
+
+
 def process_runner(string, process, *args):
     """Logs the argument to be attempted to run, runs it, logs and returns
     stdout and stderr."""
@@ -39,21 +54,6 @@ def process_runner(string, process, *args):
                     return stdout, stderr
         logging.warning(stderr)
     return stdout, stderr
-
-
-def get_current_branch(path):
-    """Grab the current git branch.
-
-    Credit:
-        Mostly from u/merfi on SO, added path param, logging.
-    """
-    head_dir = Path(path) / ".git" / "HEAD"
-    with head_dir.open("r") as f:
-        content = f.read().splitlines()
-    for line in content:
-        if line[0:4] == "ref:":
-            return line.partition("refs/heads/")[2]
-    logging.warning(f"ERROR: Failed to get branch from {path}.")
 
 
 def set_branch(branch, directory):
