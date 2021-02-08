@@ -8,7 +8,7 @@ setuptools.setup(
     version="1.1.0-dev",
     author="Gareth Field",
     author_email="field.gareth@gmail.com",
-    description="Rename primary branches of code repositories.",
+    description="Batch rename primary branches of GitHub repositories including 'default branch' and sync local repos to new names.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Twitchkidd/master-blaster",
