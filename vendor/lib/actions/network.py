@@ -37,24 +37,23 @@ def get_repos(username, token):
     # Bad token returns a 401! #
     if response.status_code >= 400:
         raise RequestError(response.status_code)
-    else:
-        if len(response.json()) == 0:
-            raise NoReposError()
-        print("Repos received!\n")
-        reposResponseConfirmed = True
-        # ownerLogin is guaranteed to be the canonnical capitalization,
-        # leave as part of repo rather than setting username for future feature
-        repos = map(
-            lambda repo: {
-                "name": repo["name"],
-                "ownerLogin": f"{repo['owner']['login']}",
-                "htmlUrl": repo["html_url"],
-                "gitUrl": repo["git_url"],
-                "sshUrl": repo["ssh_url"],
-                "default": repo["default_branch"],
-            },
-            response.json(),
-        )
+    if len(response.json()) == 0:
+        raise NoReposError()
+    print("Repos received!\n")
+    reposResponseConfirmed = True
+    # ownerLogin is guaranteed to be the canonnical capitalization,
+    # leave as part of repo rather than setting username for future feature
+    repos = map(
+        lambda repo: {
+            "name": repo["name"],
+            "ownerLogin": f"{repo['owner']['login']}",
+            "htmlUrl": repo["html_url"],
+            "gitUrl": repo["git_url"],
+            "sshUrl": repo["ssh_url"],
+            "default": repo["default_branch"],
+        },
+        response.json(),
+    )
     return [*repos]
 
 
