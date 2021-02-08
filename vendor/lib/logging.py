@@ -17,5 +17,5 @@ def logging_config(testing):
             level=logging.INFO,
             format="%(asctime)s %(levelname)s %(message)s",
         )
-    logging.info("master-blaster v1.1.0")
+    logging.info("master-blaster v1.1.0-dev")
     logging.info("Creating a log file!!")
